@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+    <ModulePrefs title="Advertisment gadget" /> 
+    <Content type="html">
+        <![CDATA[ 
+        < <script type="text/javascript"><!--
+                    google_ad_client = "pub-6531063547301416";
+                    /* 728x90, created 12/03/09 */
+                    google_ad_slot = "2687496479";
+                    google_ad_width = 728;
+                    google_ad_height = 90;
+                    //-->
+                    </script><script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"> 
+                </script> 
+        ]]>
+    </Content> 
+</Module>
