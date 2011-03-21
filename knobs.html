@@ -1,15 +1,6 @@
 <html>
 	<head>
-		<link rel="stylesheet" href="jquery-ui-1.8.11.custom/css/ui-lightness/jquery-ui-1.8.11.custom.css"> 
-		<link rel="stylesheet" href="jquery.ui.knob.css"> 
-		<script type='text/javascript' src="jquery-ui-1.8.11.custom/js/jquery-1.5.1.min.js"></script>
-		<script type='text/javascript' src="jquery-ui-1.8.11.custom/development-bundle/ui/jquery.ui.core.js"></script>
-		<script type='text/javascript' src="jquery-ui-1.8.11.custom/development-bundle/ui/jquery.ui.widget.js"></script>
-		<script type='text/javascript' src="jquery-ui-1.8.11.custom/development-bundle/ui/jquery.ui.mouse.js"></script>
-		<script type='text/javascript' src="jquery-ui-1.8.11.custom/development-bundle/ui/jquery.ui.slider.js"></script>
-		<!--
-		<script type='text/javascript' src='jquery.ui.knob.js'></script>
-		-->
+		<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
 		<script type='text/javascript' src='jqueryrotate/jQueryRotateCompressed.js'></script>
 		<script type='text/javascript' src='http://gsgd.co.uk/sandbox/jquery/easing/jquery.easing.1.3.js'></script>
 		<script type='text/javascript'>
@@ -59,10 +50,7 @@ So we'll use these coordinates when referencing the imageAngle and zeroAngle (bu
 				}
 
 				currentValue = degrees;
-				$('#slider-vertical').slider({value: currentValue});
-				$('#slider-horizontal').slider({value: currentValue});
 				$('#angle').val(currentValue);
-
 				$('#amount').val(currentValue - minAngle);
 				$('#knob1').rotate({ angle: currentValue - imageAngle + zeroAngle });
 			}
@@ -71,27 +59,7 @@ So we'll use these coordinates when referencing the imageAngle and zeroAngle (bu
 				setAngle(ui.value);
 			}
 
-			$('#slider-vertical').slider({
-				orientation: 'vertical',
-				range: 'min',
-				min: minAngle,
-				max: maxAngle,
-				value: currentValue,
-				slide: slideHandler
-			});
-
-			$('#slider-horizontal').slider({
-				orientation: 'horizontal',
-				range: 'min',
-				min: minAngle,
-				max: maxAngle,
-				value: currentValue,
-				slide: slideHandler
-			});
-
 			setAngle(currentValue);
-
-
 
 			function getGesture(maxMouseX, maxMouseY) {
 				var gesture;
@@ -105,9 +73,6 @@ So we'll use these coordinates when referencing the imageAngle and zeroAngle (bu
 
 				return gesture;
 			}
-
-
-
 
 			$('#knob1').bind({
 				'mousedown': function(event) {
@@ -136,26 +101,15 @@ So we'll use these coordinates when referencing the imageAngle and zeroAngle (bu
 					avgAngle = sampleCount = 0;
 
 
-
-
-/*
-
-	assume gesture direction from first movement
-	if the bottom or top were clicked, assume horizontal
-	if the left or right were clicked, assume vertical
-
-	after the initial decision, listen for big changes for a small amount of time
-
-*/
-
-
 					$(document).bind({
 						'mousemove': function(event) {
 
 							var degrees = currentValue;
 
-
-
+							// TODO: if the gesture started towards the bottom or top, assume horizontal
+							// TODO: if the gesture started towards the left or right, assume vertical
+							// After initial gesture guess (most likely vertical/horizontal), 
+							// look for circular gesture. Stop looking once the sample size is reached.
 
 							if(sampleCount < sampleSize) {
 								sampleCount++;
@@ -169,42 +123,7 @@ So we'll use these coordinates when referencing the imageAngle and zeroAngle (bu
 								}
 							}
 
-
-
-
-							/*
-							if(sampleCount < sampleSize) {
-								sampleCount++;
-								if(Math.abs(event.pageX - touchStartX) > maxMouseX)
-									maxMouseX = Math.abs(event.pageX - touchStartX);
-								if(Math.abs(event.pageY - touchStartY) > maxMouseY)
-									maxMouseY = Math.abs(event.pageY - touchStartY);
-							}
-							else if(gesture == undefined) {
-
-								if(maxMouseX == 0) gesture = "vertical";
-								else if(maxMouseY == 0) gesture = "horizontal";
-
-								if(maxMouseX/maxMouseY > 2) gesture = "horizontal";
-								else if(maxMouseY/maxMouseX > 2) gesture = "vertical";
-								else gesture = "circular";
-
-
-								// if(maxMouseX > bWidth/2
-								//    && maxMouseY > bHeight/2) {
-								// 	gesture = "circular";
-								// }
-								// else if(maxMouseX > bWidth/2) {
-								// 	gesture = "horizontal";
-								// }
-								// else if(maxMouseY > bHeight/2) {
-								// 	gesture = "vertical";
-								// }
-							}
-							*/
-
-							console.log(sampleCount + ' ' + gesture + ' ' + maxMouseX + ' ' + maxMouseY);
-							
+							// console.log(sampleCount + ' ' + gesture + ' ' + maxMouseX + ' ' + maxMouseY);
 
 							if(gesture == undefined || gesture == "circular") {
 								y = centerTop - event.pageY;
@@ -242,20 +161,6 @@ So we'll use these coordinates when referencing the imageAngle and zeroAngle (bu
 		</script>
 	</head>
 	<body>
-		<div class="demo">
-			<p>
-				<label for="amount">Value:</label>
-				<input type="text" id="amount" style="border:0; color:#f6931f; font-weight:bold;" />
-			</p>
-			<p>
-				<label for="amount">Angle:</label>
-				<input type="text" id="angle" style="border:0; color:#f6931f; font-weight:bold;" />
-			</p>
-
-			<div id="slider-horizontal" style="width:200px;"></div>
-			<div id="slider-vertical" style="height:200px;"></div>
-		</div>
-
 		<div style="position:absolute;top:200px;width:100%;text-align:center">
 			<img id="knob1" src='knob.gif' />
 		</div>
