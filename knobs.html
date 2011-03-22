@@ -1,10 +1,11 @@
 <html>
 	<head>
-		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
 		<script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
 		<script type='text/javascript' src='jqueryrotate/jQueryRotateCompressed.js'></script>
 		<script type='text/javascript' src='http://gsgd.co.uk/sandbox/jquery/easing/jquery.easing.1.3.js'></script>
 		<script type='text/javascript'>
+
 		$(function()
 		{
 /*
@@ -18,18 +19,18 @@ Angles from the center of the knob are returned from atan2 like this:
 So we'll use these coordinates when referencing the imageAngle and zeroAngle (but not min/maxAngle - they're relative to zero)
 */
 
-			var minAngle = 40;
-			var maxAngle = 320;
 			var zeroAngle = 90; // angle where 0 is located
 			var imageAngle = 270; // angle the image knob tip is pointing at
+			var minAngle = 40;
+			var maxAngle = 320;
+			var halfway = minAngle + (maxAngle - minAngle)/2;
 			var direction = "clockwise";
 			var currentValue = minAngle;
-			var halfway = minAngle + (maxAngle - minAngle)/2;
-			var sampleCount = 0;
 			var speedMultiplier = 2; // change the relation between drag speed and knob rotation
+			var sampleCount = 0;
+			var sampleSize = 20;
 
-
-			function setAngle(degrees) {
+			function setAngle(degrees, $knob) {
 
 				// enforce the limits on knob turning
 				// make sure you can't skip from the min to the max (& vice versa) directly
@@ -52,14 +53,11 @@ So we'll use these coordinates when referencing the imageAngle and zeroAngle (bu
 				currentValue = degrees;
 				$('#angle').val(currentValue);
 				$('#amount').val(currentValue - minAngle);
-				$('#knob1').rotate({ angle: currentValue - imageAngle + zeroAngle });
+				$knob.rotate({ angle: currentValue - imageAngle + zeroAngle });
 			}
 
-			var slideHandler = function(event, ui) {
-				setAngle(ui.value);
-			}
-
-			setAngle(currentValue);
+			setAngle(currentValue, $('#knob1'));
+			setAngle(currentValue, $('#knob2'));
 
 			function getGesture(maxMouseX, maxMouseY) {
 				var gesture;
@@ -67,128 +65,210 @@ So we'll use these coordinates when referencing the imageAngle and zeroAngle (bu
 				if(maxMouseX == 0) gesture = "vertical";
 				else if(maxMouseY == 0) gesture = "horizontal";
 
-				if(maxMouseX/maxMouseY > 2) gesture = "horizontal";
-				else if(maxMouseY/maxMouseX > 2) gesture = "vertical";
+				if(maxMouseX/maxMouseY > 1.5) gesture = "horizontal";
+				else if(maxMouseY/maxMouseX > 1.5) gesture = "vertical";
 				else gesture = "circular";
 
 				return gesture;
 			}
 
+			$('#knob1')[0].ontouchstart = downHandler
 			$('#knob1').bind({
+				// 'touchstart': function(event) {
+				// 	//alert('touchstart');
+				// 	return downHandler(event);
+				// },
+
 				'mousedown': function(event) {
-					// console.log("mousedown")
-					var $knob = $(this);
+					return downHandler(event);
+				}
+			});
 
-					var bPos = $knob.offset();
-					var bWidth = $knob.width();
-					var bHeight = $knob.height();
+			$('#knob2')[0].ontouchstart = downHandler
+			$('#knob2').bind({
+				// 'touchstart': function(event) {
+				// 	//alert('touchstart');
+				// 	return downHandler(event);
+				// },
 
-					var centerLeft = (bWidth + bPos.left) - (bWidth / 2);
-					var centerTop = (bHeight + bPos.top) - (bHeight / 2);
-					// var touchStartPos = { x: event.pageX, y: event.pageY };
-					var touchStartX = event.pageX;
-					var touchStartY = event.pageY;
-					var touchStartHorizontal = (event.pageX >= centerLeft) ? "right" : "left";
-					var touchStartVertical = (event.pageY >= centerTop) ? "bottom" : "top";
-
-
-					var touchStartAngle = 360 - Math.atan2(centerTop - event.pageY,event.pageX - centerLeft)/Math.PI*180 - zeroAngle;
-					touchStartAngle %= 360;
-					if (touchStartAngle < 0) touchStartAngle += 360;
-
-					var gesture = undefined;
-					var lastTouchX = event.pageX;
-					var lastTouchY = event.pageY;
-					var increasing = false;
-
-					var maxMouseX = 0;
-					var maxMouseY = 0;
-					var sampleSize = 20;
-					avgAngle = sampleCount = 0;
+				'mousedown': function(event) {
+					return downHandler(event);
+				}
+			});
 
 
+			function downHandler(event) {
+				var $knob = $(event.target);
+				var bPos = $knob.offset();
+				var bWidth = $knob.width();
+				var bHeight = $knob.height();
+
+				var centerLeft = (bWidth + bPos.left) - (bWidth / 2);
+				var centerTop = (bHeight + bPos.top) - (bHeight / 2);
+				// var touchStartPos = { x: event.pageX, y: event.pageY };
+
+				var touchStartX, touchStartY;
+				if(event.type == 'touchstart') {
+					if(event.targetTouches.length != 1)
+						return false;
+					touchStartX = event.targetTouches[0].pageX;
+					touchStartY = event.targetTouches[0].pageY;
+				}
+				else {
+					touchStartX = event.pageX;
+					touchStartY = event.pageY;
+				}
+
+				var lastTouchX = touchStartX;
+				var lastTouchY = touchStartY;
+				var touchStartHorizontal = (touchStartX >= centerLeft) ? "right" : "left";
+				var touchStartVertical = (touchStartY >= centerTop) ? "bottom" : "top";
+
+
+				var touchStartAngle = 360 - Math.atan2(centerTop - touchStartY, touchStartX - centerLeft)/Math.PI*180 - zeroAngle;
+				touchStartAngle %= 360;
+				if (touchStartAngle < 0) touchStartAngle += 360;
+
+				var gesture = undefined;
+
+
+				var increasing = false;
+
+				var maxMouseX = 0;
+				var maxMouseY = 0;
+				sampleCount = 0;
+
+				//alert('bPos ' + bPos + 'bWidth ' + bWidth + 'centerLeft ' + centerLeft + 'centerTop ' + centerTop + 'touchStartX ' + touchStartX + 'touchStartY ' + touchStartY + ' ' + )
+				function moveHandler(e) {
+					// e.preventDefault();
+
+					var pageX, pageY;
+					if(e.type == 'touchmove') {
+
+						if(e.targetTouches.length != 1)
+							return false;
+
+						pageX = e.targetTouches[0].pageX;
+						pageY = e.targetTouches[0].pageY;
+					}
+					else {
+						pageX = e.pageX;
+						pageY = e.pageY;
+					}
+
+					$('#debug').html('pageX,pageY ' + pageX + ' ' + pageY)
+					var degrees = currentValue;
+
+					// TODO: if the gesture started towards the bottom or top, assume horizontal
+					// TODO: if the gesture started towards the left or right, assume vertical
+					// After initial gesture guess (most likely vertical/horizontal), 
+					// look for circular gesture. Stop looking once the sample size is reached.
+
+					if(sampleCount < sampleSize) {
+						sampleCount++;
+						if(Math.abs(pageX - touchStartX) > maxMouseX)
+							maxMouseX = Math.abs(pageX - touchStartX);
+						if(Math.abs(pageY - touchStartY) > maxMouseY)
+							maxMouseY = Math.abs(pageY - touchStartY);
+						var currentGesture = getGesture(maxMouseX, maxMouseY);
+						if(gesture == undefined || currentGesture == "circular")  {
+							// if(gesture != "circular" && currentGesture == "circular") {
+							// 	console.log('changing to circular ' + touchStartAngle)
+							// 	touchStartAngle = 360 - Math.atan2(centerTop - e.pageY,e.pageX - centerLeft)/Math.PI*180 - zeroAngle;
+							// 	touchStartAngle %= 360;
+							// 	if (touchStartAngle < 0) touchStartAngle += 360;
+							// 	console.log('new startangle ' + touchStartAngle)
+							// }
+							gesture = currentGesture;
+						}
+					}
+
+					// console.log(sampleCount + ' ' + gesture + ' ' + maxMouseX + ' ' + maxMouseY);
+
+					if(gesture == "circular") {
+						y = centerTop - pageY;
+						x = pageX - centerLeft;
+						var inputAngle = 360 - Math.atan2(y,x)/Math.PI*180;
+						inputAngle -= zeroAngle;
+						// console.log(degrees + ' ' + inputAngle)
+						degrees = inputAngle;
+					}
+					else if(gesture == "vertical") {
+						var change = (pageY - lastTouchY) * speedMultiplier;
+						degrees += (touchStartHorizontal == "right") ? change : -change;
+					}
+					else if(gesture == "horizontal") {
+						var change = (pageX - lastTouchX) * speedMultiplier;
+						degrees += (touchStartVertical == "top") ? change : -change;
+					}
+
+					lastTouchX = pageX;
+					lastTouchY = pageY;
+
+					// if(gesture == "circular") {
+					// 	console.log('circular: ' + degrees)
+					// 	degrees -= touchStartAngle;
+					// 	console.log('circular 22: ' + degrees)
+					// }
+					degrees %= 360;
+					if (degrees < 0) degrees += 360;
+
+
+					// slow down the transition from one position to another
+					//degrees = currentValue + (degrees - currentValue)/2;
+					//degrees = currentValue + Math.min(degrees - currentValue, 4);
+
+					setAngle(degrees, $knob);
+
+					return false;
+				}
+
+				if(event.type == 'touchstart') {
+					document.addEventListener('touchmove', moveHandler, false);
+					document.addEventListener('touchend', function(e) {
+						document.removeEventListener('touchmove', moveHandler);
+						document.removeEventListener('touchend', arguments.callee);
+						return false;
+					}, false);
+
+					// $('#knob1').bind({
+					// 	'touchmove': function(event) {
+					// 		alert("yooo " + event.targetTouches);
+					// 		return moveHandler(event);
+					// 	},
+					// 	'touchend': function(event) {
+					// 		alert('touchend');
+					// 		$(this).unbind('touchmove');
+					// 		$(this).unbind('touchend');
+					// 		return false;
+					// 	}
+					// });
+				}
+				else {
 					$(document).bind({
 						'mousemove': function(event) {
-
-							var degrees = currentValue;
-
-							// TODO: if the gesture started towards the bottom or top, assume horizontal
-							// TODO: if the gesture started towards the left or right, assume vertical
-							// After initial gesture guess (most likely vertical/horizontal), 
-							// look for circular gesture. Stop looking once the sample size is reached.
-
-							if(sampleCount < sampleSize) {
-								sampleCount++;
-								if(Math.abs(event.pageX - touchStartX) > maxMouseX)
-									maxMouseX = Math.abs(event.pageX - touchStartX);
-								if(Math.abs(event.pageY - touchStartY) > maxMouseY)
-									maxMouseY = Math.abs(event.pageY - touchStartY);
-								var currentGesture = getGesture(maxMouseX, maxMouseY);
-								if(gesture == undefined || currentGesture == "circular")  {
-									// if(gesture != "circular" && currentGesture == "circular") {
-									// 	console.log('changing to circular ' + touchStartAngle)
-									// 	touchStartAngle = 360 - Math.atan2(centerTop - event.pageY,event.pageX - centerLeft)/Math.PI*180 - zeroAngle;
-									// 	touchStartAngle %= 360;
-									// 	if (touchStartAngle < 0) touchStartAngle += 360;
-									// 	console.log('new startangle ' + touchStartAngle)
-									// }
-									gesture = currentGesture;
-								}
-							}
-
-							// console.log(sampleCount + ' ' + gesture + ' ' + maxMouseX + ' ' + maxMouseY);
-
-							if(gesture == "circular") {
-								y = centerTop - event.pageY;
-								x = event.pageX - centerLeft;
-								var inputAngle = 360 - Math.atan2(y,x)/Math.PI*180;
-								inputAngle -= zeroAngle;
-								// console.log(degrees + ' ' + inputAngle)
-								degrees = inputAngle;
-							}
-							else if(gesture == "vertical") {
-								var change = (event.pageY - lastTouchY) * speedMultiplier;
-								degrees += (touchStartHorizontal == "right") ? change : -change;
-							}
-							else if(gesture == "horizontal") {
-								var change = (event.pageX - lastTouchX) * speedMultiplier;
-								degrees += (touchStartVertical == "top") ? change : -change;
-							}
-
-							lastTouchX = event.pageX;
-							lastTouchY = event.pageY;
-
-							// if(gesture == "circular") {
-							// 	console.log('circular: ' + degrees)
-							// 	degrees -= touchStartAngle;
-							// 	console.log('circular 22: ' + degrees)
-							// }
-							degrees %= 360;
-							if (degrees < 0) degrees += 360;
-
-		
-							// slow down the transition from one position to another
-							//degrees = currentValue + (degrees - currentValue)/2;
-							//degrees = currentValue + Math.min(degrees - currentValue, 4);
-
-							setAngle(degrees);
+							return moveHandler(event);
 						},
 						'mouseup': function(event) {
 							$(this).unbind('mousemove');
 							$(this).unbind('mouseup');
+							return false;
 						}
 					});
-					return false;
 				}
-			});
+				return false;
+			} // end downHandler
 
 		});
 
 		</script>
 	</head>
 	<body>
+		<div id="debug"></div>
 		<div style="position:absolute;top:200px;width:100%;text-align:center">
 			<img id="knob1" src='knob.gif' />
+			<span>knobs</span>
+			<img id="knob2" src='knob.gif' />
 		</div>
 
 	</body>
