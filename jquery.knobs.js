@@ -1,56 +1,33 @@
 (function($) {
 	var setAngle = function(degrees, $knob) {
 		var data = $knob.data('knob');
-		console.log('attempted ' + degrees);
-
-
-		// enforce the angle limits on knob turning by making sure you can't cross between min & max
-		// look for very large jumps in the difference between the old and new value
-		// var cutoff = (settings.maxAngle - settings.minAngle) * 0.625;
-		// if(Math.abs(data.currentValue - degrees) > cutoff) {
-		// 	degrees = data.currentValue < data.halfway ? settings.minAngle : settings.maxAngle;
-		// }
-
-
-
-
-
-
+		// console.log('attempted ' + degrees);
 
 		var turnAmount = 0;
 		var prevTurns = 0;
 
-		var diff = (data.currentValue%360) - degrees%360;
+		degrees %= 360; // chop off any previous turns, get base angle
+		// enforce the angle limits on knob turning by making sure you can't cross between min & max
+		// look for very large jumps in the difference between the old and new angle
+		var diff = data.currentValue%360 - degrees;
 		var cutoff = 225 // 360 * 0.625
 		if(Math.abs(diff) > cutoff) {
 			turnAmount = (diff > 0) ? 1 : -1;
 		}
-		prevTurns = 360 * (~~(data.currentValue/360) + turnAmount);
+		// prevTurns is the total degrees already turned
+		prevTurns = 360 * (~~(data.currentValue/360) + turnAmount); // ~~ forces integer division
 
-
-		degrees = degrees % 360 + prevTurns;
-		//degrees = (Math.floor(degrees/360)*360) + degrees%360 + prevTurns
-		console.log('prev  ' + prevTurns + 'turn ' + turnAmount + ' final degrees ' + degrees)
-
-
-		// 1084 = (Math.floor(724/360)*360) + 724%360 + 360
-		// console.log('prev  ' + prevTurns + 'turn ' + turnAmount + ' final degrees ' + degrees)
-
-
+		degrees += prevTurns; // add base angle with previous turns
 
 		// don't allow values below min and above max angle
 		degrees = Math.min(Math.max(degrees, settings.minAngle), settings.maxAngle);
-
-
-
-
 
 		$knob.rotate({
 			angle: (degrees - data.settings.labelAngle + data.settings.rotation)
 		});
 
 		data.currentValue = degrees;
-		// console.log(degrees);
+		// console.log('prev  ' + prevTurns + 'turn ' + turnAmount + ' final degrees ' + degrees)
 	};
 
 	var getGesture = function(maxMouseX, maxMouseY) {
@@ -70,7 +47,7 @@
 	var settings =  {                 // Default Orientation
 		'minValue': 0,                //         270
 		'maxValue': 100,              //   180    +    0
-		'value': 0,                  //         90
+		'value': 0,                   //         90
 		'rotation': 0, // angle of the entire knob relative to the default orientation
 		'labelAngle': 0, // angle of the image relative to the default orientation
 		'minAngle': 0, // relative to 0 (rotation automatically added)
@@ -208,31 +185,6 @@
 								inputAngle -= data.settings.rotation;
 								inputAngle %= 360;
 								degrees = inputAngle;
-
-
-
-
-								// if the raw angle crosses over 360 to 0 or vice versa,
-								// and the max and min angle haven't been reached yet
-								// (this happens with a maxAngle >= 360) be sure to
-								// make sure you account for the number of turns
-
-
-								// console.log('diff  ' + diff + ' current ' + data.currentValue + ' mod360 ' + (data.currentValue%360))
-
-								// var turnAmount = 0;
-								// var prevTurns = 0;
-
-								// var diff = (data.currentValue%360) - inputAngle;
-								// var cutoff = 225 // 360 * 0.625
-								// if(Math.abs(diff) > cutoff) {
-								// 	turnAmount = (diff > 0) ? 1 : -1;
-								// }
-								// prevTurns = Math.max(360 * (~~(data.currentValue/360) + turnAmount), 0);
-	
-								// //console.log('circular ' + degrees + ' ' + inputAngle)
-								// degrees = inputAngle + prevTurns;
-								// console.log('prev  ' + prevTurns + ' final degrees ' + degrees)
 							}
 							else if(data.gesture == "vertical") {
 								var change = (pageY - data.lastTouchY) * data.settings.turnSpeed;
