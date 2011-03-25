@@ -33,12 +33,17 @@
 	var getGesture = function(maxMouseX, maxMouseY) {
 		var gesture;
 
-		if(maxMouseX == 0) gesture = "vertical";
-		else if(maxMouseY == 0) gesture = "horizontal";
-
-		if(maxMouseX/maxMouseY > 1.5) gesture = "horizontal";
-		else if(maxMouseY/maxMouseX > 1.5) gesture = "vertical";
-		else gesture = "circular";
+		if(maxMouseX == 0) {
+			gesture = "vertical";
+		}
+		else if(maxMouseY == 0) {
+			gesture = "horizontal";
+		}
+		else {
+			if(maxMouseX/maxMouseY > 1.3) gesture = "horizontal";
+			else if(maxMouseY/maxMouseX > 1.3) gesture = "vertical";
+			else gesture = "circular";
+		}
 
 		return gesture;
 	};
@@ -54,7 +59,7 @@
 		// look for circular gesture. Stop looking once the sample size is reached.
 
 		if(data.sampleCount < data.settings.sampleSize) {
-			data.sampleCount = data.sampleCount + 1;
+			data.sampleCount++;
 
 			if(Math.abs(pageX - data.touchStartX) > data.maxMouseX)
 				data.maxMouseX = Math.abs(pageX - data.touchStartX);
@@ -105,8 +110,9 @@
 		'minAngle': 0, // relative to 0 (rotation automatically added)
 		'maxAngle': 359, // relative to 0 (rotation automatically added)
 		'direction': 'clockwise', // direction the knob turns from minAngle to maxAngle
-		'turnSpeed': 2, // go 2 x number of pixels travelled by gesture (only applies to linear gestures)
-		'sampleSize': 20, // how many locations to sample before locking gesture best guess
+		'turnSpeed': 1.4, // go 2 x number of pixels travelled by gesture (only applies to linear gestures)
+		'sampleSize': 15, // how many locations to sample before locking gesture best guess
+		'step': 1,
 		'circularGestureEnabled': true,
 		'verticalGestureEnabled': true,
 		'horizontalGestureEnabled': true
@@ -208,19 +214,14 @@
 								'touchend': function(event) {
 									var e = event.originalEvent;
 									e.preventDefault();
+									for(var i=0; i < e.changedTouches.length; i++) {
+										delete activeKnobs[e.changedTouches[i].identifier];
+									}
 									var count = 0;
 									for (var key in activeKnobs) {
 										count++;
 									}
-									$('#debug2').append('before: ' + count);
-									for(var i=0; i < e.changedTouches.length; i++) {
-										delete activeKnobs[e.changedTouches[i].identifier];
-									}
-									count = 0;
-									for (var key in activeKnobs) {
-										count++;
-									}
-									$('#debug2').append('<br>after: ' + count + '<br>');
+									// $('#debug2').append('before: ' + count);
 									if(count <= 0) {
 										$(document).unbind('touchmove');
 										$(document).unbind('touchend');										
