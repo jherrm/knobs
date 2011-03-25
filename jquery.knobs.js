@@ -14,13 +14,13 @@
 		if(Math.abs(diff) > cutoff) {
 			turnAmount = (diff > 0) ? 1 : -1;
 		}
-		// prevTurns is the total degrees already turned
+		// prevTurns is the total number of full turns in degrees
 		prevTurns = 360 * (~~(data.currentValue/360) + turnAmount); // ~~ forces integer division
 
 		degrees += prevTurns; // add base angle with previous turns
 
 		// don't allow values below min and above max angle
-		degrees = Math.min(Math.max(degrees, settings.minAngle), settings.maxAngle);
+		degrees = Math.min(Math.max(degrees, data.settings.minAngle), data.settings.maxAngle);
 
 		$knob.rotate({
 			angle: (degrees - data.settings.labelAngle + data.settings.rotation)
@@ -44,7 +44,7 @@
 	};
 
 
-	var settings =  {                 // Default Orientation
+	var defaults =  {                 // Default Orientation
 		'minValue': 0,                //         270
 		'maxValue': 100,              //   180    +    0
 		'value': 0,                   //         90
@@ -67,8 +67,9 @@
 				// this.mousedown = function(event) {
 				// 	alert('sdf')
 				// };
+				var settings = {};
 				if(options) {
-					$.extend(settings, options);
+					settings = $.extend(settings, defaults, options); // don't modify defaults
 				}
 
 				// var $this = $(this),
