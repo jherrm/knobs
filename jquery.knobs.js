@@ -220,25 +220,16 @@
 						}
 
 						if(event.type == 'touchstart') {
-							document.addEventListener('touchmove', moveHandler, false);
-							document.addEventListener('touchend', function(e) {
-								document.removeEventListener('touchmove', moveHandler);
-								document.removeEventListener('touchend', arguments.callee);
-								return false;
-							}, false);
-
-							// $('#knob1').bind({
-							// 	'touchmove': function(event) {
-							// 		alert("yooo " + event.targetTouches);
-							// 		return moveHandler(event);
-							// 	},
-							// 	'touchend': function(event) {
-							// 		alert('touchend');
-							// 		$(this).unbind('touchmove');
-							// 		$(this).unbind('touchend');
-							// 		return false;
-							// 	}
-							// });
+							$(document).bind({
+								'touchmove': function(event) {
+									return moveHandler(event.originalEvent);
+								},
+								'touchend': function(event) {
+									$(document).unbind('touchmove');
+									$(document).unbind('touchend');
+									return false;
+								}
+							});
 						}
 						else {
 							$(document).bind({
@@ -259,14 +250,13 @@
 
 
 
-					this.ontouchstart = downHandler; // don't use jquery object (event doesn't get passed correctly)
+					// this.addEventListener('touchstart', downHandler, false);
+					//this.ontouchstart = downHandler; // don't use jquery object (event doesn't get passed correctly)
 					//alert($this.attr('src'))
 					$this.bind({
-						// 'touchstart': function(event) {
-						// 	//alert('touchstart');
-						// 	return downHandler(event);
-						// },
-
+						'touchstart': function(event) {
+							return downHandler(event.originalEvent);
+						},
 						'mousedown': function(event) {
 					 		return downHandler(event);
 							// return false;
