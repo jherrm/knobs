@@ -43,6 +43,58 @@
 		return gesture;
 	};
 
+	var updateKnob = function($knob, pageX, pageY) {
+		var data = $knob.data('knob');
+
+		var degrees = data.currentValue;
+
+		// TODO: if the gesture started towards the bottom or top, assume horizontal
+		// TODO: if the gesture started towards the left or right, assume vertical
+		// After initial gesture guess (most likely vertical/horizontal), 
+		// look for circular gesture. Stop looking once the sample size is reached.
+
+		if(data.sampleCount < data.settings.sampleSize) {
+			data.sampleCount = data.sampleCount + 1;
+
+			if(Math.abs(pageX - data.touchStartX) > data.maxMouseX)
+				data.maxMouseX = Math.abs(pageX - data.touchStartX);
+			if(Math.abs(pageY - data.touchStartY) > data.maxMouseY)
+				data.maxMouseY = Math.abs(pageY - data.touchStartY);
+			var currentGesture = getGesture(data.maxMouseX, data.maxMouseY);
+			if(data.gesture == undefined || currentGesture == "circular")  {
+				data.gesture = currentGesture;
+			}
+		}
+
+		if(data.gesture == "circular") {
+			y = data.centerTop - pageY;
+			x = pageX - data.centerLeft;
+			var inputAngle = 360 - Math.atan2(y,x)/Math.PI*180;
+			inputAngle -= data.settings.rotation;
+			inputAngle %= 360;
+			degrees = inputAngle;
+		}
+		else if(data.gesture == "vertical") {
+			var change = (pageY - data.lastTouchY) * data.settings.turnSpeed;
+			degrees += (data.touchStartHorizontal == "right") ? change : -change;
+		}
+		else if(data.gesture == "horizontal") {
+			var change = (pageX - data.lastTouchX) * data.settings.turnSpeed;
+			degrees += (data.touchStartVertical == "top") ? change : -change;
+		}
+
+		data.lastTouchX = pageX;
+		data.lastTouchY = pageY;
+
+		if (degrees < 0) degrees += 360;
+
+		// slow down the transition from one position to another
+		//degrees = currentValue + (degrees - currentValue)/2;
+		//degrees = currentValue + Math.min(degrees - currentValue, 4);
+
+		setAngle(degrees, $knob);
+	}
+
 
 	var defaults =  {                 // Default Orientation
 		'minValue': 0,                //         270
@@ -59,6 +111,8 @@
 		'verticalGestureEnabled': true,
 		'horizontalGestureEnabled': true
 	}
+
+	var activeKnobs = {};
 
 
 	var methods = {
@@ -89,7 +143,8 @@
 					var $knob = $this;
 
 					function downHandler(event) {
-						//var $knob = $(event.target);
+						event.preventDefault();
+						// var $knob = $(event.target);  // seems to only work with touch events
 						var data = $knob.data('knob');
 						var bPos = $knob.offset();
 						var bWidth = $knob.width();
@@ -101,10 +156,9 @@
 
 						// var touchStartX, touchStartY;
 						if(event.type == 'touchstart') {
-							if(event.targetTouches.length != 1)
-								return false;
 							data.touchStartX = event.targetTouches[0].pageX;
 							data.touchStartY = event.targetTouches[0].pageY;
+							activeKnobs[event.targetTouches[0].identifier] = $knob;
 						}
 						else {
 							data.touchStartX = event.pageX;
@@ -129,92 +183,19 @@
 
 						//alert('bPos ' + bPos + 'bWidth ' + bWidth + 'centerLeft ' + centerLeft + 'centerTop ' + centerTop + 'touchStartX ' + touchStartX + 'touchStartY ' + touchStartY + ' ' + )
 						function moveHandler(e) {
-							// e.preventDefault();
+							e.preventDefault();
 
-							// var $knob = $('#knob1');
-							var data = $knob.data('knob');
-
-							var pageX, pageY;
 							if(e.type == 'touchmove') {
-
-								if(e.targetTouches.length != 1)
-									return false;
-
-								pageX = e.targetTouches[0].pageX;
-								pageY = e.targetTouches[0].pageY;
-							}
-							else {
-								pageX = e.pageX;
-								pageY = e.pageY;
-							}
-
-							$('#debug').html('pageX,pageY ' + pageX + ' ' + pageY);
-
-							var degrees = data.currentValue;
-
-							// TODO: if the gesture started towards the bottom or top, assume horizontal
-							// TODO: if the gesture started towards the left or right, assume vertical
-							// After initial gesture guess (most likely vertical/horizontal), 
-							// look for circular gesture. Stop looking once the sample size is reached.
-
-							if(data.sampleCount < data.settings.sampleSize) {
-								data.sampleCount = data.sampleCount + 1;
-
-								if(Math.abs(pageX - data.touchStartX) > data.maxMouseX)
-									data.maxMouseX = Math.abs(pageX - data.touchStartX);
-								if(Math.abs(pageY - data.touchStartY) > data.maxMouseY)
-									data.maxMouseY = Math.abs(pageY - data.touchStartY);
-								var currentGesture = getGesture(data.maxMouseX, data.maxMouseY);
-								if(data.gesture == undefined || currentGesture == "circular")  {
-									// if(gesture != "circular" && currentGesture == "circular") {
-									// 	console.log('changing to circular ' + touchStartAngle)
-									// 	touchStartAngle = 360 - Math.atan2(centerTop - e.pageY,e.pageX - centerLeft)/Math.PI*180 - rotation;
-									// 	touchStartAngle %= 360;
-									// 	if (touchStartAngle < 0) touchStartAngle += 360;
-										console.log('new startangle ' + data.touchStartAngle)
-									// }
-									data.gesture = currentGesture;
+								for(var i=0; i < e.changedTouches.length; i++) {
+									var $k = activeKnobs[e.changedTouches[i].identifier];
+									if($k !== undefined) {
+										updateKnob($k, e.changedTouches[i].pageX, e.changedTouches[i].pageY);
+									}
 								}
 							}
-
-							// console.log(sampleCount + ' ' + gesture + ' ' + maxMouseX + ' ' + maxMouseY);
-
-							if(data.gesture == "circular") {
-								y = data.centerTop - pageY;
-								x = pageX - data.centerLeft;
-								var inputAngle = 360 - Math.atan2(y,x)/Math.PI*180;
-								inputAngle -= data.settings.rotation;
-								inputAngle %= 360;
-								degrees = inputAngle;
+							else {
+								updateKnob($knob, e.pageX, e.pageY);
 							}
-							else if(data.gesture == "vertical") {
-								var change = (pageY - data.lastTouchY) * data.settings.turnSpeed;
-								degrees += (data.touchStartHorizontal == "right") ? change : -change;
-							}
-							else if(data.gesture == "horizontal") {
-								var change = (pageX - data.lastTouchX) * data.settings.turnSpeed;
-								degrees += (data.touchStartVertical == "top") ? change : -change;
-							}
-							// console.log(data.gesture + degrees + ' ' + inputAngle)
-
-							data.lastTouchX = pageX;
-							data.lastTouchY = pageY;
-
-							// if(gesture == "circular") {
-							// 	console.log('circular: ' + degrees)
-							// 	degrees -= touchStartAngle;
-							// 	console.log('circular 22: ' + degrees)
-							// }
-
-							if (degrees < 0) degrees += 360;
-
-
-							// slow down the transition from one position to another
-							//degrees = currentValue + (degrees - currentValue)/2;
-							//degrees = currentValue + Math.min(degrees - currentValue, 4);
-
-							// console.log(data.lastTouchX, degrees)
-							setAngle(degrees, $knob);
 
 							return false;
 						}
@@ -225,8 +206,25 @@
 									return moveHandler(event.originalEvent);
 								},
 								'touchend': function(event) {
-									$(document).unbind('touchmove');
-									$(document).unbind('touchend');
+									var e = event.originalEvent;
+									e.preventDefault();
+									var count = 0;
+									for (var key in activeKnobs) {
+										count++;
+									}
+									$('#debug2').append('before: ' + count);
+									for(var i=0; i < e.changedTouches.length; i++) {
+										delete activeKnobs[e.changedTouches[i].identifier];
+									}
+									count = 0;
+									for (var key in activeKnobs) {
+										count++;
+									}
+									$('#debug2').append('<br>after: ' + count + '<br>');
+									if(count <= 0) {
+										$(document).unbind('touchmove');
+										$(document).unbind('touchend');										
+									}
 									return false;
 								}
 							});
@@ -247,12 +245,6 @@
 					}
 
 
-
-
-
-					// this.addEventListener('touchstart', downHandler, false);
-					//this.ontouchstart = downHandler; // don't use jquery object (event doesn't get passed correctly)
-					//alert($this.attr('src'))
 					$this.bind({
 						'touchstart': function(event) {
 							return downHandler(event.originalEvent);
