@@ -1,5 +1,7 @@
 <html>
 	<head>
+		<!--
+		-->
 		<meta name='viewport' content='width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;'>
 		<style>
 			.logo {
@@ -15,18 +17,15 @@
 				padding:20px;'
 			}
 		</style>
-		<!--<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js'></script>-->
 		<script type='text/javascript' src='jquery-1.5.1.min.js'></script>
-		<!--<script type='text/javascript' src='http://gsgd.co.uk/sandbox/jquery/easing/jquery.easing.1.3.js'></script>-->
 		<script type='text/javascript' src='jquery.easing.1.3.js'></script>
 		<script type='text/javascript' src='jquery.knobs.js'></script>
-		<script type='text/javascript' src='jqueryrotate/jQueryRotateCompressed.js'></script>
+		<script type='text/javascript' src='jquery.rotate.js'></script>
 		<script type='text/javascript'>
 
 		$(function() {
-
 			// prevent dragging the page in touch based browsers
-			$('body').bind('touchmove', function(event) { event.originalEvent.preventDefault(); });
+			// $('body').bind('touchmove', function(event) { event.originalEvent.preventDefault(); });
 
 /**/
 			$('#logo_knob').knob({
@@ -60,6 +59,15 @@
 				'maxAngle': Number.POSITIVE_INFINITY,
 				'labelAngle': 270
 			});
+
+/*
+
+			$('#old_knob').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+				'labelAngle': 270
+			});
+
 /**/
 
 		});
@@ -73,24 +81,28 @@
 		<div style='margin:0 auto 0 auto;width:400px;'>
 
 			<div class='logo'>kn</div>
-			<div id='logo_knob' class='knob_holder' style='background-image:url(silver_halo.png);padding:2px;margin-top:66px;'>
-				<img id='logo_knob_indicator' src='silver_halo_indicator.png' />
+			<div id='logo_knob' class='knob_holder' style='background-image:url(images/silver_halo.png);padding:2px;margin-top:66px;'>
+				<img id='logo_knob_indicator' src='images/silver_halo_indicator.png' />
 			</div>
 			<div class='logo'>bs</div>
 
 			<div>
-				<div id='silver_halo' class='knob_holder' style='background-image:url(silver_halo.png);'>
-					<img id='silver_halo_indicator' src='silver_halo_indicator.png' />
+				<div id='silver_halo' class='knob_holder' style='background-image:url(images/silver_halo.png);'>
+					<img id='silver_halo_indicator' src='images/silver_halo_indicator.png' />
 				</div>
 			</div>
+
 			<div>
-				<div id='clean_metal' class='knob_holder' style='background-image:url(clean_metal.png);'>
-					<img id='clean_metal_indicator' src='clean_metal_indicator.png' style='margin-top:4px;' />
+				<div id='clean_metal' class='knob_holder' style='background-image:url(images/clean_metal.png);'>
+					<img id='clean_metal_indicator' src='images/clean_metal_indicator.png' style='margin-top:4px;' />
 				</div>
-				<div id='septa' class='knob_holder' style='background-image:url(septa_knob.png);'>
-					<img id='septa_indicator' src='septa_knob_indicator.png' style='margin-top:4px;' />
+				<div id='septa' class='knob_holder' style='background-image:url(images/septa_knob.png);'>
+					<img id='septa_indicator' src='images/septa_knob_indicator.png' style='margin-top:4px;' />
 				</div>
 			</div>
+			<!--
+			<img id='old_knob' src='images/knob.gif' />
+			-->
 		</div>
 	</div>
 
