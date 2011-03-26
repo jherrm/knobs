@@ -22,7 +22,11 @@
 		// don't allow values below min and above max angle
 		degrees = Math.min(Math.max(degrees, data.settings.minAngle), data.settings.maxAngle);
 
-		$knob.rotate({
+		var target = $knob;
+		if(data.settings.rotatedTarget !== undefined) {
+			target = data.settings.rotatedTarget;
+		}
+		target.rotate({
 			angle: (degrees - data.settings.labelAngle + data.settings.rotation)
 		});
 
@@ -80,11 +84,11 @@
 			degrees = inputAngle;
 		}
 		else if(data.gesture == "vertical") {
-			var change = (pageY - data.lastTouchY) * data.settings.turnSpeed;
+			var change = (pageY - data.lastTouchY) * data.settings.linearTurnSpeed;
 			degrees += (data.touchStartHorizontal == "right") ? change : -change;
 		}
 		else if(data.gesture == "horizontal") {
-			var change = (pageX - data.lastTouchX) * data.settings.turnSpeed;
+			var change = (pageX - data.lastTouchX) * data.settings.linearTurnSpeed;
 			degrees += (data.touchStartVertical == "top") ? change : -change;
 		}
 
@@ -105,13 +109,14 @@
 		'minValue': 0,                //         270
 		'maxValue': 100,              //   180    +    0
 		'value': 0,                   //         90
+		'rotatedTarget': undefined,
 		'rotation': 0, // angle of the entire knob relative to the default orientation
 		'labelAngle': 0, // angle of the image relative to the default orientation
 		'minAngle': 0, // relative to 0 (rotation automatically added)
 		'maxAngle': 359, // relative to 0 (rotation automatically added)
 		'direction': 'clockwise', // direction the knob turns from minAngle to maxAngle
-		'turnSpeed': 1.4, // go 2 x number of pixels travelled by gesture (only applies to linear gestures)
-		'sampleSize': 15, // how many locations to sample before locking gesture best guess
+		'linearTurnSpeed': 1.4, // go 2 x number of pixels travelled by gesture (only applies to linear gestures)
+		'sampleSize': 40, // how many locations to sample before locking gesture best guess
 		'step': 1,
 		'circularGestureEnabled': true,
 		'verticalGestureEnabled': true,
@@ -153,14 +158,13 @@
 						// var $knob = $(event.target);  // seems to only work with touch events
 						var data = $knob.data('knob');
 						var bPos = $knob.offset();
-						var bWidth = $knob.width();
-						var bHeight = $knob.height();
+						var bWidth = $knob.outerWidth(); // include border & padding
+						var bHeight = $knob.outerHeight(); // include border & padding
 
 						data.centerLeft = (bWidth + bPos.left) - (bWidth / 2);
 						data.centerTop = (bHeight + bPos.top) - (bHeight / 2);
 						// var touchStartPos = { x: event.pageX, y: event.pageY };
 
-						// var touchStartX, touchStartY;
 						if(event.type == 'touchstart') {
 							data.touchStartX = event.targetTouches[0].pageX;
 							data.touchStartY = event.targetTouches[0].pageY;
@@ -176,31 +180,28 @@
 						data.touchStartHorizontal = (data.touchStartX >= data.centerLeft) ? "right" : "left";
 						data.touchStartVertical = (data.touchStartY >= data.centerTop) ? "bottom" : "top";
 
-
-						data.touchStartAngle = 360 - Math.atan2(data.centerTop - data.touchStartY, data.touchStartX - data.centerLeft)/Math.PI*180 - data.settings.rotation;
-						data.touchStartAngle %= 360;
-						if (data.touchStartAngle < 0) data.touchStartAngle += 360;
-
 						data.gesture = undefined;
 
 						data.maxMouseX = 0;
 						data.maxMouseY = 0;
 						data.sampleCount = 4;
 
-						//alert('bPos ' + bPos + 'bWidth ' + bWidth + 'centerLeft ' + centerLeft + 'centerTop ' + centerTop + 'touchStartX ' + touchStartX + 'touchStartY ' + touchStartY + ' ' + )
-						function moveHandler(e) {
+						function mousemoveHandler(e) {
 							e.preventDefault();
 
-							if(e.type == 'touchmove') {
-								for(var i=0; i < e.changedTouches.length; i++) {
-									var $k = activeKnobs[e.changedTouches[i].identifier];
-									if($k !== undefined) {
-										updateKnob($k, e.changedTouches[i].pageX, e.changedTouches[i].pageY);
-									}
+							updateKnob($knob, e.pageX, e.pageY);
+
+							return false;
+						}
+
+						function touchmoveHandler(e) {
+							e.preventDefault();
+
+							for(var i=0; i < e.changedTouches.length; i++) {
+								var $k = activeKnobs[e.changedTouches[i].identifier];
+								if($k !== undefined) {
+									updateKnob($k, e.changedTouches[i].pageX, e.changedTouches[i].pageY);
 								}
-							}
-							else {
-								updateKnob($knob, e.pageX, e.pageY);
 							}
 
 							return false;
@@ -209,7 +210,7 @@
 						if(event.type == 'touchstart') {
 							$(document).bind({
 								'touchmove': function(event) {
-									return moveHandler(event.originalEvent);
+									return touchmoveHandler(event.originalEvent);
 								},
 								'touchend': function(event) {
 									var e = event.originalEvent;
@@ -233,7 +234,7 @@
 						else {
 							$(document).bind({
 								'mousemove': function(event) {
-									return moveHandler(event);
+									return mousemoveHandler(event);
 								},
 								'mouseup': function(event) {
 									$(document).unbind('mousemove');
@@ -252,7 +253,6 @@
 						},
 						'mousedown': function(event) {
 					 		return downHandler(event);
-							// return false;
 						}
 					});
 
