@@ -1,71 +1,154 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset='utf-8'>
+	<meta charset='utf-8'>
 
-  <title>jherm/knobs @ GitHub</title>
+	<title>jherm/knobs @ GitHub</title>
 
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #6d17a8;
-      font-family: Helvetica, Arial, FreeSans, san-serif;
-      color: #ffffff;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-    h1 { font-size: 3.8em; color: #92e857; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #92e857; }
-    h3 { text-align: center; color: #92e857; }
-    a { color: #92e857; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-  </style>
+	<style type="text/css">
+		body {
+			margin-top: 1.0em;
+			font-family: Helvetica, Arial, FreeSans, san-serif;
+			color: #000000;
+		}
+		#container {
+			margin: 0 auto;
+			width: 700px;
+		}
+		h1 { font-size: 3.8em; color: #000000; margin-bottom: 3px; }
+		h1 .small { font-size: 0.4em; }
+		h1 a { text-decoration: none }
+		h2 { font-size: 1.5em; color: #000000; }
+		h3 { text-align: center; color: #000000; }
+		a { color: #000000; }
+		.description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+		pre { background: #000; color: #fff; padding: 15px;}
+		hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+		.footer { text-align:center; padding-top:30px; font-style: italic; }
+
+		.logo {
+			font-size:155px;
+			float:left;
+		}
+
+		.knob_holder {
+			float:left;
+			background-repeat: no-repeat;
+			background-position: center center;
+			background-color:transparent;
+			padding:20px;'
+		}
+
+	</style>
+	<script type='text/javascript' src='jquery-1.5.1.min.js'></script>
+	<script type='text/javascript' src='jquery.easing.1.3.js'></script>
+	<script type='text/javascript' src='jquery.knobs.js'></script>
+	<script type='text/javascript' src='jquery.rotate.min.js'></script>
+	<script type='text/javascript'>
+
+	$(function() {
+
+		// prevent dragging the page in touch based browsers
+		$('body').bind('touchmove', function(event) { event.originalEvent.preventDefault(); });
+
+/**/
+		$('#logo_knob').knob({
+			'rotatedTarget': $('#logo_knob_indicator'),
+			'minAngle': 10,
+			'maxAngle': 350,
+			'labelAngle': 270,
+			'rotation': 90,
+			'sampleSize': 40,
+			'linearTurnSpeed': 1
+		});
+
+		$('#silver_halo').knob({
+			'rotatedTarget': $('#silver_halo_indicator'),
+			'minAngle': 10,
+			'maxAngle': 350,
+			'labelAngle': 270,
+			'rotation': 90
+		});
+
+		$('#clean_metal').knob({
+			'rotatedTarget': $('#clean_metal_indicator'),
+			'minAngle': Number.NEGATIVE_INFINITY,
+			'maxAngle': Number.POSITIVE_INFINITY,
+			'labelAngle': 270
+		});
+
+		$('#septa').knob({
+			'rotatedTarget': $('#septa_indicator'),
+			'minAngle': Number.NEGATIVE_INFINITY,
+			'maxAngle': Number.POSITIVE_INFINITY,
+			'labelAngle': 270
+		});
+/**/
+
+	});
+
+	</script>
 </head>
 
 <body>
-  <a href="http://github.com/jherm/knobs"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+	<a href="http://github.com/jherm/knobs"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
 
-  <div id="container">
 
-    <div class="download">
-      <a href="http://github.com/jherm/knobs/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/jherm/knobs/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
-    </div>
+	<div id="container" style="clear:both;">
+		<div style='margin:0 auto 0 auto;'>
 
-    <h1><a href="http://github.com/jherm/knobs">knobs</a>
-      <span class="small">by <a href="http://github.com/jherm">jherm</a></span></h1>
+			<div class='logo'>kn</div>
+			<div id='logo_knob' class='knob_holder' style='background-image:url(images/silver_halo.png);padding:2px;margin-top:66px;'>
+				<img id='logo_knob_indicator' src='images/silver_halo_indicator.png' />
+			</div>
+			<div class='logo'>bs</div>
 
-    <div class="description">
-      HTML and javascript knobs. Tried to emulate the behavior of the knobs in Apple's GarageBand for the iPad.
-    </div>
+			<div>
+				<div id='silver_halo' class='knob_holder' style='background-image:url(images/silver_halo.png);'>
+					<img id='silver_halo_indicator' src='images/silver_halo_indicator.png' />
+				</div>
+			</div>
+			<div>
+				<div id='clean_metal' class='knob_holder' style='background-image:url(images/clean_metal.png);'>
+					<img id='clean_metal_indicator' src='images/clean_metal_indicator.png' style='margin-top:10px;' />
+				</div>
+				<div id='septa' class='knob_holder' style='background-image:url(images/septa_knob.png);'>
+					<img id='septa_indicator' src='images/septa_knob_indicator.png' style='margin-top:4px;' />
+				</div>
+			</div>
+		</div>
 
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/jherm/knobs/zipball/master">zip</a> or
-      <a href="http://github.com/jherm/knobs/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/jherm/knobs</pre>
-    </p>
 
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/jherm/knobs">jherm/knobs</a>
-    </div>
+		<h1><a href="http://github.com/jherm/knobs">knobs</a>
+			<span class="small">by <a href="http://github.com/jherm">jherm</a></span></h1>
 
-  </div>
+		<div class="description">
+			HTML and javascript knobs that work on touch based devices. <br />Trying to emulate the behavior of the knobs in Apple's GarageBand for the iPad.
+		</div>
 
-  
+		<h2>Download</h2>
+		<div class="download">
+			<a href="http://github.com/jherm/knobs/zipball/master">
+				<img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
+			<a href="http://github.com/jherm/knobs/tarball/master">
+				<img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+		</div>
+		<p>
+			You can download this project in either
+			<a href="http://github.com/jherm/knobs/zipball/master">zip</a> or
+			<a href="http://github.com/jherm/knobs/tarball/master">tar</a> formats.
+		</p>
+		<p>You can also clone the project with <a href="http://git-scm.com">Git</a>
+			by running:
+			<pre>$ git clone git://github.com/jherm/knobs</pre>
+		</p>
+
+		<div class="footer">
+			get the source code on GitHub : <a href="http://github.com/jherm/knobs">jherm/knobs</a>
+		</div>
+
+	</div>
+
+	
 </body>
 </html>
