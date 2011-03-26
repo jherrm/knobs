@@ -22,11 +22,11 @@
 		// don't allow values below min and above max angle
 		degrees = Math.min(Math.max(degrees, data.settings.minAngle), data.settings.maxAngle);
 
-		var target = $knob;
-		if(data.settings.rotatedTarget !== undefined) {
-			target = data.settings.rotatedTarget;
-		}
-		target.rotate({
+		// var target = $knob;
+		// if(data.settings.rotatedTarget !== undefined) {
+		// 	target = data.settings.rotatedTarget;
+		// }
+		data.settings.rotatedTarget.rotate({
 			angle: (degrees - data.settings.labelAngle + data.settings.rotation)
 		});
 
@@ -129,17 +129,20 @@
 	var methods = {
 		init : function(options) {
 			return this.each(function() {
-				// this.mousedown = function(event) {
-				// 	alert('sdf')
-				// };
+
 				var settings = {};
 				if(options) {
 					settings = $.extend(settings, defaults, options); // don't modify defaults
 				}
 
-				// var $this = $(this),
-				var $this = $(this).rotate(0)[0],
-					data = $this.data('knob');
+				var $this = $(this);
+
+				if(settings.rotatedTarget === undefined) {
+					settings.rotatedTarget = $this;
+				}
+				settings.rotatedTarget.rotate(0);
+
+				var data = $this.data('knob');
 
 				if(!data) {
 					// setup
@@ -245,7 +248,6 @@
 						}
 						return false;
 					}
-
 
 					$this.bind({
 						'touchstart': function(event) {
