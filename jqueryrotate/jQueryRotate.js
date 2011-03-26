@@ -9,6 +9,7 @@
 // Documentation removed from script file (was kinda useless and outdated)
 
 (function($) {
+Wilq32=window.Wilq32||{};
 var supportedCSS,styles=document.getElementsByTagName("head")[0].style,toCheck="transformProperty WebkitTransform OTransform msTransform".split(" "); //MozTransform <- firefox works slower with css!!!
 for (var a=0;a<toCheck.length;a++) if (styles[toCheck[a]] !== undefined) supportedCSS = toCheck[a];
 // Bad eval to preven google closure to remove it from code o_O
@@ -43,7 +44,6 @@ rotate:function(parameters)
 
 // Library agnostic interface
 
-Wilq32=window.Wilq32||{};
 Wilq32.PhotoEffect=(function(){
 
 	if (supportedCSS) {
