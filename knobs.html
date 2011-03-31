@@ -28,14 +28,29 @@
 			// $('body').bind('touchmove', function(event) { event.originalEvent.preventDefault(); });
 
 /**/
+			$('#rendered').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+				// 'imageType': 'rendered',
+				'imagePath': 'images/black_smooth_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'indicatorType': 'none'
+			});
+
+/*
+
 			$('#logo_knob').knob({
 				'rotatedTarget': $('#logo_knob_indicator'),
 				'minAngle': 10,
 				'maxAngle': 350,
 				'labelAngle': 270,
 				'rotation': 90,
-				'sampleSize': 40,
-				'linearTurnSpeed': 1
+				'linearTurnSpeed': 1,
+				'indicatorType': 'rotate'
 			});
 
 			$('#silver_halo').knob({
@@ -43,21 +58,24 @@
 				'minAngle': 10,
 				'maxAngle': 350,
 				'labelAngle': 270,
-				'rotation': 90
+				'rotation': 90,
+				'indicatorType': 'rotate'
 			});
 
 			$('#clean_metal').knob({
 				'rotatedTarget': $('#clean_metal_indicator'),
 				'minAngle': Number.NEGATIVE_INFINITY,
 				'maxAngle': Number.POSITIVE_INFINITY,
-				'labelAngle': 270
+				'labelAngle': 270,
+				'indicatorType': 'rotate'
 			});
 
 			$('#septa').knob({
 				'rotatedTarget': $('#septa_indicator'),
 				'minAngle': Number.NEGATIVE_INFINITY,
 				'maxAngle': Number.POSITIVE_INFINITY,
-				'labelAngle': 270
+				'labelAngle': 270,
+				'indicatorType': 'rotate'
 			});
 
 /*
@@ -65,7 +83,8 @@
 			$('#old_knob').knob({
 				'minAngle': Number.NEGATIVE_INFINITY,
 				'maxAngle': Number.POSITIVE_INFINITY,
-				'labelAngle': 270
+				'labelAngle': 270,
+				'indicatorType': 'rotate'
 			});
 
 /**/
@@ -79,6 +98,12 @@
 		<div id='debug'></div>
 		<div id='debug2'></div>
 		<div style='margin:0 auto 0 auto;width:400px;'>
+
+			<div id='rendered'></div>
+
+
+
+
 
 			<div class='logo'>kn</div>
 			<div id='logo_knob' class='knob_holder' style='background-image:url(images/silver_halo.png);padding:2px;margin-top:66px;'>
