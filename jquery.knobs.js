@@ -22,79 +22,32 @@
 		// don't allow values below min and above max angle
 		degrees = Math.min(Math.max(degrees, data.settings.minAngle), data.settings.maxAngle);
 
-		// if(data.settings.rotatedTarget !== undefined) {
-		// 	data.settings.rotatedTarget.rotate({
-		// 		angle: (degrees - data.settings.labelAngle + data.settings.rotation)
-		// 	});
-		// }
-
-
-
-/*
-		120 images, 3 degree separation
-
-		0-2 offset = -gap + imageWidth * 0
-		3-5 offset = -gap + imageWidth * 1
-		6-9 offset = -gap + imageWidth * 2
-
-		breadth of images = 120 * 3 = 360
-
-
-		breadth of images = imageCount * imageAngleSeparation
-
-
-
-		Hammond: 
-		24 notches
-		360 / 24 = 15 degrees per notch
-		5 images notch to notch => 15/5 = 3 degrees between image
-
-		but all we know from the settings is 5 images, 3 degrees between images
-
-		0-2   offset = -gap + imageWidth * 0
-		3-5   offset = -gap + imageWidth * 1
-		6-8   offset = -gap + imageWidth * 2
-		9-11  offset = -gap + imageWidth * 3
-		12-14 offset = -gap + imageWidth * 4
-		15-17 offset = -gap + imageWidth * 0
-		18-20 offset = -gap + imageWidth * 1
-		21-23 offset = -gap + imageWidth * 2
-		24-26 offset = -gap + imageWidth * 3
-		27-29 offset = -gap + imageWidth * 4
-
-
-
-		Full rendered: 
-		120 images, 3 degrees between images
-
-		0-2   offset = -gap + imageWidth * 0
-		3-5   offset = -gap + imageWidth * 1
-		6-8   offset = -gap + imageWidth * 2
-		9-11  offset = -gap + imageWidth * 3
-		12-14 offset = -gap + imageWidth * 4
-		15-17 offset = -gap + imageWidth * 5
-		18-20 offset = -gap + imageWidth * 6
-		21-23 offset = -gap + imageWidth * 7
-		24-26 offset = -gap + imageWidth * 8
-		27-29 offset = -gap + imageWidth * 9
-
-		offset = -settings.imageGridGap + settings.imageWidth * (Math.floor(degrees / settings.imageAngleSeparation) % settings.imageCount);
-*/
-
-
-
-
-
-		var imageIndex = (Math.floor(degrees / data.settings.imageAngleSeparation) % data.settings.imageCount);
-		if(imageIndex > 0) {
-			imageIndex -= data.settings.imageCount;
+		if(data.indicator !== undefined) {
+			if(data.settings.rotateIndicator) {
+				data.indicator.rotate({
+					angle: (degrees - data.settings.imageAngle + data.settings.rotation)
+				});
+			}
+			// if(settings.positionIndicator) {
+			// }
 		}
-		var offset = (data.settings.imageGridGap * imageIndex-1) + data.settings.imageWidth * imageIndex;
 
-		$knob.css({
-			'background-position': offset + 'px'// + ' ' + -data.settings.imageGridGap + 'px'
-		});
+		if(data.settings.imageCount > 1) {
+			
+			var spriteDegrees = data.settings.imageDirection == 'clockwise' ? -degrees : degrees;
+			// Align the background image with the imageAngle
+			spriteDegrees += data.settings.imageAngle;
+			var imageIndex = (Math.floor( spriteDegrees / data.settings.imageAngleSeparation) % data.settings.imageCount);
+			if(imageIndex > 0) {
+				imageIndex -= data.settings.imageCount;
+			}
+			var offset = (data.settings.imageGridGap * imageIndex-1) + (data.settings.imageWidth * imageIndex);
 
+			$knob.css({
+				'background-position': offset + 'px'// + ' ' + -data.settings.imageGridGap + 'px'
+			});
+
+		}
 
 		data.currentValue = degrees;
 		// console.log('prev  ' + prevTurns + 'turn ' + turnAmount + ' final degrees ' + degrees)
@@ -186,28 +139,32 @@
 		'minValue': 0,                //         270
 		'maxValue': 100,              //   180    +    0
 		'value': 0,                   //         90
-		'rotatedTarget': undefined,
 		'rotation': 0, // angle of the entire knob relative to the default orientation
-		'labelAngle': 0, // angle of the image relative to the default orientation
+		'imageAngle': 0, // angle of the image relative to the default orientation
 		'minAngle': 0, // relative to 0 (rotation automatically added)
 		'maxAngle': 359, // relative to 0 (rotation automatically added)
 		'direction': 'clockwise', // direction the knob turns from minAngle to maxAngle
 		'linearTurnSpeed': 1.4, // go linearTurnSpeed * number of pixels travelled by gesture (only applies to linear gestures)
 		'sampleSize': 40, // how many locations to sample before locking gesture best guess
 		'step': 1,
+
 		'circularGestureEnabled': true,
 		'verticalGestureEnabled': true,
 		'horizontalGestureEnabled': true,
-		// 'imageType': 'static', // static: non-moving background, 
-		'imagePath': undefined, // path to background image/sprite (depending on knob type)
+
+		'imagePath': '', // path to background image/sprite (depending on knob type)
 		'imageCount': 1, // number sprites in image (for dynamic/fully rendered knobs)
 		'imageAngleSeparation': 3, // number of degrees turned between each image sprite
 		'imageGridGap': 0, // if the sprites are spearated by a grid or whitespace, specify the thickness of the grid here
 		'imageWidth': 67, // sprite width (default to Apple's standard size in GarageBand)
 		'imageHeight': 67, // sprite height (default to Apple's standard size in GarageBand)
-		//'rotateIndicator': false, // defaulted to least intensive
-		'indicatorType': 'position', // defaulted to least intensive, possible values 'none', 'position', 'rotate'
-		'indicatorPath': undefined // path to indicator image
+		'imageDirection': 'clockwise', // direction each sprite turns compared to the previous sprite in the image
+
+		'indicatorPath': '', // path to indicator image
+		//'positionIndicator': false,
+		'rotateIndicator': false,
+		'indicatorOffsetY': 0,
+		'indicatorOffsetX': 0
 	}
 
 	var activeKnobs = {};
@@ -229,26 +186,31 @@
 
 
 
-				// if(settings.dynamicImage) {
-					$this.css({
-						'display': 'block',
-						'background-position': -settings.imageGridGap + 'px' + ' ' + -settings.imageGridGap + 'px',
-						'height': settings.imageHeight + 'px',
-						'width': settings.imageWidth + 'px',
-						'background-image': 'url(' + settings.imagePath + ')',
-						'background-repeat': 'no-repeat' 
+				$this.css({
+					'display': 'block',
+					'background-position': -settings.imageGridGap + 'px' + ' ' + -settings.imageGridGap + 'px',
+					'height': settings.imageHeight + 'px',
+					'width': settings.imageWidth + 'px',
+					'background-image': 'url(' + settings.imagePath + ')',
+					'background-repeat': 'no-repeat'
+				});
+
+				var $indicator;
+				if(settings.indicatorPath) {
+					$indicator = $(document.createElement('img'));
+					$indicator.attr('src', settings.indicatorPath + '');
+					$indicator.css({
+						'margin-left': settings.indicatorOffsetX + 'px',
+						'margin-top': settings.indicatorOffsetY + 'px'
 					});
+					$this.append($indicator)
 
-				// }
-
-				// if(settings.knobType == STATIC_BG_ROTATED
-				// 	|| settings.knobType == DYNAMIC_BG_ROTATED) {
-
-				// 	if(settings.rotatedTarget === undefined) {
-				// 		settings.rotatedTarget = $this;
-				// 	}
-				// 	settings.rotatedTarget.rotate(0);
-				// }
+					if(settings.rotateIndicator) {
+						$indicator.rotate(settings.imageAngle);
+					}
+					// if(settings.positionIndicator) {
+					// }
+				}
 
 
 				var data = $this.data('knob');
@@ -258,8 +220,9 @@
 
 					$this.data('knob', {
 						settings: settings,
+						indicator: $indicator,
 						halfway: (settings.minAngle + (settings.maxAngle - settings.minAngle)/2),
-						currentValue: settings.value
+						currentValue: settings.imageAngle
 					});
 
 
@@ -373,7 +336,7 @@
 						}
 					});
 
-					setAngle(settings.value, $this);
+					setAngle($this.data('knob').currentValue, $this);
 				}
 			});
 		},
