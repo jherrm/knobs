@@ -42,17 +42,16 @@
 				'imageHeight': 90,
 
 				'indicatorPath': 'images/rhodes_indicator.png',
+				'positionIndicator': true,
 				'rotateIndicator': true,
-				'indicatorOffsetX': 8,
-				'indicatorOffsetY': 5
+				'centerX': 45,
+				'centerY': 42,
+				'radius': 27
 			});
 
 			$('#pad').knob({
 				'minAngle': Number.NEGATIVE_INFINITY,
 				'maxAngle': Number.POSITIVE_INFINITY,
-				// TODO: make left/right/top/bottom knob interactions base off the center
-				// 'knobCenterX': 28,
-				// 'knobCenterY': 23,
 				'imagePath': 'images/pad.png',
 				'imageAngle': 270,
 
@@ -79,28 +78,28 @@
 				'minAngle': Number.NEGATIVE_INFINITY,
 				'maxAngle': Number.POSITIVE_INFINITY,
 				'imagePath': 'images/clavinet.png',
-				'imageAngle': 270,
 				'imageWidth': 90,
 				'imageHeight': 90,
 
 				'indicatorPath': 'images/clavinet_indicator.png',
-				'rotateIndicator': true,
-				'indicatorOffsetX': 8,
-				'indicatorOffsetY': 5
+				'positionIndicator': true,
+				'centerX': 45,
+				'centerY': 42,
+				'radius': 20
 			});
 
 			$('#generic').knob({
 				'minAngle': Number.NEGATIVE_INFINITY,
 				'maxAngle': Number.POSITIVE_INFINITY,
 				'imagePath': 'images/generic.png',
-				'imageAngle': 270,
 				'imageWidth': 90,
 				'imageHeight': 90,
 
 				'indicatorPath': 'images/generic_indicator.png',
-				'rotateIndicator': true,
-				'indicatorOffsetX': 8,
-				'indicatorOffsetY': 5
+				'positionIndicator': true,
+				'centerX': 46,
+				'centerY': 47,
+				'radius': 20
 			});
 
 			// multiple background images rotate indicator
@@ -117,7 +116,7 @@
 				'imageDirection': 'clockwise',
 
 				'indicatorPath': 'images/synth_indicator.png',
-				'imageAngle': 270,
+				'imageAngle': -90,
 				'rotateIndicator': true,
 				'indicatorOffsetX': 0
  			});
@@ -137,9 +136,10 @@
 				'imageHeight': 100,
 
 				'indicatorPath': 'images/hammond_indicator.png',
-				'imageAngle': 270,
 				'positionIndicator': true,
-				'indicatorOffsetX': 0
+				'centerX': 51,
+				'centerY': 51,
+				'radius': 26
 			});
 
 
@@ -380,6 +380,122 @@
 				'imageDirection': 'counter-clockwise'
 			});
 
+			$('#acoustic').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'images/acoustic.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 111,
+				'imageHeight': 105,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#classic-clean').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'images/classic-clean.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 125,
+				'imageHeight': 122,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#fender').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'images/fender.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 119,
+				'imageHeight': 110,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#grand').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'images/grand.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 148,
+				'imageHeight': 148,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#hardrock').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'images/hardrock.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 125,
+				'imageHeight': 122,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#liverpool').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'images/liverpool.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 106,
+				'imageHeight': 104,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#picked').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'images/picked.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 119,
+				'imageHeight': 110,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#roots').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'images/roots.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 125,
+				'imageHeight': 122,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#upright').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'images/upright.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 111,
+				'imageHeight': 105,
+				'imageDirection': 'clockwise'
+			});
 
 /*
 
@@ -391,6 +507,21 @@
 			});
 
 /**/
+
+			$('#metal').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+				'imagePath': 'images/custom/metal.png',
+				'imageWidth': 355,
+				'imageHeight': 355,
+
+				'indicatorPath': 'images/custom/metal_indicator.png',
+				'positionIndicator': true,
+				'rotateIndicator': false,
+				'centerX': 177,
+				'centerY': 177,
+				'radius': 100
+			});
 
 		});
 
@@ -429,6 +560,7 @@
 						<div id='synth'></div>
 					</td>
 					<td>
+						<div id='septa_120'></div>
 					</td>
 					<td>
 						<div id='panner'></div>
@@ -464,15 +596,16 @@
 				</tr>
 				<tr>
 					<td>
+						<div id='small_black_120'></div>
+					</td>
+					<td>
+						<div id='small_white_120'></div>
+					</td>
+					<td>
 						<div id='gold_120'></div>
 					</td>
 					<td>
 						<div id='silver_120'></div>
-					</td>
-					<td>
-						<div id='septa_120'></div>
-					</td>
-					<td>
 					</td>
 				</tr>
 				<tr>
@@ -491,15 +624,44 @@
 				</tr>
 				<tr>
 					<td>
-						<div id='small_black_120'></div>
+						<div id='upright'></div>
 					</td>
 					<td>
-						<div id='small_white_120'></div>
+						<div id='acoustic'></div>
+					</td>
+					<td>
+						<div id='classic-clean'></div>
+					</td>
+					<td>
+						<div id='fender'></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div id='hardrock'></div>
+					</td>
+					<td>
+						<div id='liverpool'></div>
+					</td>
+					<td>
+						<div id='picked'></div>
+					</td>
+					<td>
+						<div id='roots'></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div id='grand'></div>
+					</td>
+					<td>
+						<div id='metal'></div>
+					</td>
+					<td>
+						<div id=''></div>
 					</td>
 					<td>
 						<div id='test_92_72'></div>
-					</td>
-					<td>
 					</td>
 				</tr>
 			</table>
@@ -507,6 +669,7 @@
 			<!--
 			<img id='old_knob' src='images/knob.gif' />
 			-->
+
 		</div>
 	</div>
 

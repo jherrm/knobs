@@ -23,18 +23,25 @@
 		degrees = Math.min(Math.max(degrees, data.settings.minAngle), data.settings.maxAngle);
 
 		if(data.indicator !== undefined) {
+			if(data.settings.positionIndicator) {
+				var rads = degrees * Math.PI/180;
+				data.indicator.css({
+					top:  data.settings.centerY + data.settings.radius * Math.sin(rads) - data.indicator.height() * 0.5,
+					left: data.settings.centerX + data.settings.radius * Math.cos(rads) - data.indicator.width() * 0.5
+				});
+			}
 			if(data.settings.rotateIndicator) {
 				data.indicator.rotate({
 					angle: (degrees - data.settings.imageAngle + data.settings.rotation)
 				});
 			}
-			// if(settings.positionIndicator) {
-			// }
 		}
 
+		// If there are multiple images (using sprites), figure out which image to show.
 		if(data.settings.imageCount > 1) {
 			
 			var spriteDegrees = data.settings.imageDirection == 'clockwise' ? -degrees : degrees;
+
 			// Align the background image with the imageAngle
 			spriteDegrees += data.settings.imageAngle;
 			var imageIndex = (Math.floor( spriteDegrees / data.settings.imageAngleSeparation) % data.settings.imageCount);
@@ -44,7 +51,7 @@
 			var offset = (data.settings.imageGridGap * imageIndex-1) + (data.settings.imageWidth * imageIndex);
 
 			$knob.css({
-				'background-position': offset + 'px'// + ' ' + -data.settings.imageGridGap + 'px'
+				'background-position': offset + 'px'
 			});
 
 		}
@@ -95,8 +102,9 @@
 		}
 
 		if(data.gesture == "circular") {
-			y = data.centerTop - pageY;
-			x = pageX - data.centerLeft;
+
+			y = data.centerY - pageY;
+			x = pageX - data.centerX;
 			var inputAngle = 360 - Math.atan2(y,x)/Math.PI*180;
 			inputAngle -= data.settings.rotation;
 			inputAngle %= 360;
@@ -123,18 +131,6 @@
 		setAngle(degrees, $knob);
 	}
 
-	// // still background image, turn by positioning the indicator
-	// const STATIC_BG_POSITIONED  = 0;
-	// // still background image, turn by rotating the indicator
-	// const STATIC_BG_ROTATED     = 1;
-	// // multiple changing background images, turn by changing bg images and positioning indicator
-	// const DYNAMIC_BG_POSITIONED = 2;
-	// // multiple changing background images, turn by changing bg images and rotating indicator
-	// const DYNAMIC_BG_ROTATED    = 3;
-	// // multiple changing images of entire knob, turn by changing the images
-	// const FULLY_RENDERED        = 4;
-
-
 	var defaults =  {                 // Default Orientation
 		'minValue': 0,                //         270
 		'maxValue': 100,              //   180    +    0
@@ -151,6 +147,9 @@
 		'circularGestureEnabled': true,
 		'verticalGestureEnabled': true,
 		'horizontalGestureEnabled': true,
+
+		'centerX': undefined,
+		'centerY': undefined,
 
 		'imagePath': '', // path to background image/sprite (depending on knob type)
 		'imageCount': 1, // number sprites in image (for dynamic/fully rendered knobs)
@@ -186,30 +185,32 @@
 
 
 
-				$this.css({
-					'display': 'block',
-					'background-position': -settings.imageGridGap + 'px' + ' ' + -settings.imageGridGap + 'px',
-					'height': settings.imageHeight + 'px',
-					'width': settings.imageWidth + 'px',
-					'background-image': 'url(' + settings.imagePath + ')',
-					'background-repeat': 'no-repeat'
-				});
+				if(settings.imagePath) {
+					$this.css({
+						'position': 'relative',
+						'display': 'block',
+						'background-position': -settings.imageGridGap + 'px' + ' ' + -settings.imageGridGap + 'px',
+						'height': settings.imageHeight + 'px',
+						'width': settings.imageWidth + 'px',
+						'background-image': 'url(' + settings.imagePath + ')',
+						'background-repeat': 'no-repeat'
+					});
+				}
 
 				var $indicator;
 				if(settings.indicatorPath) {
 					$indicator = $(document.createElement('img'));
 					$indicator.attr('src', settings.indicatorPath + '');
 					$indicator.css({
+						'position': 'relative',
 						'margin-left': settings.indicatorOffsetX + 'px',
 						'margin-top': settings.indicatorOffsetY + 'px'
 					});
 					$this.append($indicator)
 
-					if(settings.rotateIndicator) {
-						$indicator.rotate(settings.imageAngle);
-					}
-					// if(settings.positionIndicator) {
-					// }
+					$indicator.load(function() {
+						setAngle($this.data('knob').currentValue, $this);
+					});
 				}
 
 
@@ -222,7 +223,7 @@
 						settings: settings,
 						indicator: $indicator,
 						halfway: (settings.minAngle + (settings.maxAngle - settings.minAngle)/2),
-						currentValue: settings.imageAngle
+						currentValue: 0 // TODO: set to value from settings
 					});
 
 
@@ -238,12 +239,27 @@
 						event.preventDefault();
 						// var $knob = $(event.target);  // seems to only work with touch events
 						var data = $knob.data('knob');
-						var bPos = $knob.offset();
-						var bWidth = $knob.outerWidth(); // include border & padding
-						var bHeight = $knob.outerHeight(); // include border & padding
 
-						data.centerLeft = (bWidth + bPos.left) - (bWidth / 2);
-						data.centerTop = (bHeight + bPos.top) - (bHeight / 2);
+						var pos = $knob.offset();
+
+						// Get the center of knob to base interactions from
+
+						// if the center of the knob wasn't provided, use the midpoint of the element
+						if(data.settings.centerX !== undefined) {
+							data.centerX = pos.left + data.settings.centerX;
+						}
+						else {
+							var w = $knob.outerWidth(); // include border & padding
+							data.centerX = (w + pos.left) - (w / 2);
+						}
+						if(data.settings.centerY !== undefined) {
+							data.centerY = pos.top + data.settings.centerY;
+						}
+						else {
+							var h = $knob.outerHeight(); // include border & padding
+							data.settings.centerY = (h + pos.top) - (h / 2);
+						}
+
 						// var touchStartPos = { x: event.pageX, y: event.pageY };
 
 						if(event.type == 'touchstart') {
@@ -258,8 +274,8 @@
 
 						data.lastTouchX = data.touchStartX;
 						data.lastTouchY = data.touchStartY;
-						data.touchStartHorizontal = (data.touchStartX >= data.centerLeft) ? "right" : "left";
-						data.touchStartVertical = (data.touchStartY >= data.centerTop) ? "bottom" : "top";
+						data.touchStartHorizontal = (data.touchStartX >= data.centerX) ? "right" : "left";
+						data.touchStartVertical = (data.touchStartY >= data.centerY) ? "bottom" : "top";
 
 						data.gesture = undefined;
 
@@ -335,6 +351,7 @@
 					 		return downHandler(event);
 						}
 					});
+
 
 					setAngle($this.data('knob').currentValue, $this);
 				}
