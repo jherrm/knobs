@@ -29,51 +29,9 @@
 			// prevent dragging the page in touch based browsers
 			// $('body').bind('touchmove', function(event) { event.originalEvent.preventDefault(); });
 
-/**/
-
-			// static background, rotate indicator
-
-			$('#rhodes').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-				'imagePath': 'images/rhodes.png',
-				'imageAngle': 270,
-				'imageWidth': 90,
-				'imageHeight': 90,
-
-				'indicatorPath': 'images/rhodes_indicator.png',
-				'positionIndicator': true,
-				'rotateIndicator': true,
-				'centerX': 45,
-				'centerY': 42,
-				'radius': 27
-			});
-
-			$('#pad').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-				'imagePath': 'images/pad.png',
-				'imageAngle': 270,
-
-				'indicatorPath': 'images/pad_indicator.png',
-				'rotateIndicator': true,
-				'indicatorOffsetX': 10,
-				'indicatorOffsetY': 5
-			});
+/*
 
 			// static background, position indicator
-
-			$('#panner').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-				'imagePath': 'images/panner.png',
-				'imageAngle': 270,
-				'indicatorPath': 'images/panner_indicator.png',
-				'rotateIndicator': true,
-				'indicatorOffsetX': 8,
-				'indicatorOffsetY': 5
-			});
-
 			$('#clavinet').knob({
 				'minAngle': Number.NEGATIVE_INFINITY,
 				'maxAngle': Number.POSITIVE_INFINITY,
@@ -88,18 +46,34 @@
 				'radius': 20
 			});
 
-			$('#generic').knob({
+			// static background, rotate indicator
+			$('#pad').knob({
 				'minAngle': Number.NEGATIVE_INFINITY,
 				'maxAngle': Number.POSITIVE_INFINITY,
-				'imagePath': 'images/generic.png',
+				'imagePath': 'images/pad.png',
+				'imageAngle': 270,
+
+				'indicatorPath': 'images/pad_indicator.png',
+				'rotateIndicator': true,
+				'indicatorOffsetX': 10,
+				'indicatorOffsetY': 5
+			});
+
+			// static background, rotate and position indicator
+			$('#rhodes').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+				'imagePath': 'images/rhodes.png',
+				'imageAngle': 270,
 				'imageWidth': 90,
 				'imageHeight': 90,
 
-				'indicatorPath': 'images/generic_indicator.png',
+				'indicatorPath': 'images/rhodes_indicator.png',
 				'positionIndicator': true,
-				'centerX': 46,
-				'centerY': 47,
-				'radius': 20
+				'rotateIndicator': true,
+				'centerX': 45,
+				'centerY': 42,
+				'radius': 27
 			});
 
 			// multiple background images rotate indicator
@@ -144,177 +118,6 @@
 
 
 			// fully rendered images, no indicator
-			$('#test_92_72').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-				'linearTurnSpeed': 0.6,
-
-				'imagePath': 'images/test_92_72.png',
-				'imageCount': 72,
-				'imageAngleSeparation': 5,
-				'imageGridGap': 1,
-				'imageWidth': 91,
-				'imageHeight': 91,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#round_metal_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/round_metal_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#black_point_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/black_point_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#black_smooth_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/black_smooth_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#black_notched_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/black_notched_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#mini_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/mini_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-
-			$('#black_shiny_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/black_shiny_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#gold_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/gold_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#numbers_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/numbers_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#pointy_black_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/pointy_black_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#pointy_metal_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/pointy_metal_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#pointy_red_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/pointy_red_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#pointy_white_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/pointy_white_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
 			$('#round_arrow_120').knob({
 				'minAngle': Number.NEGATIVE_INFINITY,
 				'maxAngle': Number.POSITIVE_INFINITY,
@@ -328,123 +131,7 @@
 				'imageDirection': 'counter-clockwise'
 			});
 
-			$('#septa_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/septa_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#silver_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/silver_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#small_black_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/small_black_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#small_white_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/small_white_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
-				'imageWidth': 67,
-				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
-			});
-
-			$('#acoustic').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/acoustic.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
-				'imageWidth': 111,
-				'imageHeight': 105,
-				'imageDirection': 'clockwise'
-			});
-
-			$('#classic-clean').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/classic-clean.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
-				'imageWidth': 125,
-				'imageHeight': 122,
-				'imageDirection': 'clockwise'
-			});
-
-			$('#fender').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/fender.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
-				'imageWidth': 119,
-				'imageHeight': 110,
-				'imageDirection': 'clockwise'
-			});
-
-			$('#grand').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/grand.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
-				'imageWidth': 148,
-				'imageHeight': 148,
-				'imageDirection': 'clockwise'
-			});
-
-			$('#hardrock').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/hardrock.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
-				'imageWidth': 125,
-				'imageHeight': 122,
-				'imageDirection': 'clockwise'
-			});
-
+			// stepped (not fully working)
 			$('#liverpool').knob({
 				'minAngle': Number.NEGATIVE_INFINITY,
 				'maxAngle': Number.POSITIVE_INFINITY,
@@ -458,47 +145,6 @@
 				'imageDirection': 'clockwise'
 			});
 
-			$('#picked').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/picked.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
-				'imageWidth': 119,
-				'imageHeight': 110,
-				'imageDirection': 'clockwise'
-			});
-
-			$('#roots').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/roots.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
-				'imageWidth': 125,
-				'imageHeight': 122,
-				'imageDirection': 'clockwise'
-			});
-
-			$('#upright').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-
-				'imagePath': 'images/upright.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
-				'imageWidth': 111,
-				'imageHeight': 105,
-				'imageDirection': 'clockwise'
-			});
-
-/*
-
 			$('#old_knob').knob({
 				'minAngle': Number.NEGATIVE_INFINITY,
 				'maxAngle': Number.POSITIVE_INFINITY,
@@ -511,16 +157,204 @@
 			$('#metal').knob({
 				'minAngle': Number.NEGATIVE_INFINITY,
 				'maxAngle': Number.POSITIVE_INFINITY,
-				'imagePath': 'images/custom/metal.png',
+				'imagePath': 'knob_images/metal.png',
 				'imageWidth': 355,
 				'imageHeight': 355,
 
-				'indicatorPath': 'images/custom/metal_indicator.png',
+				'indicatorPath': 'knob_images/metal_indicator.png',
 				'positionIndicator': true,
 				'rotateIndicator': false,
 				'centerX': 177,
 				'centerY': 177,
 				'radius': 100
+			});
+
+
+
+
+
+			$('#custom').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'knob_images/merge1.png',
+				'imageAngle': -90,
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 0,
+				'imageWidth': 256,
+				'imageHeight': 256,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#gibson').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'knob_images/gibson.png',
+				'imageAngle': 0,
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 0,
+				'imageWidth': 256,
+				'imageHeight': 256,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#guitar100').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'knob_images/guitar100.png',
+				'imageAngle': 0,
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 0,
+				'imageWidth': 100,
+				'imageHeight': 100,
+				'imageDirection': 'clockwise'
+			});
+
+			// $('#guitar256').knob({
+			// 	'minAngle': Number.NEGATIVE_INFINITY,
+			// 	'maxAngle': Number.POSITIVE_INFINITY,
+
+			// 	'imagePath': 'knob_images/guitar256.png',
+			// 	'imageAngle': 0,
+			// 	'imageCount': 120,
+			// 	'imageAngleSeparation': 3,
+			// 	'imageGridGap': 0,
+			// 	'imageWidth': 256,
+			// 	'imageHeight': 256,
+			// 	'imageDirection': 'clockwise'
+			// });
+
+
+			$('#house100').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'knob_images/house100.png',
+				'imageAngle': 0,
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 0,
+				'imageWidth': 100,
+				'imageHeight': 100,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			// $('#house256').knob({
+			// 	'minAngle': Number.NEGATIVE_INFINITY,
+			// 	'maxAngle': Number.POSITIVE_INFINITY,
+
+			// 	'imagePath': 'knob_images/house256.png',
+			// 	'imageAngle': 0,
+			// 	'imageCount': 120,
+			// 	'imageAngleSeparation': 3,
+			// 	'imageGridGap': 0,
+			// 	'imageWidth': 256,
+			// 	'imageHeight': 256,
+			// 	'imageDirection': 'counter-clockwise'
+			// });
+
+
+			$('#kitchen40').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'knob_images/kitchen40.png',
+				'imageAngle': 0,
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 0,
+				'imageWidth': 40,
+				'imageHeight': 40,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#kitchen100').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'knob_images/kitchen100.png',
+				'imageAngle': 0,
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 0,
+				'imageWidth': 100,
+				'imageHeight': 100,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#kitchen256').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'knob_images/kitchen256.png',
+				'imageAngle': 0,
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 0,
+				'imageWidth': 256,
+				'imageHeight': 256,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#kitchen256top').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'knob_images/kitchen256top.png',
+				'imageAngle': 0,
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 0,
+				'imageWidth': 256,
+				'imageHeight': 256,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#toaster40').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'knob_images/toaster40.png',
+				'imageAngle': -90,
+				'imageCount': 12,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 0,
+				'imageWidth': 40,
+				'imageHeight': 40,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#toaster100').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'knob_images/toaster100.png',
+				'imageAngle': -90,
+				'imageCount': 12,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 0,
+				'imageWidth': 100,
+				'imageHeight': 100,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#toaster256').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'knob_images/toaster256.png',
+				'imageAngle': -90,
+				'imageCount': 12,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 0,
+				'imageWidth': 256,
+				'imageHeight': 256,
+				'imageDirection': 'clockwise'
 			});
 
 		});
@@ -540,128 +374,83 @@
 			<table>
 				<tr>
 					<td>
-						<div id='generic'></div>
+						<div id='house100'></div>
 					</td>
 					<td>
+						<div id='house256'></div>
+					</td>
+					<td>
+						<div id='toaster40'></div>
+					</td>
+					<td>
+						<div id='toaster100'></div>
+					</td>
+					<td>
+						<div id='toaster256'></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div id='custom'></div>
+					</td>
+					<td>
+						<div id='kitchen40'></div>
+					</td>
+					<td>
+						<div id='kitchen100'></div>
+					</td>
+					<td>
+						<div id='kitchen256'></div>
+					</td>
+					<td>
+						<div id='kitchen256top'></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div id='gibson'></div>
+					</td>
+					<td>
+						<div id='guitar100'></div>
+					</td>
+					<td>
+						<div id='guitar256'></div>
+					</td>
+					<td>
+					</td>
+					<td>
+					</td>
+				</tr>
+				<tr>
+					<td>
 						<div id='clavinet'></div>
+					</td>
+					<td>
+						<div id='pad'></div>
 					</td>
 					<td>
 						<div id='rhodes'></div>
 					</td>
 					<td>
-						<div id='pad'></div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div id='hammond'></div>
-					</td>
-					<td>
 						<div id='synth'></div>
 					</td>
 					<td>
-						<div id='septa_120'></div>
-					</td>
-					<td>
-						<div id='panner'></div>
+						<div id='hammond'></div>
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<div id='black_point_120'></div>
-					</td>
-					<td>
-						<div id='black_smooth_120'></div>
-					</td>
-					<td>
-						<div id='black_notched_120'></div>
-					</td>
-					<td>
-						<div id='mini_120'></div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div id='black_shiny_120'></div>
-					</td>
-					<td>
-						<div id='numbers_120'></div>
-					</td>
 					<td>
 						<div id='round_arrow_120'></div>
-					</td>
-					<td>
-						<div id='round_metal_120'></div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div id='small_black_120'></div>
-					</td>
-					<td>
-						<div id='small_white_120'></div>
-					</td>
-					<td>
-						<div id='gold_120'></div>
-					</td>
-					<td>
-						<div id='silver_120'></div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div id='pointy_black_120'></div>
-					</td>
-					<td>
-						<div id='pointy_white_120'></div>
-					</td>
-					<td>
-						<div id='pointy_metal_120'></div>
-					</td>
-					<td>
-						<div id='pointy_red_120'></div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div id='upright'></div>
-					</td>
-					<td>
-						<div id='acoustic'></div>
-					</td>
-					<td>
-						<div id='classic-clean'></div>
-					</td>
-					<td>
-						<div id='fender'></div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div id='hardrock'></div>
 					</td>
 					<td>
 						<div id='liverpool'></div>
 					</td>
 					<td>
-						<div id='picked'></div>
-					</td>
-					<td>
-						<div id='roots'></div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div id='grand'></div>
-					</td>
-					<td>
-						<div id='metal'></div>
-					</td>
-					<td>
-						<div id=''></div>
-					</td>
-					<td>
 						<div id='test_92_72'></div>
+					</td>
+					<td>
+					</td>
+					<td>
 					</td>
 				</tr>
 			</table>
