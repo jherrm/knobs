@@ -199,6 +199,14 @@
 					});
 				}
 
+				// TODO: only vertically align if specified in settings
+				$this.css({
+					'position': 'relative',
+					'top': '50%',
+					'margin-top': (-settings.imageHeight/2) + 'px'
+				});
+
+
 				var $indicator;
 				if(settings.indicatorPath) {
 					$indicator = $(document.createElement('img'));
