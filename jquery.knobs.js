@@ -1,12 +1,13 @@
 (function($) {
 	var setAngle = function(degrees, $knob) {
 		var data = $knob.data('knob');
-		// console.log('attempted ' + degrees);
 
 		var turnAmount = 0;
 		var prevTurns = 0;
 
-		degrees %= 360; // chop off any previous turns, get base angle
+		// chop off any previous turns, get base angle
+		degrees %= 360;
+
 		// enforce the angle limits on knob turning by making sure you can't cross between min & max
 		// look for very large jumps in the difference between the old and new angle
 		var diff = data.currentValue%360 - degrees;
@@ -15,7 +16,8 @@
 			turnAmount = (diff > 0) ? 1 : -1;
 		}
 		// prevTurns is the total number of full turns in degrees
-		prevTurns = 360 * (~~(data.currentValue/360) + turnAmount); // ~~ forces integer division
+		// ~~ forces integer division
+		prevTurns = 360 * (~~(data.currentValue/360) + turnAmount);
 
 		degrees += prevTurns; // add base angle with previous turns
 
@@ -252,12 +254,13 @@
 							var w = $knob.outerWidth(); // include border & padding
 							data.centerX = (w + pos.left) - (w / 2);
 						}
+
 						if(data.settings.centerY !== undefined) {
 							data.centerY = pos.top + data.settings.centerY;
 						}
 						else {
 							var h = $knob.outerHeight(); // include border & padding
-							data.settings.centerY = (h + pos.top) - (h / 2);
+							data.centerY = (h + pos.top) - (h / 2);
 						}
 
 						// var touchStartPos = { x: event.pageX, y: event.pageY };
@@ -360,8 +363,8 @@
 
 		destroy : function() {
 			return this.each(function() {
-				var $this = $(this),
-					data = $this.data('knob');
+				// var $this = $(this),
+				//	 data = $this.data('knob');
 				
 				//$(window).unbind('.knob');
 				//data.knob.remove();
