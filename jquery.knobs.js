@@ -187,14 +187,19 @@
 
 
 
+				// TODO: base sample size off of radius (image size if radius not available)
+
+
 
 				$this.css({
 					'position': 'relative',
 					'display': 'block',
+					'overflow': 'auto', // prevent margin collapsing
 					'height': settings.imageHeight + 'px',
 					'width': settings.imageWidth + 'px',
 					'margin': '0 auto 0 auto'
 				});
+
 
 				if(settings.imagePath) {
 					$el.css({
@@ -204,16 +209,25 @@
 						'height': settings.imageHeight + 'px',
 						'width': settings.imageWidth + 'px',
 						'background-image': 'url(' + settings.imagePath + ')',
-						'background-repeat': 'no-repeat'
+						'background-repeat': 'no-repeat',
+						'margin': '0 auto 0 auto'
 					});
 				}
 
 				// TODO: only vertically align if specified in settings
+
+				$el.css({
+					'position': 'relative',
+					'top': '50%',
+					'margin-top': (-$el.outerHeight()/2) + 'px'
+				});
+
 				$this.css({
 					'position': 'relative',
 					'top': '50%',
-					'margin-top': (-settings.imageHeight/2) + 'px'
+					'margin-top': (-$this.outerHeight()/2) + 'px'
 				});
+
 
 
 				var $indicator;
