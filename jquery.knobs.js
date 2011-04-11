@@ -52,7 +52,7 @@
 			}
 			var offset = (data.settings.imageGridGap * imageIndex-1) + (data.settings.imageWidth * imageIndex);
 
-			$knob.css({
+			data.element.css({
 				'background-position': offset + 'px'
 			});
 
@@ -182,13 +182,22 @@
 				}
 
 				var $this = $(this);
+				var $el = $(document.createElement('div'));
+				$this.append($el)
 
 
 
 
+				$this.css({
+					'position': 'relative',
+					'display': 'block',
+					'height': settings.imageHeight + 'px',
+					'width': settings.imageWidth + 'px',
+					'margin': '0 auto 0 auto'
+				});
 
 				if(settings.imagePath) {
-					$this.css({
+					$el.css({
 						'position': 'relative',
 						'display': 'block',
 						'background-position': -settings.imageGridGap + 'px' + ' ' + -settings.imageGridGap + 'px',
@@ -216,7 +225,7 @@
 						'margin-left': settings.indicatorOffsetX + 'px',
 						'margin-top': settings.indicatorOffsetY + 'px'
 					});
-					$this.append($indicator)
+					$el.append($indicator)
 
 					$indicator.load(function() {
 						setAngle($this.data('knob').currentValue, $this);
@@ -232,6 +241,7 @@
 					$this.data('knob', {
 						settings: settings,
 						indicator: $indicator,
+						element: $el,
 						halfway: (settings.minAngle + (settings.maxAngle - settings.minAngle)/2),
 						currentValue: 0 // TODO: set to value from settings
 					});
