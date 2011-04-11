@@ -6,6 +6,8 @@
 
 	<title>jherm/knobs @ GitHub</title>
 
+	<link rel="stylesheet" media="only screen and (max-device-width: 1024px) and (orientation:portrait)" href="css/portrait.css" type="text/css" />
+	<link rel="stylesheet" media="only screen and (max-device-width: 1024px) and (orientation:landscape)" href="css/landscape.css" type="text/css" />
 	<style type="text/css">
 		body {
 			margin-top: 1.0em;
@@ -28,7 +30,7 @@
 		.footer { text-align:center; padding-top:30px; font-style: italic; }
 
 		.logo {
-			font-size:155px;
+			font-size:115px;
 			float:left;
 		}
 
@@ -40,7 +42,24 @@
 			padding:20px;'
 		}
 
+		#grid {
+			margin:0 auto;
+			max-width:840px;
+		}
+
+		#grid>div {
+			float:left;
+			width: 140px;
+			height: 140px;
+		}
+
+		#grid>div>div {
+			padding: 20px;
+		}
+
 	</style>
+
+
 	<script type='text/javascript' src='jquery-1.5.1.min.js'></script>
 	<script type='text/javascript' src='jquery.easing.1.3.js'></script>
 	<script type='text/javascript' src='jquery.knobs.js'></script>
@@ -52,39 +71,90 @@
 		// prevent dragging the page in touch based browsers
 		// $('body').bind('touchmove', function(event) { event.originalEvent.preventDefault(); });
 
-/**/
-		$('#logo_knob').knob({
-			'rotatedTarget': $('#logo_knob_indicator'),
-			'minAngle': 10,
-			'maxAngle': 350,
-			'labelAngle': 270,
-			'rotation': 90,
-			'sampleSize': 40,
-			'linearTurnSpeed': 1
-		});
-
-		$('#silver_halo').knob({
-			'rotatedTarget': $('#silver_halo_indicator'),
-			'minAngle': 10,
-			'maxAngle': 350,
-			'labelAngle': 270,
-			'rotation': 90
-		});
-
-		$('#clean_metal').knob({
-			'rotatedTarget': $('#clean_metal_indicator'),
+		$('.house100').knob({
 			'minAngle': Number.NEGATIVE_INFINITY,
 			'maxAngle': Number.POSITIVE_INFINITY,
-			'labelAngle': 270
+
+			'imagePath': 'knob_images/house100.png',
+			'imageAngle': 0,
+			'imageCount': 120,
+			'imageAngleSeparation': 3,
+			'imageGridGap': 0,
+			'imageWidth': 100,
+			'imageHeight': 100,
+			'imageDirection': 'counter-clockwise'
 		});
 
-		$('#septa').knob({
-			'rotatedTarget': $('#septa_indicator'),
+		$('.kitchen40').knob({
 			'minAngle': Number.NEGATIVE_INFINITY,
 			'maxAngle': Number.POSITIVE_INFINITY,
-			'labelAngle': 270
+
+			'imagePath': 'knob_images/kitchen40.png',
+			'imageAngle': 0,
+			'imageCount': 120,
+			'imageAngleSeparation': 3,
+			'imageGridGap': 0,
+			'imageWidth': 40,
+			'imageHeight': 40,
+			'imageDirection': 'clockwise'
 		});
-/**/
+
+		$('.kitchen100').knob({
+			'minAngle': Number.NEGATIVE_INFINITY,
+			'maxAngle': Number.POSITIVE_INFINITY,
+
+			'imagePath': 'knob_images/kitchen100.png',
+			'imageAngle': 0,
+			'imageCount': 120,
+			'imageAngleSeparation': 3,
+			'imageGridGap': 0,
+			'imageWidth': 100,
+			'imageHeight': 100,
+			'imageDirection': 'clockwise'
+		});
+
+		$('.toaster40').knob({
+			'minAngle': Number.NEGATIVE_INFINITY,
+			'maxAngle': Number.POSITIVE_INFINITY,
+
+			'imagePath': 'knob_images/toaster40.png',
+			'imageAngle': -90,
+			'imageCount': 12,
+			'imageAngleSeparation': 3,
+			'imageGridGap': 0,
+			'imageWidth': 40,
+			'imageHeight': 40,
+			'imageDirection': 'clockwise'
+		});
+
+		$('.toaster100').knob({
+			'minAngle': Number.NEGATIVE_INFINITY,
+			'maxAngle': Number.POSITIVE_INFINITY,
+
+			'imagePath': 'knob_images/toaster100.png',
+			'imageAngle': -90,
+			'imageCount': 12,
+			'imageAngleSeparation': 3,
+			'imageGridGap': 0,
+			'imageWidth': 100,
+			'imageHeight': 100,
+			'imageDirection': 'clockwise'
+		});
+
+		$('.guitar100').knob({
+			'minAngle': Number.NEGATIVE_INFINITY,
+			'maxAngle': Number.POSITIVE_INFINITY,
+
+			'imagePath': 'knob_images/guitar100.png',
+			'imageAngle': 0,
+			'imageCount': 120,
+			'imageAngleSeparation': 3,
+			'imageGridGap': 0,
+			'imageWidth': 100,
+			'imageHeight': 100,
+			'imageDirection': 'clockwise'
+		});
+
 
 	});
 
@@ -94,39 +164,46 @@
 <body>
 	<a href="http://github.com/jherm/knobs"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
 
-
-	<div id="container" style="clear:both;">
-		<div style='margin:0 auto 0 auto;'>
-
-			<div class='logo'>kn</div>
-			<div id='logo_knob' class='knob_holder' style='background-image:url(images/silver_halo.png);padding:2px;margin-top:66px;'>
-				<img id='logo_knob_indicator' src='images/silver_halo_indicator.png' />
-			</div>
-			<div class='logo'>bs</div>
-
-			<div>
-				<div id='silver_halo' class='knob_holder' style='background-image:url(images/silver_halo.png);'>
-					<img id='silver_halo_indicator' src='images/silver_halo_indicator.png' />
-				</div>
-			</div>
-			<div>
-				<div id='clean_metal' class='knob_holder' style='background-image:url(images/clean_metal.png);'>
-					<img id='clean_metal_indicator' src='images/clean_metal_indicator.png' style='margin-top:10px;' />
-				</div>
-				<div id='septa' class='knob_holder' style='background-image:url(images/septa_knob.png);'>
-					<img id='septa_indicator' src='images/septa_knob_indicator.png' style='margin-top:4px;' />
-				</div>
-			</div>
+	<div style='margin:0 auto;text-align:center;width:325px;background-color:#f00'>
+		<div class='logo'>kn</div>
+		<!--
+		-->
+		<div style='float:left;margin:75px -10px 0 -10px;'>
+			<div id='logo_knob' class='kitchen100'></div>
 		</div>
-
-
-		<h1><a href="http://github.com/jherm/knobs">knobs</a>
-			<span class="small">by <a href="http://github.com/jherm">jherm</a></span></h1>
-
+		<div class='logo'>bs</div>
+	</div>
+	<p style="clear:both;"></p>
+	<div style='margin:0 auto;width:700px;'>
 		<div class="description">
-			HTML and javascript knobs that work on touch based devices. <br />Trying to emulate the behavior of the knobs in Apple's GarageBand for the iPad.
+			Virtual knobs that work on desktops and touch based devices through the magic of javascript and HTML.<br />This project tries to emulate the behavior of the knobs in Apple's GarageBand for the iPad.
 		</div>
+	</div>
+	<p style="clear:both;"></p>
 
+	<div id="grid">
+		<div>
+			<div class='toaster40'></div>
+		</div>
+		<div>
+			<div class='kitchen40'></div>
+		</div>
+		<div>
+			<div class='house100'></div>
+		</div>
+		<div>
+			<div class='toaster100'></div>
+		</div>
+		<div>
+			<div class='kitchen100'></div>
+		</div>
+		<div>
+			<div class='guitar100'></div>
+		</div>
+	</div>
+	<p style="clear:both;"></p>
+
+	<div id="container" style="margin-top:50px;">
 		<h2>Download</h2>
 		<div class="download">
 			<a href="http://github.com/jherm/knobs/zipball/master">
