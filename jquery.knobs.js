@@ -24,7 +24,7 @@
 		// don't allow values below min and above max angle
 		degrees = Math.min(Math.max(degrees, data.settings.minAngle), data.settings.maxAngle);
 
-		if(data.indicator !== undefined) {
+		if(typeof data.indicator !== "undefined") {
 			if(data.settings.positionIndicator) {
 				var rads = degrees * Math.PI/180;
 				data.indicator.css({
@@ -41,7 +41,7 @@
 
 		// If there are multiple images (using sprites), figure out which image to show.
 		if(data.settings.imageCount > 1) {
-			
+
 			var spriteDegrees = data.settings.imageDirection == 'clockwise' ? -degrees : degrees;
 
 			// Align the background image with the imageAngle
@@ -87,7 +87,7 @@
 
 		// TODO: if the gesture started towards the bottom or top, assume horizontal
 		// TODO: if the gesture started towards the left or right, assume vertical
-		// After initial gesture guess (most likely vertical/horizontal), 
+		// After initial gesture guess (most likely vertical/horizontal),
 		// look for circular gesture. Stop looking once the sample size is reached.
 
 		if(data.sampleCount < data.settings.sampleSize) {
@@ -98,15 +98,15 @@
 			if(Math.abs(pageY - data.touchStartY) > data.maxMouseY)
 				data.maxMouseY = Math.abs(pageY - data.touchStartY);
 			var currentGesture = getGesture(data.maxMouseX, data.maxMouseY);
-			if(data.gesture == undefined || currentGesture == "circular")  {
+			if(typeof data.gesture === "undefined" || currentGesture == "circular")  {
 				data.gesture = currentGesture;
 			}
 		}
 
 		if(data.gesture == "circular") {
 
-			y = data.centerY - pageY;
-			x = pageX - data.centerX;
+			var y = data.centerY - pageY,
+				x = pageX - data.centerX;
 			var inputAngle = 360 - Math.atan2(y,x)/Math.PI*180;
 			inputAngle -= data.settings.rotation;
 			inputAngle %= 360;
@@ -279,7 +279,7 @@
 						// Get the center of knob to base interactions from
 
 						// if the center of the knob wasn't provided, use the midpoint of the element
-						if(data.settings.centerX !== undefined) {
+						if(typeof data.settings.centerX !== "undefined") {
 							data.centerX = pos.left + data.settings.centerX;
 						}
 						else {
@@ -287,7 +287,7 @@
 							data.centerX = (w + pos.left) - (w / 2);
 						}
 
-						if(data.settings.centerY !== undefined) {
+						if(typeof data.settings.centerY !== "undefined") {
 							data.centerY = pos.top + data.settings.centerY;
 						}
 						else {
@@ -316,7 +316,7 @@
 
 						data.maxMouseX = 0;
 						data.maxMouseY = 0;
-						data.sampleCount = 4;
+						data.sampleCount = 0;
 
 						function mousemoveHandler(e) {
 							e.preventDefault();
@@ -331,7 +331,7 @@
 
 							for(var i=0; i < e.changedTouches.length; i++) {
 								var $k = activeKnobs[e.changedTouches[i].identifier];
-								if($k !== undefined) {
+								if(typeof $k !== "undefined") {
 									updateKnob($k, e.changedTouches[i].pageX, e.changedTouches[i].pageY);
 								}
 							}
@@ -357,7 +357,7 @@
 									// $('#debug2').append('before: ' + count);
 									if(count <= 0) {
 										$(document).unbind('touchmove');
-										$(document).unbind('touchend');										
+										$(document).unbind('touchend');
 									}
 									return false;
 								}
@@ -383,7 +383,7 @@
 							return downHandler(event.originalEvent);
 						},
 						'mousedown': function(event) {
-					 		return downHandler(event);
+							return downHandler(event);
 						}
 					});
 
@@ -397,7 +397,7 @@
 			return this.each(function() {
 				// var $this = $(this),
 				//	 data = $this.data('knob');
-				
+
 				//$(window).unbind('.knob');
 				//data.knob.remove();
 				//$this.removeData('knob');
