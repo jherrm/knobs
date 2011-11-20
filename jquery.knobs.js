@@ -22,7 +22,7 @@
 		degrees += prevTurns; // add base angle with previous turns
 
 		// don't allow values below min and above max angle
-		degrees = Math.min(Math.max(degrees, data.settings.minAngle), data.settings.maxAngle);
+		degrees = Math.min(Math.max(degrees, data.settings.angleMin), data.settings.angleMax);
 
 		if(typeof data.indicator !== "undefined") {
 			var rads = degrees * Math.PI/180;
@@ -32,10 +32,10 @@
 			var iy = $knob.height()/2 + data.settings.centerOffsetY - data.indicator.height()/2;
 
 			data.indicator.css({
-				left: ix + (data.settings.positionIndicator ? data.settings.radius * Math.cos(rads) : 0),
-				top:  iy + (data.settings.positionIndicator ? data.settings.radius * Math.sin(rads) : 0)
+				left: ix + (data.settings.indicatorAutoPosition ? data.settings.indicatorRadius * Math.cos(rads) : 0),
+				top:  iy + (data.settings.indicatorAutoPosition ? data.settings.indicatorRadius * Math.sin(rads) : 0)
 			});
-			if(data.settings.rotateIndicator) {
+			if(data.settings.indicatorAutoRotate) {
 				data.indicator.rotate({
 					angle: (degrees - data.settings.indicatorStartAngle)
 				});
@@ -43,17 +43,17 @@
 		}
 
 		// If there are multiple images (using sprites), figure out which image to show.
-		if(data.settings.imageCount > 1) {
+		if(data.settings.spriteCount > 1) {
 
-			var spriteDegrees = data.settings.imageDirection == 'clockwise' ? -degrees : degrees;
+			var spriteDegrees = data.settings.spriteDirection == 'cw' ? -degrees : degrees;
 
 			// Align the background image for sprites
 			spriteDegrees += data.settings.spriteStartAngle;
-			var imageIndex = (Math.floor( spriteDegrees / data.settings.imageAngleSeparation) % data.settings.imageCount);
+			var imageIndex = (Math.floor( spriteDegrees / data.settings.spriteSeparationAngle) % data.settings.spriteCount);
 			if(imageIndex > 0) {
-				imageIndex -= data.settings.imageCount;
+				imageIndex -= data.settings.spriteCount;
 			}
-			var offset = (data.settings.imageGridGap * imageIndex-1) + (data.settings.imageWidth * imageIndex);
+			var offset = (data.settings.spriteSeparationGap * imageIndex-1) + (data.settings.imageWidth * imageIndex);
 
 			data.element.css({
 				'background-position': offset + 'px'
@@ -115,11 +115,11 @@
 			degrees = inputAngle;
 		}
 		else if(data.gesture == "vertical") {
-			var change = (pageY - data.lastTouchY) * data.settings.linearTurnSpeed;
+			var change = (pageY - data.lastTouchY) * data.settings.angleSlideRatio;
 			degrees += (data.touchStartHorizontal == "right") ? change : -change;
 		}
 		else if(data.gesture == "horizontal") {
-			var change = (pageX - data.lastTouchX) * data.settings.linearTurnSpeed;
+			var change = (pageX - data.lastTouchX) * data.settings.angleSlideRatio;
 			degrees += (data.touchStartVertical == "top") ? change : -change;
 		}
 
@@ -135,38 +135,46 @@
 		setAngle(degrees, $knob);
 	}
 
-	var defaults =  {                 // Default Orientation
-		'minValue': 0,                //         270
-		'maxValue': 100,              //   180    +    0
-		'value': 0,                   //         90
-		'imageAngle': 0, // angle of the image relative to the default orientation
-		'minAngle': 0, // relative to 0
-		'maxAngle': 359, // relative to 0
-		'direction': 'clockwise', // direction the knob turns from minAngle to maxAngle
-		'linearTurnSpeed': 1.4, // go linearTurnSpeed * number of pixels travelled by gesture (only applies to linear gestures)
-		'sampleSize': 40, // how many locations to sample before locking gesture best guess
-		'step': 1,
+	/**
+	 *   Default
+	 * Orientation
+	 *	   270
+	 *	180 + 0
+	 *	   90
+	 **/
 
-		'circularGestureEnabled': true,
-		'verticalGestureEnabled': true,
-		'horizontalGestureEnabled': true,
+	var defaults =  {
+		valueMin: Number.NEGATIVE_INFINITY,
+		valueMax: Number.POSITIVE_INFINITY,
+		value: 0,
+		angleMin: Number.NEGATIVE_INFINITY,
+		angleMax: Number.POSITIVE_INFINITY,
+		direction: 'cw', // direction the knob turns from angleMin to angleMax
+		angleSlideRatio: 1.4, // go angleSlideRatio * number of pixels travelled by gesture (only applies to linear gestures)
+		sampleSize: 40, // how many locations to sample before locking gesture best guess
+		step: 1,
 
-		'centerOffsetX': 0,
-		'centerOffsetY': 0,
+		gestureSpinEnabled: true,
+		gestureSlideYEnabled: true,
+		gestureSlideXEnabled: true,
 
-		'imagePath': '', // path to background image/sprite (depending on knob type)
-		'imageCount': 1, // number sprites in image (for dynamic/fully rendered knobs)
-		'imageAngleSeparation': 3, // number of degrees turned between each image sprite
-		'imageGridGap': 0, // if the sprites are spearated by a grid or whitespace, specify the thickness of the grid here
-		'imageWidth': 67, // sprite width (default to Apple's standard size in GarageBand)
-		'imageHeight': 67, // sprite height (default to Apple's standard size in GarageBand)
-		'imageDirection': 'clockwise', // direction each sprite turns compared to the previous sprite in the image
+		centerOffsetX: 0,
+		centerOffsetY: 0,
 
-		'indicatorPath': '', // path to indicator image
-		'indicatorStartAngle': 0,
-		'positionIndicator': false,
-		'rotateIndicator': false,
-		'radius': 0
+		imagePath: '', // path to background image/sprite (depending on knob type)
+		spriteCount: 1, // number sprites in image (for dynamic/fully rendered knobs)
+		spriteSeparationAngle: 3, // number of degrees turned between each image sprite
+		spriteSeparationGap: 0, // if the sprites are spearated by a grid or whitespace, specify the thickness of the grid here
+		imageWidth: 67, // sprite width (default to Apple's standard size in GarageBand)
+		imageHeight: 67, // sprite height (default to Apple's standard size in GarageBand)
+		spriteDirection: 'cw', // direction each sprite turns compared to the previous sprite in the image
+		spriteStartAngle: 0, // angle of the image relative to the default orientation
+
+		indicatorImagePath: '', // path to indicator image
+		indicatorStartAngle: 0,
+		indicatorAutoPosition: false,
+		indicatorAutoRotate: false,
+		indicatorRadius: 0
 	}
 
 	var activeKnobs = {};
@@ -206,7 +214,7 @@
 					$el.css({
 						'position': 'relative',
 						'display': 'block',
-						'background-position': -settings.imageGridGap + 'px' + ' ' + -settings.imageGridGap + 'px',
+						'background-position': -settings.spriteSeparationGap + 'px' + ' ' + -settings.spriteSeparationGap + 'px',
 						'height': settings.imageHeight + 'px',
 						'width': settings.imageWidth + 'px',
 						'background-image': 'url(' + settings.imagePath + ')',
@@ -231,9 +239,9 @@
 
 
 				var $indicator;
-				if(settings.indicatorPath) {
+				if(settings.indicatorImagePath) {
 					$indicator = $(document.createElement('img'));
-					$indicator.attr('src', settings.indicatorPath + '');
+					$indicator.attr('src', settings.indicatorImagePath + '');
 					$indicator.css({
 						'position': 'relative'
 					});
@@ -254,7 +262,7 @@
 						settings: settings,
 						indicator: $indicator,
 						element: $el,
-						halfway: (settings.minAngle + (settings.maxAngle - settings.minAngle)/2),
+						halfway: (settings.angleMin + (settings.angleMax - settings.angleMin)/2),
 						currentValue: 0 // TODO: set to value from settings
 					});
 

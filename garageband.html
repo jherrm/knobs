@@ -66,33 +66,29 @@
 			// static background, rotate indicator
 
 			$('#rhodes').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 				'imagePath': 'garageband_images_renamed/rhodes.png',
 				'imageWidth': 90,
 				'imageHeight': 90,
 
-				'indicatorPath': 'garageband_images_renamed/rhodes_indicator.png',
+				'indicatorImagePath': 'garageband_images_renamed/rhodes_indicator.png',
 				'indicatorStartAngle': 270,
-				'positionIndicator': true,
-				'rotateIndicator': true,
+				'indicatorAutoPosition': true,
+				'indicatorAutoRotate': true,
 
 				'centerOffsetX': 0.5,
 				'centerOffsetY': -2.5,
 
-				'radius': 27
+				'indicatorRadius': 27
 			});
 
 			$('#pad').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 				'imagePath': 'garageband_images_renamed/pad.png',
 				'imageWidth': 63,
 				'imageHeight': 65,
 
-				'indicatorPath': 'garageband_images_renamed/pad_indicator.png',
+				'indicatorImagePath': 'garageband_images_renamed/pad_indicator.png',
 				'indicatorStartAngle': 270,
-				'rotateIndicator': true,
+				'indicatorAutoRotate': true,
 				'centerOffsetX': -3,
 				'centerOffsetY': -9,
 			});
@@ -100,442 +96,378 @@
 			// static background, position indicator
 
 			$('#panner').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 				'imagePath': 'garageband_images_renamed/panner.png',
 				'imageWidth': 52,
 				'imageHeight': 45,
 
-				'indicatorPath': 'garageband_images_renamed/panner_indicator.png',
+				'indicatorImagePath': 'garageband_images_renamed/panner_indicator.png',
 				'indicatorStartAngle': 270,
-				'rotateIndicator': true,
+				'indicatorAutoRotate': true,
 
 				'centerOffsetX': 0,
 				'centerOffsetY': 1,
 			});
 
 			$('#clavinet').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 				'imagePath': 'garageband_images_renamed/clavinet.png',
 				'imageWidth': 90,
 				'imageHeight': 90,
 
-				'indicatorPath': 'garageband_images_renamed/clavinet_indicator.png',
-				'positionIndicator': true,
+				'indicatorImagePath': 'garageband_images_renamed/clavinet_indicator.png',
+				'indicatorAutoPosition': true,
 				'centerOffsetX': 0.5,
 				'centerOffsetY': -2.5,
 
-				'radius': 20
+				'indicatorRadius': 20
 			});
 
 			$('#generic').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 				'imagePath': 'garageband_images_renamed/generic.png',
 				'imageWidth': 90,
 				'imageHeight': 90,
 
-				'indicatorPath': 'garageband_images_renamed/generic_indicator.png',
-				'positionIndicator': true,
+				'indicatorImagePath': 'garageband_images_renamed/generic_indicator.png',
+				'indicatorAutoPosition': true,
 
 				'centerOffsetX': 0.5,
 				'centerOffsetY': 2.5,
 
-				'radius': 20
+				'indicatorRadius': 20
 			});
 
 			// multiple background images rotate indicator
 			$('#synth').knob({
-				'linearTurnSpeed': 0.8,
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
+				'angleSlideRatio': 0.8,
 				'imagePath': 'garageband_images_renamed/synth.png',
-				'imageCount': 17,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 17,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 93,
 				'imageHeight': 93,
-				'imageDirection': 'clockwise',
+				'spriteDirection': 'cw',
 				'spriteStartAngle': 270,
 
-				'indicatorPath': 'garageband_images_renamed/synth_indicator.png',
+				'indicatorImagePath': 'garageband_images_renamed/synth_indicator.png',
 				'indicatorStartAngle': 0,
-				'rotateIndicator': true
+				'indicatorAutoRotate': true
  			});
 
 
 			// multiple background images position indicator
 			$('#hammond').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-				'linearTurnSpeed': 0.6,
+				'angleSlideRatio': 0.6,
 
 				'imagePath': 'garageband_images_renamed/hammond.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 5,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 100,
 				'imageHeight': 100,
 
-				'indicatorPath': 'garageband_images_renamed/hammond_indicator.png',
-				'positionIndicator': true,
-				'radius': 26
+				'indicatorImagePath': 'garageband_images_renamed/hammond_indicator.png',
+				'indicatorAutoPosition': true,
+				'indicatorRadius': 26
 			});
 
 
 			// fully rendered images, no indicator
 			$('#test_92_72').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
-				'linearTurnSpeed': 0.6,
+				'angleSlideRatio': 0.6,
 
 				'imagePath': 'garageband_images_renamed/test_92_72.png',
-				'imageCount': 72,
-				'imageAngleSeparation': 5,
-				'imageGridGap': 1,
+				'spriteCount': 72,
+				'spriteSeparationAngle': 5,
+				'spriteSeparationGap': 1,
 				'imageWidth': 91,
 				'imageHeight': 91,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#round_metal_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/round_metal_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#black_point_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/black_point_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#black_smooth_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/black_smooth_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#black_notched_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/black_notched_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#mini_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/mini_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 
 			$('#black_shiny_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/black_shiny_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#gold_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/gold_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#numbers_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/numbers_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#pointy_black_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/pointy_black_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#pointy_metal_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/pointy_metal_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#pointy_red_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/pointy_red_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#pointy_white_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/pointy_white_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#round_arrow_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/round_arrow_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#septa_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/septa_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#silver_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/silver_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#small_black_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/small_black_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#small_white_120').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/small_white_120.png',
-				'imageCount': 120,
-				'imageAngleSeparation': 3,
-				'imageGridGap': 1,
+				'spriteCount': 120,
+				'spriteSeparationAngle': 3,
+				'spriteSeparationGap': 1,
 				'imageWidth': 67,
 				'imageHeight': 67,
-				'imageDirection': 'counter-clockwise'
+				'spriteDirection': 'ccw'
 			});
 
 			$('#acoustic').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/acoustic.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
+				'spriteCount': 5,
+				'spriteSeparationAngle': 30,
+				'spriteSeparationGap': 1,
 				'imageWidth': 111,
 				'imageHeight': 105,
-				'imageDirection': 'clockwise'
+				'spriteDirection': 'cw'
 			});
 
 			$('#classic-clean').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/classic-clean.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
+				'spriteCount': 5,
+				'spriteSeparationAngle': 30,
+				'spriteSeparationGap': 1,
 				'imageWidth': 125,
 				'imageHeight': 122,
-				'imageDirection': 'clockwise'
+				'spriteDirection': 'cw'
 			});
 
 			$('#fender').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/fender.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
+				'spriteCount': 5,
+				'spriteSeparationAngle': 30,
+				'spriteSeparationGap': 1,
 				'imageWidth': 119,
 				'imageHeight': 110,
-				'imageDirection': 'clockwise'
+				'spriteDirection': 'cw'
 			});
 
 			$('#grand').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/grand.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
+				'spriteCount': 5,
+				'spriteSeparationAngle': 30,
+				'spriteSeparationGap': 1,
 				'imageWidth': 148,
 				'imageHeight': 148,
-				'imageDirection': 'clockwise'
+				'spriteDirection': 'cw'
 			});
 
 			$('#hardrock').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/hardrock.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
+				'spriteCount': 5,
+				'spriteSeparationAngle': 30,
+				'spriteSeparationGap': 1,
 				'imageWidth': 125,
 				'imageHeight': 122,
-				'imageDirection': 'clockwise'
+				'spriteDirection': 'cw'
 			});
 
 			$('#liverpool').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/liverpool.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
+				'spriteCount': 5,
+				'spriteSeparationAngle': 30,
+				'spriteSeparationGap': 1,
 				'imageWidth': 106,
 				'imageHeight': 104,
-				'imageDirection': 'clockwise'
+				'spriteDirection': 'cw'
 			});
 
 			$('#picked').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/picked.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
+				'spriteCount': 5,
+				'spriteSeparationAngle': 30,
+				'spriteSeparationGap': 1,
 				'imageWidth': 119,
 				'imageHeight': 110,
-				'imageDirection': 'clockwise'
+				'spriteDirection': 'cw'
 			});
 
 			$('#roots').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/roots.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
+				'spriteCount': 5,
+				'spriteSeparationAngle': 30,
+				'spriteSeparationGap': 1,
 				'imageWidth': 125,
 				'imageHeight': 122,
-				'imageDirection': 'clockwise'
+				'spriteDirection': 'cw'
 			});
 
 			$('#upright').knob({
-				'minAngle': Number.NEGATIVE_INFINITY,
-				'maxAngle': Number.POSITIVE_INFINITY,
 
 				'imagePath': 'garageband_images_renamed/upright.png',
-				'imageCount': 5,
-				'imageAngleSeparation': 30,
-				'imageGridGap': 1,
+				'spriteCount': 5,
+				'spriteSeparationAngle': 30,
+				'spriteSeparationGap': 1,
 				'imageWidth': 111,
 				'imageHeight': 105,
-				'imageDirection': 'clockwise'
+				'spriteDirection': 'cw'
 			});
 
 		});

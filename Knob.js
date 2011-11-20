@@ -16,13 +16,13 @@ var Knob;
 		this.options = {
 
 			/** Enable turning of the knob in a circular motion */
-			gestureSpin: true,
+			gestureSpinEnabled: true,
 
 			/** Enable turning of the knob in a horizontal sliding motion */
-			gestureSlideX: true,
+			gestureSlideXEnabled: true,
 
 			/** Enable turning of the knob with a vertical sliding motion */
-			gestureSlideY: true,
+			gestureSlideYEnabled: true,
 
 			/** During spin gestures, point the indicator to the finger as it spins */
 			// followFinger: true,
