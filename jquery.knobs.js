@@ -25,13 +25,16 @@
 		degrees = Math.min(Math.max(degrees, data.settings.minAngle), data.settings.maxAngle);
 
 		if(typeof data.indicator !== "undefined") {
-			if(data.settings.positionIndicator) {
-				var rads = degrees * Math.PI/180;
-				data.indicator.css({
-					top:  data.settings.centerY + data.settings.radius * Math.sin(rads) - data.indicator.height() * 0.5,
-					left: data.settings.centerX + data.settings.radius * Math.cos(rads) - data.indicator.width() * 0.5
-				});
-			}
+			var rads = degrees * Math.PI/180;
+
+			// TODO: No reason to recalculate this every time. Store indicator x/y after indicator first loads.
+			var ix =  $knob.width()/2 + data.settings.centerOffsetX - data.indicator.width()/2;
+			var iy = $knob.height()/2 + data.settings.centerOffsetY - data.indicator.height()/2;
+
+			data.indicator.css({
+				left: ix + (data.settings.positionIndicator ? data.settings.radius * Math.cos(rads) : 0),
+				top:  iy + (data.settings.positionIndicator ? data.settings.radius * Math.sin(rads) : 0)
+			});
 			if(data.settings.rotateIndicator) {
 				data.indicator.rotate({
 					angle: (degrees - data.settings.imageAngle + data.settings.rotation)
@@ -150,8 +153,8 @@
 		'verticalGestureEnabled': true,
 		'horizontalGestureEnabled': true,
 
-		'centerX': undefined,
-		'centerY': undefined,
+		'centerOffsetX': 0,
+		'centerOffsetY': 0,
 
 		'imagePath': '', // path to background image/sprite (depending on knob type)
 		'imageCount': 1, // number sprites in image (for dynamic/fully rendered knobs)
@@ -162,10 +165,9 @@
 		'imageDirection': 'clockwise', // direction each sprite turns compared to the previous sprite in the image
 
 		'indicatorPath': '', // path to indicator image
-		//'positionIndicator': false,
+		'positionIndicator': false,
 		'rotateIndicator': false,
-		'indicatorOffsetY': 0,
-		'indicatorOffsetX': 0
+		'radius': 0
 	}
 
 	var activeKnobs = {};
@@ -229,15 +231,12 @@
 				});
 
 
-
 				var $indicator;
 				if(settings.indicatorPath) {
 					$indicator = $(document.createElement('img'));
 					$indicator.attr('src', settings.indicatorPath + '');
 					$indicator.css({
-						'position': 'relative',
-						'margin-left': settings.indicatorOffsetX + 'px',
-						'margin-top': settings.indicatorOffsetY + 'px'
+						'position': 'relative'
 					});
 					$el.append($indicator)
 
@@ -264,7 +263,6 @@
 
 
 
-
 					var $knob = $this;
 
 
@@ -277,23 +275,8 @@
 						var pos = $knob.offset();
 
 						// Get the center of knob to base interactions from
-
-						// if the center of the knob wasn't provided, use the midpoint of the element
-						if(typeof data.settings.centerX !== "undefined") {
-							data.centerX = pos.left + data.settings.centerX;
-						}
-						else {
-							var w = $knob.outerWidth(); // include border & padding
-							data.centerX = (w + pos.left) - (w / 2);
-						}
-
-						if(typeof data.settings.centerY !== "undefined") {
-							data.centerY = pos.top + data.settings.centerY;
-						}
-						else {
-							var h = $knob.outerHeight(); // include border & padding
-							data.centerY = (h + pos.top) - (h / 2);
-						}
+						data.centerX = pos.left + $knob.outerWidth()/2 + data.settings.centerOffsetX;
+						data.centerY = pos.top + $knob.outerHeight()/2 + data.settings.centerOffsetY;
 
 						// var touchStartPos = { x: event.pageX, y: event.pageY };
 
