@@ -37,7 +37,7 @@
 			});
 			if(data.settings.rotateIndicator) {
 				data.indicator.rotate({
-					angle: (degrees - data.settings.imageAngle + data.settings.rotation)
+					angle: (degrees - data.settings.indicatorStartAngle + data.settings.rotation)
 				});
 			}
 		}
@@ -47,8 +47,8 @@
 
 			var spriteDegrees = data.settings.imageDirection == 'clockwise' ? -degrees : degrees;
 
-			// Align the background image with the imageAngle
-			spriteDegrees += data.settings.imageAngle;
+			// Align the background image for sprites
+			spriteDegrees += data.settings.spriteStartAngle;
 			var imageIndex = (Math.floor( spriteDegrees / data.settings.imageAngleSeparation) % data.settings.imageCount);
 			if(imageIndex > 0) {
 				imageIndex -= data.settings.imageCount;
@@ -165,6 +165,7 @@
 		'imageDirection': 'clockwise', // direction each sprite turns compared to the previous sprite in the image
 
 		'indicatorPath': '', // path to indicator image
+		'indicatorStartAngle': 0,
 		'positionIndicator': false,
 		'rotateIndicator': false,
 		'radius': 0
