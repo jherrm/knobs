@@ -65,19 +65,29 @@
 		// console.log('prev  ' + prevTurns + 'turn ' + turnAmount + ' final degrees ' + degrees)
 	};
 
-	var getGesture = function(maxMouseX, maxMouseY) {
+	var getGesture = function(maxMouseX, maxMouseY, data) {
 		var gesture;
+		var minRatio = 1.3;
 
-		if(maxMouseX == 0) {
+		// TODO: clean up this logic
+		if(data.settings.gestureSlideYEnabled &&
+			(maxMouseX == 0 || maxMouseY/maxMouseX > minRatio ||
+				(!data.settings.gestureSlideXEnabled && !data.settings.gestureSpinEnabled)
+			)
+		) {
 			gesture = "vertical";
 		}
-		else if(maxMouseY == 0) {
+		else if(data.settings.gestureSlideXEnabled &&
+			(maxMouseY == 0 || maxMouseX/maxMouseY > minRatio ||
+				(!data.settings.gestureSlideYEnabled && !data.settings.gestureSpinEnabled)
+			)
+		) {
 			gesture = "horizontal";
 		}
-		else {
-			if(maxMouseX/maxMouseY > 1.3) gesture = "horizontal";
-			else if(maxMouseY/maxMouseX > 1.3) gesture = "vertical";
-			else gesture = "circular";
+		else if(data.settings.gestureSpinEnabled ||
+			(!data.settings.gestureSlideYEnabled && !data.settings.gestureSlideXEnabled)
+		) {
+			gesture = "circular";
 		}
 
 		return gesture;
@@ -100,14 +110,14 @@
 				data.maxMouseX = Math.abs(pageX - data.touchStartX);
 			if(Math.abs(pageY - data.touchStartY) > data.maxMouseY)
 				data.maxMouseY = Math.abs(pageY - data.touchStartY);
-			var currentGesture = getGesture(data.maxMouseX, data.maxMouseY);
+			var currentGesture = getGesture(data.maxMouseX, data.maxMouseY, data);
 			if(typeof data.gesture === "undefined" || currentGesture == "circular")  {
 				data.gesture = currentGesture;
 			}
+			console.log(data.gesture);
 		}
 
 		if(data.gesture == "circular") {
-
 			var y = data.centerY - pageY,
 				x = pageX - data.centerX;
 			var inputAngle = 360 - Math.atan2(y,x)/Math.PI*180;
@@ -121,6 +131,9 @@
 		else if(data.gesture == "horizontal") {
 			var change = (pageX - data.lastTouchX) * data.settings.angleSlideRatio;
 			degrees += (data.touchStartVertical == "top") ? change : -change;
+		}
+		else {
+			return;
 		}
 
 		data.lastTouchX = pageX;
