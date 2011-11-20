@@ -1,0 +1,657 @@
+<html>
+	<head>
+		<!--
+		-->
+		<meta name='viewport' content='width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;'>
+		<style>
+			.logo {
+				font-size:155px;
+				float:left;
+			}
+		body {
+			margin-top: 1.0em;
+			font-family: Helvetica, Arial, FreeSans, san-serif;
+			color: #000000;
+		}
+		#container {
+			margin: 0 auto;
+			width: 700px;
+		}
+		h1 { font-size: 3.8em; color: #000000; margin-bottom: 3px; }
+		h1 .small { font-size: 0.4em; }
+		h1 a { text-decoration: none }
+		h2 { font-size: 1.5em; color: #000000; }
+		h3 { text-align: center; color: #000000; }
+		a { color: #000000; }
+		.description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+		pre { background: #000; color: #fff; padding: 15px;}
+		hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+		.footer { text-align:center; padding-top:30px; font-style: italic; }
+
+		.knob_holder {
+			float:left;
+			background-repeat: no-repeat;
+			background-position: center center;
+			background-color:transparent;
+			padding:20px;'
+		}
+
+		#grid {
+			margin:0 auto;
+			max-width:840px;
+		}
+
+		#grid>div {
+			float:left;
+			width: 140px;
+			height: 140px;
+			background-color: #ffeeee;
+			border: solid 1px #bbb;
+		}
+
+		#grid>div>div {
+			padding: 20px;
+		}
+		</style>
+		<script type='text/javascript' src='jquery-1.5.1.min.js'></script>
+		<script type='text/javascript' src='jquery.easing.1.3.js'></script>
+		<script type='text/javascript' src='jquery.knobs.js'></script>
+		<script type='text/javascript' src='jquery.rotate.js'></script>
+		<script type='text/javascript'>
+
+		$(function() {
+			// prevent dragging the page in touch based browsers
+			// $('body').bind('touchmove', function(event) { event.originalEvent.preventDefault(); });
+
+			// static background, rotate indicator
+
+			$('#rhodes').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+				'imagePath': 'garageband_images_renamed/rhodes.png',
+				'imageAngle': 270,
+				'imageWidth': 90,
+				'imageHeight': 90,
+
+				'indicatorPath': 'garageband_images_renamed/rhodes_indicator.png',
+				'positionIndicator': true,
+				'rotateIndicator': true,
+
+				'centerOffsetX': 0.5,
+				'centerOffsetY': -2.5,
+
+				'radius': 27
+			});
+
+			$('#pad').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+				'imagePath': 'garageband_images_renamed/pad.png',
+				'imageAngle': 270,
+				'imageWidth': 63,
+				'imageHeight': 65,
+
+				'indicatorPath': 'garageband_images_renamed/pad_indicator.png',
+				'rotateIndicator': true,
+				'centerOffsetX': -3,
+				'centerOffsetY': -9,
+			});
+
+			// static background, position indicator
+
+			$('#panner').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+				'imagePath': 'garageband_images_renamed/panner.png',
+				'imageAngle': 270,
+				'imageWidth': 52,
+				'imageHeight': 45,
+
+				'indicatorPath': 'garageband_images_renamed/panner_indicator.png',
+				'rotateIndicator': true,
+
+				'centerOffsetX': 0,
+				'centerOffsetY': 1,
+			});
+
+			$('#clavinet').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+				'imagePath': 'garageband_images_renamed/clavinet.png',
+				'imageWidth': 90,
+				'imageHeight': 90,
+
+				'indicatorPath': 'garageband_images_renamed/clavinet_indicator.png',
+				'positionIndicator': true,
+				'centerOffsetX': 0.5,
+				'centerOffsetY': -2.5,
+
+				'radius': 20
+			});
+
+			$('#generic').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+				'imagePath': 'garageband_images_renamed/generic.png',
+				'imageWidth': 90,
+				'imageHeight': 90,
+
+				'indicatorPath': 'garageband_images_renamed/generic_indicator.png',
+				'positionIndicator': true,
+
+				'centerOffsetX': 0.5,
+				'centerOffsetY': 2.5,
+
+				'radius': 20
+			});
+
+			// multiple background images rotate indicator
+			$('#synth').knob({
+				'linearTurnSpeed': 0.8,
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+				'imagePath': 'garageband_images_renamed/synth.png',
+				'imageCount': 17,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 93,
+				'imageHeight': 93,
+				'imageDirection': 'clockwise',
+
+				'indicatorPath': 'garageband_images_renamed/synth_indicator.png',
+				'imageAngle': -90,
+				'rotateIndicator': true
+ 			});
+
+
+			// multiple background images position indicator
+			$('#hammond').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+				'linearTurnSpeed': 0.6,
+
+				'imagePath': 'garageband_images_renamed/hammond.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 100,
+				'imageHeight': 100,
+
+				'indicatorPath': 'garageband_images_renamed/hammond_indicator.png',
+				'positionIndicator': true,
+				'radius': 26
+			});
+
+
+			// fully rendered images, no indicator
+			$('#test_92_72').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+				'linearTurnSpeed': 0.6,
+
+				'imagePath': 'garageband_images_renamed/test_92_72.png',
+				'imageCount': 72,
+				'imageAngleSeparation': 5,
+				'imageGridGap': 1,
+				'imageWidth': 91,
+				'imageHeight': 91,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#round_metal_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/round_metal_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#black_point_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/black_point_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#black_smooth_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/black_smooth_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#black_notched_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/black_notched_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#mini_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/mini_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+
+			$('#black_shiny_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/black_shiny_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#gold_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/gold_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#numbers_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/numbers_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#pointy_black_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/pointy_black_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#pointy_metal_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/pointy_metal_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#pointy_red_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/pointy_red_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#pointy_white_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/pointy_white_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#round_arrow_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/round_arrow_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#septa_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/septa_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#silver_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/silver_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#small_black_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/small_black_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#small_white_120').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/small_white_120.png',
+				'imageCount': 120,
+				'imageAngleSeparation': 3,
+				'imageGridGap': 1,
+				'imageWidth': 67,
+				'imageHeight': 67,
+				'imageDirection': 'counter-clockwise'
+			});
+
+			$('#acoustic').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/acoustic.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 111,
+				'imageHeight': 105,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#classic-clean').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/classic-clean.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 125,
+				'imageHeight': 122,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#fender').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/fender.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 119,
+				'imageHeight': 110,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#grand').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/grand.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 148,
+				'imageHeight': 148,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#hardrock').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/hardrock.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 125,
+				'imageHeight': 122,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#liverpool').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/liverpool.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 106,
+				'imageHeight': 104,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#picked').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/picked.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 119,
+				'imageHeight': 110,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#roots').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/roots.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 125,
+				'imageHeight': 122,
+				'imageDirection': 'clockwise'
+			});
+
+			$('#upright').knob({
+				'minAngle': Number.NEGATIVE_INFINITY,
+				'maxAngle': Number.POSITIVE_INFINITY,
+
+				'imagePath': 'garageband_images_renamed/upright.png',
+				'imageCount': 5,
+				'imageAngleSeparation': 30,
+				'imageGridGap': 1,
+				'imageWidth': 111,
+				'imageHeight': 105,
+				'imageDirection': 'clockwise'
+			});
+
+		});
+
+		</script>
+	</head>
+	<body>
+<div id="grid">
+	<div>
+		<div id='generic'></div>
+	</div>
+	<div>
+		<div id='clavinet'></div>
+	</div>
+	<div>
+		<div id='rhodes'></div>
+	</div>
+	<div>
+		<div id='pad'></div>
+	</div>
+	<div>
+		<div id='hammond'></div>
+	</div>
+	<div>
+		<div id='synth'></div>
+	</div>
+	<div>
+		<div id='septa_120'></div>
+	</div>
+	<div>
+		<div id='panner'></div>
+	</div>
+	<div>
+		<div id='black_point_120'></div>
+	</div>
+	<div>
+		<div id='black_smooth_120'></div>
+	</div>
+	<div>
+		<div id='black_notched_120'></div>
+	</div>
+	<div>
+		<div id='mini_120'></div>
+	</div>
+	<div>
+		<div id='black_shiny_120'></div>
+	</div>
+	<div>
+		<div id='numbers_120'></div>
+	</div>
+	<div>
+		<div id='round_arrow_120'></div>
+	</div>
+	<div>
+		<div id='round_metal_120'></div>
+	</div>
+	<div>
+		<div id='small_black_120'></div>
+	</div>
+	<div>
+		<div id='small_white_120'></div>
+	</div>
+	<div>
+		<div id='gold_120'></div>
+	</div>
+	<div>
+		<div id='silver_120'></div>
+	</div>
+	<div>
+		<div id='pointy_black_120'></div>
+	</div>
+	<div>
+		<div id='pointy_white_120'></div>
+	</div>
+	<div>
+		<div id='pointy_metal_120'></div>
+	</div>
+	<div>
+		<div id='pointy_red_120'></div>
+	</div>
+	<div>
+		<div id='upright'></div>
+	</div>
+	<div>
+		<div id='acoustic'></div>
+	</div>
+	<div>
+		<div id='classic-clean'></div>
+	</div>
+	<div>
+		<div id='fender'></div>
+	</div>
+	<div>
+		<div id='hardrock'></div>
+	</div>
+	<div>
+		<div id='liverpool'></div>
+	</div>
+	<div>
+		<div id='picked'></div>
+	</div>
+	<div>
+		<div id='roots'></div>
+	</div>
+	<div>
+		<div id='grand'></div>
+	</div>
+	<div>
+		<div id='metal'></div>
+	</div>
+	<div>
+		<div id=''></div>
+	</div>
+	<div>
+		<div id='test_92_72'></div>
+	</div>
+</div>
+
+	</body>
+</html>
