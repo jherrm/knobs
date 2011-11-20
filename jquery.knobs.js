@@ -37,7 +37,7 @@
 			});
 			if(data.settings.rotateIndicator) {
 				data.indicator.rotate({
-					angle: (degrees - data.settings.indicatorStartAngle + data.settings.rotation)
+					angle: (degrees - data.settings.indicatorStartAngle)
 				});
 			}
 		}
@@ -111,7 +111,6 @@
 			var y = data.centerY - pageY,
 				x = pageX - data.centerX;
 			var inputAngle = 360 - Math.atan2(y,x)/Math.PI*180;
-			inputAngle -= data.settings.rotation;
 			inputAngle %= 360;
 			degrees = inputAngle;
 		}
@@ -140,10 +139,9 @@
 		'minValue': 0,                //         270
 		'maxValue': 100,              //   180    +    0
 		'value': 0,                   //         90
-		'rotation': 0, // angle of the entire knob relative to the default orientation
 		'imageAngle': 0, // angle of the image relative to the default orientation
-		'minAngle': 0, // relative to 0 (rotation automatically added)
-		'maxAngle': 359, // relative to 0 (rotation automatically added)
+		'minAngle': 0, // relative to 0
+		'maxAngle': 359, // relative to 0
 		'direction': 'clockwise', // direction the knob turns from minAngle to maxAngle
 		'linearTurnSpeed': 1.4, // go linearTurnSpeed * number of pixels travelled by gesture (only applies to linear gestures)
 		'sampleSize': 40, // how many locations to sample before locking gesture best guess
