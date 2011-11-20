@@ -65,6 +65,9 @@ var Knob;
 			---------------------------------------------------------------------------
 			*/
 
+			/** Angle the inicator is at when first rendered */
+			indicatorStartAngle: 0,
+
 			/** Path to indicator image */
 			indicatorImagePath: '',
 
@@ -84,7 +87,7 @@ var Knob;
 
 			/*
 			---------------------------------------------------------------------------
-				IMAGE/SPRITE OPTIONS
+				KNOB IMAGE/SPRITE OPTIONS
 			---------------------------------------------------------------------------
 			*/
 
@@ -97,20 +100,20 @@ var Knob;
 			/** Height of the image or individual images in the sprite */
 			imageHeight: 67, /* (default to Apple's standard size in GarageBand) */
 
-			/** Angle of the image (or 1st sprite image) relative to the default orientation */
-			imageAngle: 0,
-
 			/** Number of images in the sprite */
-			imageCount: 1,
+			spriteCount: 1,
+
+			/** Which way the images turn when viewing left to right in the sprite */
+			spriteDirection: 'cw', /* cw = clockwise, ccw = counter-clockwise */
+
+			/** Angle of the image (or 1st sprite image) relative to the default orientation */
+			spriteStartAngle: 0,
 
 			/** Number of degrees turned between each image in the sprite */
-			imageSeparationAngle: 3,
+			spriteSeparationAngle: 3,
 
 			/** The thickness of the gap surrounding images in the sprite */
-			imageSeparationGap: 0,
-
-			/** Which way the knob images turn when going from left to right in the sprite */
-			imageDirection: 'cw', /* cw = clockwise, ccw = counter-clockwise */
+			spriteSeparationGap: 0,
 
 		};
 
@@ -125,9 +128,6 @@ var Knob;
 		__sampleSize: 40,
 
 		__step: 1,
-
-		// angle of the entire knob relative to the default orientation
-		__rotation: 0,
 
 	}
 
