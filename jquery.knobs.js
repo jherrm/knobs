@@ -10,14 +10,14 @@
 
 		// enforce the angle limits on knob turning by making sure you can't cross between min & max
 		// look for very large jumps in the difference between the old and new angle
-		var diff = data.currentValue%360 - degrees;
+		var diff = data.angleDegrees%360 - degrees;
 		var cutoff = 225 // 360 * 0.625
 		if(Math.abs(diff) > cutoff) {
 			turnAmount = (diff > 0) ? 1 : -1;
 		}
 		// prevTurns is the total number of full turns in degrees
 		// ~~ forces integer division
-		prevTurns = 360 * (~~(data.currentValue/360) + turnAmount);
+		prevTurns = 360 * (~~(data.angleDegrees/360) + turnAmount);
 
 		degrees += prevTurns; // add base angle with previous turns
 
@@ -61,7 +61,7 @@
 
 		}
 
-		data.currentValue = degrees;
+		data.angleDegrees = degrees;
 		// console.log('prev  ' + prevTurns + 'turn ' + turnAmount + ' final degrees ' + degrees)
 	};
 
@@ -96,7 +96,7 @@
 	var updateKnob = function($knob, pageX, pageY) {
 		var data = $knob.data('knob');
 
-		var degrees = data.currentValue;
+		var degrees = data.angleDegrees;
 
 		// TODO: if the gesture started towards the bottom or top, assume horizontal
 		// TODO: if the gesture started towards the left or right, assume vertical
@@ -118,8 +118,8 @@
 		}
 
 		if(data.gesture == "circular") {
-			var y = data.centerY - pageY,
-				x = pageX - data.centerX;
+			var y = data.centerGlobalY - pageY,
+				x = pageX - data.centerGlobalX;
 			var inputAngle = 360 - Math.atan2(y,x)/Math.PI*180;
 			inputAngle %= 360;
 			degrees = inputAngle;
@@ -142,8 +142,8 @@
 		if (degrees < 0) degrees += 360;
 
 		// slow down the transition from one position to another
-		//degrees = currentValue + (degrees - currentValue)/2;
-		//degrees = currentValue + Math.min(degrees - currentValue, 4);
+		//degrees = angleDegrees + (degrees - angleDegrees)/2;
+		//degrees = angleDegrees + Math.min(degrees - angleDegrees, 4);
 
 		setAngle(degrees, $knob);
 	}
@@ -165,7 +165,6 @@
 		direction: 'cw', // direction the knob turns from angleMin to angleMax
 		angleSlideRatio: 1.4, // go angleSlideRatio * number of pixels travelled by gesture (only applies to linear gestures)
 		sampleSize: 40, // how many locations to sample before locking gesture best guess
-		step: 1,
 
 		gestureSpinEnabled: true,
 		gestureSlideYEnabled: true,
@@ -214,39 +213,39 @@
 
 
 				$this.css({
-					'position': 'relative',
-					'display': 'block',
-					'overflow': 'auto', // prevent margin collapsing
-					'height': settings.imageHeight + 'px',
-					'width': settings.imageWidth + 'px',
-					'margin': '0 auto 0 auto'
+					position: 'relative',
+					display: 'block',
+					overflow: 'auto', // prevent margin collapsing
+					height: settings.imageHeight + 'px',
+					width: settings.imageWidth + 'px',
+					margin: '0 auto 0 auto'
 				});
 
 
 				if(settings.imagePath) {
 					$el.css({
-						'position': 'relative',
-						'display': 'block',
+						position: 'relative',
+						display: 'block',
 						'background-position': -settings.spriteSeparationGap + 'px' + ' ' + -settings.spriteSeparationGap + 'px',
-						'height': settings.imageHeight + 'px',
-						'width': settings.imageWidth + 'px',
+						height: settings.imageHeight + 'px',
+						width: settings.imageWidth + 'px',
 						'background-image': 'url(' + settings.imagePath + ')',
 						'background-repeat': 'no-repeat',
-						'margin': '0 auto 0 auto'
+						margin: '0 auto 0 auto'
 					});
 				}
 
 				// TODO: only vertically align if specified in settings
 
 				$el.css({
-					'position': 'relative',
-					'top': '50%',
+					position: 'relative',
+					top: '50%',
 					'margin-top': (-$el.outerHeight()/2) + 'px'
 				});
 
 				$this.css({
-					'position': 'relative',
-					'top': '50%',
+					position: 'relative',
+					top: '50%',
 					'margin-top': (-$this.outerHeight()/2) + 'px'
 				});
 
@@ -256,12 +255,12 @@
 					$indicator = $(document.createElement('img'));
 					$indicator.attr('src', settings.indicatorImagePath + '');
 					$indicator.css({
-						'position': 'relative'
+						position: 'relative'
 					});
 					$el.append($indicator)
 
 					$indicator.load(function() {
-						setAngle($this.data('knob').currentValue, $this);
+						setAngle($this.data('knob').angleDegrees, $this);
 					});
 				}
 
@@ -276,7 +275,7 @@
 						indicator: $indicator,
 						element: $el,
 						halfway: (settings.angleMin + (settings.angleMax - settings.angleMin)/2),
-						currentValue: 0 // TODO: set to value from settings
+						angleDegrees: 0 // TODO: set to value from settings
 					});
 
 
@@ -295,8 +294,8 @@
 						var pos = $knob.offset();
 
 						// Get the center of knob to base interactions from
-						data.centerX = pos.left + $knob.outerWidth()/2 + data.settings.centerOffsetX;
-						data.centerY = pos.top + $knob.outerHeight()/2 + data.settings.centerOffsetY;
+						data.centerGlobalX = pos.left + $knob.outerWidth()/2 + data.settings.centerOffsetX;
+						data.centerGlobalY = pos.top + $knob.outerHeight()/2 + data.settings.centerOffsetY;
 
 						// var touchStartPos = { x: event.pageX, y: event.pageY };
 
@@ -312,8 +311,8 @@
 
 						data.lastTouchX = data.touchStartX;
 						data.lastTouchY = data.touchStartY;
-						data.touchStartHorizontal = (data.touchStartX >= data.centerX) ? "right" : "left";
-						data.touchStartVertical = (data.touchStartY >= data.centerY) ? "bottom" : "top";
+						data.touchStartHorizontal = (data.touchStartX >= data.centerGlobalX) ? "right" : "left";
+						data.touchStartVertical = (data.touchStartY >= data.centerGlobalY) ? "bottom" : "top";
 
 						data.gesture = undefined;
 
@@ -391,7 +390,7 @@
 					});
 
 
-					setAngle($this.data('knob').currentValue, $this);
+					setAngle($this.data('knob').angleDegrees, $this);
 				}
 			});
 		},
