@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Knob - Canvas</title>
+	<link rel="stylesheet" href="asset/ui.css" />
+	<script src="../Knob.js"></script>
+
+</head>
+<body>
+	<div id="container">
+		<canvas id="knob1"></canvas>
+	</div>
+
+	<div id="settings">
+		<div><label for="knobAngle">Angle: </label><input type="text" id="knobAngle" size="5" value="0"/></div>
+		<div><label for="knobValue">Value: </label><input type="text" id="knobValue" size="5" value="0"/></div>
+
+		<div><label for="scrollingX">ScrollingX: </label><input type="checkbox" id="scrollingX" checked/></div>
+		<div><label for="scrollingY">ScrollingY: </label><input type="checkbox" id="scrollingY" checked/></div>
+		<div><label for="animating">Animating: </label><input type="checkbox" id="animating" checked/></div>
+		<div><label for="bouncing">Bouncing: </label><input type="checkbox" id="bouncing" checked/></div>
+		<div><label for="locking">Locking: </label><input type="checkbox" id="locking" checked/></div>
+
+		<div><label for="zooming">Zooming: </label><input type="checkbox" id="zooming" checked/></div>
+		<div><label for="minZoom">Min Zoom: </label><input type="text" id="minZoom" size="5" value="0.5"/></div>
+		<div><label for="maxZoom">Max Zoom: </label><input type="text" id="maxZoom" size="5" value="3"/></div>
+		<div><label for="zoomLevel">Zoom Level: </label><input type="text" id="zoomLevel" size="5"/></div>
+		<div><button id="zoom">Zoom to Level</button><button id="zoomIn">+</button><button id="zoomOut">-</button></div>
+
+		<div><label for="scrollLeft">Scroll Left: </label><input type="text" id="scrollLeft" size="9"/></div>
+		<div><label for="scrollTop">Scroll Top: </label><input type="text" id="scrollTop" size="9"/></div>
+		<div><button id="scrollTo">Scroll to Coords</button></div>
+
+		<div><button id="scrollByUp">&uarr;</button><button id="scrollByDown">&darr;</button><button id="scrollByLeft">&larr;</button><button id="scrollByRight">&rarr;</button></div>
+	</div>
+
+ 	<!-- Custom rendering code -->
+	<script type="text/javascript">
+
+	// Intialize layout
+	var container = document.getElementById("container");
+	var content = document.getElementById("knob1");
+	var context = content.getContext('2d');
+
+	// Settings
+	var knobW = container.clientWidth;
+	var knobH = container.clientHeight;
+	var knobRadius = 20;
+	var indicatorW = 10;
+	var indicatorH = 5;
+
+
+	// Sync current dimensions with canvas
+	content.width = knobW;
+	content.height = knobH;
+
+
+
+
+	// Canvas renderer
+	var render = function(angle, value, indicatorX, indicatorY, indicatorAngle, spriteOffset) {
+		console.log("render "+angle+" "+value+" "+indicatorX+" "+indicatorY+" "+indicatorAngle+" "+spriteOffset);
+		// Full clearing
+		context.clearRect(0, 0, knobW, knobH);
+		paint(indicatorX, indicatorY, indicatorAngle);
+	};
+
+
+	// Cell Paint Logic
+	var paint = function(indicatorX, indicatorY, indicatorAngle) {
+
+		//draw the knob background
+		context.fillStyle = "#008";
+		context.beginPath();
+		context.arc(knobW/2, knobH/2, knobRadius, 0, Math.PI*2, true);
+		context.closePath();
+		context.fill();
+
+		//draw the knob indicator
+		context.fillStyle = "#080";
+		context.fillRect(indicatorX, indicatorY, indicatorH, indicatorW);
+	};
+
+
+	// Initialize Scroller
+	this.knob = new Knob(render, {
+		indicatorW: indicatorW,
+		indicatorH: indicatorH,
+		indicatorRadius: knobRadius,
+		indicatorAutoPosition: true,
+		indicatorAutoRotate: true
+	});
+
+
+
+	var rect = container.getBoundingClientRect();
+	knob.setPosition(rect.left + container.clientLeft, rect.top + container.clientTop);
+	knob.setDimensions(container.clientWidth, container.clientHeight);
+
+	var knobAngleField = document.getElementById("knobAngle"),
+		knobValueField = document.getElementById("knobValue");
+
+	setInterval(function() {
+		var values = knob.getValues();
+		knobAngleField.value = values.angle.toFixed(2);
+		knobValueField.value = values.val.toFixed(2);
+	}, 500);
+
+
+	// Detect touch capable client
+	if ('ontouchstart' in window) {
+
+		container.addEventListener('touchstart', function(e) {
+			// Don't react if initial down happens on a form element
+			// if (e.touches[0] && e.touches[0].target && e.touches[0].target.tagName.match(/input|textarea|select/i)) {
+			// 	return;
+			// }
+
+			knob.doTouchStart(e.touches, e.timeStamp);
+			e.preventDefault();
+		}, false);
+
+		document.addEventListener('touchmove', function(e) {
+			knob.doTouchMove(e.touches, e.timeStamp, e.scale);
+		}, false);
+
+		document.addEventListener('touchend', function(e) {
+			knob.doTouchEnd(e.timeStamp);
+		}, false);
+
+		document.addEventListener('touchcancel', function(e) {
+			knob.doTouchEnd(e.timeStamp);
+		}, false);
+
+	} else {
+
+		var mousedown = false;
+
+		container.addEventListener('mousedown', function(e) {
+			// Don't react if initial down happens on a form element
+			// if (e.target.tagName.match(/input|textarea|select/i)) {
+			// 	return;
+			// }
+
+			knob.doTouchStart([{
+				pageX: e.pageX,
+				pageY: e.pageY
+			}], e.timeStamp);
+
+			mousedown = true;
+		}, false);
+
+		document.addEventListener('mousemove', function(e) {
+			if (!mousedown) {
+				return;
+			}
+
+			knob.doTouchMove([{
+				pageX: e.pageX,
+				pageY: e.pageY
+			}], e.timeStamp);
+
+			mousedown = true;
+		}, false);
+
+		document.addEventListener('mouseup', function(e) {
+			if (!mousedown) {
+				return;
+			}
+
+			knob.doTouchEnd(e.timeStamp);
+
+			mousedown = false;
+		}, false);
+
+		container.addEventListener('mousewheel', function(e) {
+			knob.doMouseZoom(e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
+		}, false);
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+		</script>
+
+	<!-- Create Scroller, bind UI layer and mouse/touch events -->
+	<!-- <script src="asset/ui.js"></script> -->
+
+
+</body>
+</html>
