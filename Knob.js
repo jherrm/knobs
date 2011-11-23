@@ -65,9 +65,6 @@ var Knob;
 			/** Angle the inicator is at when first rendered */
 			indicatorStartAngle: 0,
 
-			/** Path to indicator image */
-			// indicatorImagePath: '',
-
 			/** Automatically rotate the indicator based on the angle */
 			indicatorAutoRotate: false,
 
@@ -84,18 +81,15 @@ var Knob;
 
 			/*
 			---------------------------------------------------------------------------
-				KNOB IMAGE/SPRITE OPTIONS
+				SPRITE OPTIONS
 			---------------------------------------------------------------------------
 			*/
 
-			/** Path to background image or sprite */
-			// imagePath: '',
-
 			/** Width of the image or individual images in the sprite */
-			imageWidth: 67, /* (default to Apple's standard size in GarageBand) */
+			spriteWidth: 67, /* (default to Apple's standard size in GarageBand) */
 
 			/** Height of the image or individual images in the sprite */
-			imageHeight: 67, /* (default to Apple's standard size in GarageBand) */
+			spriteHeight: 67, /* (default to Apple's standard size in GarageBand) */
 
 			/** Number of images in the sprite */
 			spriteCount: 1,
@@ -103,7 +97,7 @@ var Knob;
 			/** Which way the images turn when viewing left to right in the sprite */
 			spriteDirection: 'cw', /* cw = clockwise, ccw = counter-clockwise */
 
-			/** Angle of the image (or 1st sprite image) relative to the default orientation */
+			/** Angle of the 1st sprite image relative to the default orientation */
 			spriteStartAngle: 0,
 
 			/** Number of degrees turned between each image in the sprite */
@@ -160,10 +154,10 @@ var Knob;
 		__value: 0,
 
 		/** {Number} Center of the knob in the context of the page */
-		__centerGlobalX: 0,
+		__centerPageX: 0,
 
 		/** {Number} Center of the knob in the context of the page */
-		__centerGlobalY: 0,
+		__centerPageY: 0,
 
 		/** {Boolean} Whether only a single finger is used in touch handling */
 		__isSingleTouch: false,
@@ -375,8 +369,8 @@ var Knob;
 			self.__slideYDetected = !isSingleTouch && self.options.gestureSlideYEnabled;
 
 			// Figure out where the touch was relative to the center
-			self.__initialTouchLocationX = (currentTouchLeft >= self.__centerGlobalX) ? "right" : "left";
-			self.__initialTouchLocationY = (currentTouchTop  >= self.__centerGlobalY) ? "bottom" : "top";
+			self.__initialTouchLocationX = (currentTouchLeft >= self.__centerPageX) ? "right" : "left";
+			self.__initialTouchLocationY = (currentTouchTop  >= self.__centerPageY) ? "bottom" : "top";
 
 			// Reset tracking flag
 			self.__isTracking = true;
@@ -431,15 +425,15 @@ var Knob;
 
 				// Compute move distance
 				var moveX = currentTouchLeft - self.__lastTouchLeft;
-				var moveY = currentTouchTop - self.__lastTouchTop;
+				var moveY = currentTouchTop  - self.__lastTouchTop;
 
 				// handle spin, then handle slides
 				if(self.__spinDetected) {
 					// console.log("spinning");
 
 					// http://stackoverflow.com/questions/1311049/how-to-map-atan2-to-degrees-0-360
-					var y = self.__centerGlobalY - currentTouchTop,
-						x = currentTouchLeft - self.__centerGlobalX;
+					var y = self.__centerPageY - currentTouchTop,
+						x = currentTouchLeft - self.__centerPageX;
 					currentAngle = toDegrees(Math.atan2(-y,-x)+Math.PI);
 				}
 				else {
@@ -488,22 +482,12 @@ var Knob;
 					turnAmount--;
 				}
 
-				// When self.__angle % 360 = 0 and self.__angle != 0, we need to change the number of turns
-				// if(nPrevAngle == 0) {
-				// 	if(self.__angle > 0) {
-				// 		turnAmount--;
-				// 	}
-					// else if(self.__angle < 0) {
-					// 	turnAmount++;
-					// }
-				// }
 
 				// prevTurns is the total number of full turns in degrees
 				// ~~ forces integer division
 				prevTurns = 360 * (~~(self.__angle/360) + turnAmount);
 
 				var nextAngle = nCurrentAngle + prevTurns; // add base angle with previous turns
-				// console.log(" nCurrentAngle: "+nCurrentAngle+" prevTurns: "+prevTurns+" nextAngle: "+nextAngle);
 
 				// Hold angleStart and angleEnd constraints
 				if(self.options.angleStart < self.options.angleEnd) {
@@ -542,9 +526,6 @@ var Knob;
 					nextAngle = self.options.angleEnd;
 				}
 
-				// console.log("nPrevAngle: "+nPrevAngle+" nCurrentAngle: "+nCurrentAngle+" turnAmount: "+turnAmount+" prevTurns: "+prevTurns);
-
-
 				var indicatorX, indicatorY, indicatorAngle, spriteOffset;
 
 				if(self.options.indicatorAutoPosition) {
@@ -577,11 +558,6 @@ var Knob;
 				}
 
 				self.__angle = nextAngle;
-				// console.log("ANGLE: "+self.__angle+" ix:"+indicatorX+" iy:"+indicatorY);
-
-
-
-
 
 
 				// Keep list from growing infinitely (holding min 10, max 20 measure points)
@@ -595,6 +571,7 @@ var Knob;
 
 				// Sync data
 				self.__publish({
+					knob: self,
 					angle: self.__angle,
 					val: self.__value,
 					indicatorX: indicatorX,
@@ -619,7 +596,6 @@ var Knob;
 				positions.push(currentTouchLeft, currentTouchTop, timeStamp);
 
 				self.__isTurning = (self.__slideXDetected || self.__slideYDetected) && (distanceX >= minimumTrackingForSpin || distanceY >= minimumTrackingForSpin);
-				// console.log("spinning: "+self.__isTurning+" sliding x: "+self.__slideXDetected+" sliding y: "+self.__slideYDetected);
 			}
 
 			// Update last touch positions and time stamp for next event
@@ -670,9 +646,6 @@ var Knob;
 		__publish: function(angle, value, indicatorX, indicatorY, indicatorAngle, spriteOffset) {
 			var self = this;
 
-
-			// console.log("ANGLE: " + self.__angle);
-
 			// Push values out
 			if (self.__callback) {
 				self.__callback(angle, value, indicatorX, indicatorY, indicatorAngle, spriteOffset);
@@ -684,9 +657,8 @@ var Knob;
 			var self = this;
 
 			// Get the center of knob to base interactions from
-			self.__centerGlobalX = self.__clientLeft + self.__clientWidth/2  + self.options.centerOffsetX;
-			self.__centerGlobalY = self.__clientTop  + self.__clientHeight/2 + self.options.centerOffsetY;
-
+			self.__centerPageX = self.__clientLeft + self.__clientWidth/2  + self.options.centerOffsetX;
+			self.__centerPageY = self.__clientTop + self.__clientHeight/2 + self.options.centerOffsetY;
 		},
 	}
 
