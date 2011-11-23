@@ -4,9 +4,9 @@ var Knob;
 	/**
 	 *   Default
 	 * Orientation
-	 *	   270
-	 *	180 + 0
 	 *	   90
+	 *	180 + 0
+	 *	   270
 	 **/
 
 	Knob = function(callback, options) {
@@ -27,14 +27,11 @@ var Knob;
 			/** During spin gestures, point the indicator to the finger as it spins */
 			// followFinger: true,
 
-			/** Which way the knob turns to increase the value */
-			direction: 'cw', /* cw = clockwise, ccw = counter-clockwise */
-
 			/** Angle where the minimum value is if knob has bounds */
-			angleMin: Number.NEGATIVE_INFINITY,
+			angleStart: Number.NEGATIVE_INFINITY,
 
 			/** Angle where the maximum value is if knob has bounds */
-			angleMax: Number.POSITIVE_INFINITY,
+			angleEnd: Number.POSITIVE_INFINITY,
 
 			/** Maximum value the knob can go up to */
 			valueMin: Number.NEGATIVE_INFINITY,
@@ -67,12 +64,6 @@ var Knob;
 
 			/** Angle the inicator is at when first rendered */
 			indicatorStartAngle: 0,
-
-			/**  */
-			indicatorWidth: 0,
-
-			/**  */
-			indicatorHeight: 0,
 
 			/** Path to indicator image */
 			// indicatorImagePath: '',
@@ -422,7 +413,7 @@ var Knob;
 
 
 			var currentTouchLeft, currentTouchTop,
-				angle = self.__angle;
+				currentAngle = self.__angle;
 
 			// Compute move based around of center of fingers
 			// if (touches.length === 2) {
@@ -444,77 +435,135 @@ var Knob;
 
 				// handle spin, then handle slides
 				if(self.__spinDetected) {
-					console.log("spinning");
+					// console.log("spinning");
+
+					// http://stackoverflow.com/questions/1311049/how-to-map-atan2-to-degrees-0-360
 					var y = self.__centerGlobalY - currentTouchTop,
 						x = currentTouchLeft - self.__centerGlobalX;
-					var inputAngle = 360 - toDegrees(Math.atan2(y,x));
-					inputAngle %= 360;
-					angle = inputAngle;
+					currentAngle = toDegrees(Math.atan2(-y,-x)+Math.PI);
 				}
 				else {
 					if (self.__slideXDetected) {
-						console.log("sliding left/right");
+						// console.log("sliding left/right");
 						var change = (currentTouchLeft - self.__lastTouchLeft) * self.options.angleSlideRatio;
-						angle += (self.__initialTouchLocationY == "top") ? change : -change;
+						currentAngle += (self.__initialTouchLocationY == "top") ? -change : change;
 					}
 
 					if (self.__slideYDetected) {
-						console.log("sliding up/down");
+						// console.log("sliding up/down");
 						var change = (currentTouchTop - self.__lastTouchTop) * self.options.angleSlideRatio;
-						angle += (self.__initialTouchLocationX == "right") ? change : -change;
+						currentAngle += (self.__initialTouchLocationX == "right") ? -change : change;
 					}
 				}
 
-				if (angle < 0) angle += 360;
-
-				self.__angle = angle;
-
+				var turnAmount = 0,
+				prevTurns = 0;
 
 
+				// get normalized base angles by chopping off any previous turns
+				var nCurrentAngle = currentAngle % 360,
+					nPrevAngle    = self.__angle % 360;
+				// ensure the normalized angles are positive
+				while (nPrevAngle < 0) { nPrevAngle += 360; }
+				while (nCurrentAngle < 0) { nCurrentAngle += 360; }
 
-				var turnAmount = 0;
-				var prevTurns = 0;
 
-				// chop off any previous turns, get base angle
-				angle %= 360;
-
-				// enforce the angle limits on knob turning by making sure you can't cross between min & max
-				// look for very large jumps in the difference between the old and new angle
-				var diff = self.__angle%360 - angle;
-				var cutoff = 225 // 360 * 0.625
-				if(Math.abs(diff) > cutoff) {
-					turnAmount = (diff > 0) ? 1 : -1;
+				// If the last angle was close to one side of the discontinuity and
+				// the other angle was close to the other side of the discontinuity,
+				// assume the user has crossed the discontinuity.
+				var edgeZone = 20;
+				if(nPrevAngle < edgeZone && nCurrentAngle > 360 - edgeZone) {
+					turnAmount--;
+					console.log("FORD THE RIVER 0 -> 360")
 				}
+				else if(nPrevAngle > 360 - edgeZone && nCurrentAngle < edgeZone) {
+					turnAmount++;
+					console.log("FORD THE RIVER 360 -> 0")
+				}
+
+				// Because 0-360 is the zeroeth turn, any negative angle is 1 turn behind positive angles
+				// When self.__angle % 360 = 0 and self.__angle != 0, we need to change the number of turns
+				if((self.__angle < 0 && nPrevAngle != 0) ||
+				   (self.__angle > 0 && nPrevAngle == 0)) {
+					turnAmount--;
+				}
+
+				// When self.__angle % 360 = 0 and self.__angle != 0, we need to change the number of turns
+				// if(nPrevAngle == 0) {
+				// 	if(self.__angle > 0) {
+				// 		turnAmount--;
+				// 	}
+					// else if(self.__angle < 0) {
+					// 	turnAmount++;
+					// }
+				// }
+
 				// prevTurns is the total number of full turns in degrees
 				// ~~ forces integer division
 				prevTurns = 360 * (~~(self.__angle/360) + turnAmount);
 
-				angle += prevTurns; // add base angle with previous turns
+				var nextAngle = nCurrentAngle + prevTurns; // add base angle with previous turns
+				// console.log(" nCurrentAngle: "+nCurrentAngle+" prevTurns: "+prevTurns+" nextAngle: "+nextAngle);
 
-				// don't allow values below min and above max angle
-				angle = Math.min(Math.max(angle, self.options.angleMin), self.options.angleMax);
+				// Hold angleStart and angleEnd constraints
+				if(self.options.angleStart < self.options.angleEnd) {
+					// Only allow numbers > angleStart and < than angleEnd
+					nextAngle = Math.min(Math.max(nextAngle, self.options.angleStart), self.options.angleEnd);
+				}
+				else {
+					// Only allow numbers < angleStart and > than angleEnd
+					// nextAngle = Math.max(Math.min(nextAngle, self.options.angleStart), self.options.angleEnd);
+					nextAngle = Math.min(Math.max(nextAngle, self.options.angleEnd), self.options.angleStart);
+				}
+
+				// if previous angle is equal to angleStart or angleEnd, or if the prev/next crosses over the angleStart or angleEnd,
+				// even if the next angle is valid, check to see if it was arrived at through an invalid path
+				// For instance, if angleStart = 0 and angleEnd = 360, a prevAngle of 1 shouldn't be able to jump to 355.
+				// Likewise, if angleStart = 180 and angleEnd = 540, a prevAngle of 169 shouldn't be able to jump to 530.
+
+				// Look for very large jumps in the difference between the previous and current angle.
+				var diff = self.__angle - nextAngle;
+				// Two lines below calculate absolute distance between two angles (e.g. 350° to 15° = 25°)
+				// var d = Math.abs(self.__angle - nextAngle) % 360;
+				// var diff = d > 180 ? 360 - d : d;
+				var cutoff = 225 // 225 = 360 * 0.625
+				if(Math.abs(diff) >= cutoff) {
+					// set the next angle to the closest boundary
+					nextAngle = Math.abs(self.__angle - self.options.angleStart) < Math.abs(self.__angle - self.options.angleEnd) ? self.options.angleStart : self.options.angleEnd;
+					if(nextAngle == Math.POSITIVE_INFINITY || nextAngle == Math.NEGATIVE_INFINITY)
+						nextAngle = self.__angle;
+				}
+
+				// if prevAngle was at a boundary, only allow a legal natural move to change the existing angle.
+				if(self.__angle == self.options.angleStart && nextAngle == self.options.angleEnd) {
+					nextAngle = self.options.angleStart;
+				}
+				if(self.__angle == self.options.angleEnd && nextAngle == self.options.angleStart) {
+					nextAngle = self.options.angleEnd;
+				}
+
+				// console.log("nPrevAngle: "+nPrevAngle+" nCurrentAngle: "+nCurrentAngle+" turnAmount: "+turnAmount+" prevTurns: "+prevTurns);
+
 
 				var indicatorX, indicatorY, indicatorAngle, spriteOffset;
 
 				if(self.options.indicatorAutoPosition) {
-					var rads = toRadians(angle);
+					var rads = toRadians(nextAngle);
 
 					// TODO: No reason to recalculate this every time. Store indicator x/y after indicator first loads.
-					var ix =  self.__clientWidth/2 + self.options.centerOffsetX - self.options.indicatorWidth/2;
-					var iy = self.__clientHeight/2 + self.options.centerOffsetY - self.options.indicatorHeight/2;
-
-					indicatorX = ix + self.options.indicatorRadius * Math.cos(rads);
-					indicatorY = iy + self.options.indicatorRadius * Math.sin(rads);
+					// Subtract Y component because of canvas's inverted Y coordinate compared to output of sin.
+					indicatorX =  self.__clientWidth/2 + self.options.centerOffsetX + self.options.indicatorRadius * Math.cos(rads);
+					indicatorY = self.__clientHeight/2 + self.options.centerOffsetY - self.options.indicatorRadius * Math.sin(rads);
 				}
 
 				if(self.options.indicatorAutoRotate) {
-					indicatorAngle = angle - self.options.indicatorStartAngle;
+					indicatorAngle = nextAngle + self.options.indicatorStartAngle;
 				}
 
 				// If there are multiple images (using sprites), figure out which image to show.
 				if(self.options.spriteCount > 1) {
 
-					var spriteDegrees = self.options.spriteDirection == 'cw' ? -angle : angle;
+					var spriteDegrees = self.options.spriteDirection == 'cw' ? -nextAngle : nextAngle;
 
 					// Align the background image for sprites
 					spriteDegrees += self.options.spriteStartAngle;
@@ -527,10 +576,8 @@ var Knob;
 
 				}
 
-				self.__angle = angle;
-				// console.log('prev  ' + prevTurns + 'turn ' + turnAmount + ' final degrees ' + degrees)
-
-
+				self.__angle = nextAngle;
+				// console.log("ANGLE: "+self.__angle+" ix:"+indicatorX+" iy:"+indicatorY);
 
 
 
@@ -547,7 +594,14 @@ var Knob;
 
 
 				// Sync data
-				self.__publish(self.__angle, self.__value, indicatorX, indicatorY, indicatorAngle, spriteOffset);
+				self.__publish({
+					angle: self.__angle,
+					val: self.__value,
+					indicatorX: indicatorX,
+					indicatorY: indicatorY,
+					indicatorAngle: indicatorAngle,
+					spriteOffset: spriteOffset
+				});
 
 			// Otherwise figure out whether we are switching into dragging mode now.
 			} else {
@@ -565,7 +619,7 @@ var Knob;
 				positions.push(currentTouchLeft, currentTouchTop, timeStamp);
 
 				self.__isTurning = (self.__slideXDetected || self.__slideYDetected) && (distanceX >= minimumTrackingForSpin || distanceY >= minimumTrackingForSpin);
-				console.log("spinning: "+self.__isTurning+" sliding x: "+self.__slideXDetected+" sliding y: "+self.__slideYDetected);
+				// console.log("spinning: "+self.__isTurning+" sliding x: "+self.__slideXDetected+" sliding y: "+self.__slideYDetected);
 			}
 
 			// Update last touch positions and time stamp for next event
