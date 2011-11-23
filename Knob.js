@@ -533,8 +533,8 @@ var Knob;
 
 					// TODO: No reason to recalculate this every time. Store indicator x/y after indicator first loads.
 					// Subtract Y component because of canvas's inverted Y coordinate compared to output of sin.
-					indicatorX =  self.__clientWidth/2 + self.options.centerOffsetX + self.options.indicatorRadius * Math.cos(rads);
-					indicatorY = self.__clientHeight/2 + self.options.centerOffsetY - self.options.indicatorRadius * Math.sin(rads);
+					indicatorX = self.__centerPageX - self.__clientLeft + self.options.indicatorRadius * Math.cos(rads);
+					indicatorY = self.__centerPageY - self.__clientTop  - self.options.indicatorRadius * Math.sin(rads);
 				}
 
 				if(self.options.indicatorAutoRotate) {
