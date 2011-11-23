@@ -17,21 +17,12 @@
 
 		<div><label for="scrollingX">ScrollingX: </label><input type="checkbox" id="scrollingX" checked/></div>
 		<div><label for="scrollingY">ScrollingY: </label><input type="checkbox" id="scrollingY" checked/></div>
-		<div><label for="animating">Animating: </label><input type="checkbox" id="animating" checked/></div>
-		<div><label for="bouncing">Bouncing: </label><input type="checkbox" id="bouncing" checked/></div>
-		<div><label for="locking">Locking: </label><input type="checkbox" id="locking" checked/></div>
 
-		<div><label for="zooming">Zooming: </label><input type="checkbox" id="zooming" checked/></div>
 		<div><label for="minZoom">Min Zoom: </label><input type="text" id="minZoom" size="5" value="0.5"/></div>
 		<div><label for="maxZoom">Max Zoom: </label><input type="text" id="maxZoom" size="5" value="3"/></div>
 		<div><label for="zoomLevel">Zoom Level: </label><input type="text" id="zoomLevel" size="5"/></div>
 		<div><button id="zoom">Zoom to Level</button><button id="zoomIn">+</button><button id="zoomOut">-</button></div>
 
-		<div><label for="scrollLeft">Scroll Left: </label><input type="text" id="scrollLeft" size="9"/></div>
-		<div><label for="scrollTop">Scroll Top: </label><input type="text" id="scrollTop" size="9"/></div>
-		<div><button id="scrollTo">Scroll to Coords</button></div>
-
-		<div><button id="scrollByUp">&uarr;</button><button id="scrollByDown">&darr;</button><button id="scrollByLeft">&larr;</button><button id="scrollByRight">&rarr;</button></div>
 	</div>
 
  	<!-- Custom rendering code -->
@@ -49,20 +40,18 @@
 	var indicatorW = 10;
 	var indicatorH = 5;
 
-
 	// Sync current dimensions with canvas
 	content.width = knobW;
 	content.height = knobH;
 
 
 
-
 	// Canvas renderer
-	var render = function(angle, value, indicatorX, indicatorY, indicatorAngle, spriteOffset) {
-		console.log("render "+angle+" "+value+" "+indicatorX+" "+indicatorY+" "+indicatorAngle+" "+spriteOffset);
+	var render = function(knobData) {
+		// console.log("render "+knobData.angle+" "+knobData.val+" "+knobData.indicatorX+" "+knobData.indicatorY+" "+knobData.indicatorAngle+" "+knobData.spriteOffset);
 		// Full clearing
 		context.clearRect(0, 0, knobW, knobH);
-		paint(indicatorX, indicatorY, indicatorAngle);
+		paint(knobData.indicatorX, knobData.indicatorY, knobData.indicatorAngle);
 	};
 
 
@@ -72,25 +61,33 @@
 		//draw the knob background
 		context.fillStyle = "#008";
 		context.beginPath();
-		context.arc(knobW/2, knobH/2, knobRadius, 0, Math.PI*2, true);
+		context.arc(knobW/2, knobH/2, knobRadius+indicatorH, 0, Math.PI*2, true);
 		context.closePath();
 		context.fill();
 
+		context.save();
+
+		context.translate(indicatorX, indicatorY);
+		context.rotate(-indicatorAngle*(Math.PI/180));
+
 		//draw the knob indicator
-		context.fillStyle = "#080";
-		context.fillRect(indicatorX, indicatorY, indicatorH, indicatorW);
+		context.fillStyle = "#efefef";
+		context.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
+
+		context.restore();
 	};
+
 
 
 	// Initialize Scroller
 	this.knob = new Knob(render, {
-		indicatorW: indicatorW,
-		indicatorH: indicatorH,
+		angleStart:-400,
+		angleEnd:360,
 		indicatorRadius: knobRadius,
+		indicatorStartAngle: 0,
 		indicatorAutoPosition: true,
 		indicatorAutoRotate: true
 	});
-
 
 
 	var rect = container.getBoundingClientRect();
