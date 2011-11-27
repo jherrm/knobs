@@ -7,8 +7,14 @@
 
 </head>
 <body>
-	<div id="container">
-		<canvas id="knob1"></canvas>
+	<div id="container" class="container">
+		<canvas id="shapePosition"></canvas>
+	</div>
+	<div id="container2" class="container">
+		<canvas id="shapeRotate"></canvas>
+	</div>
+	<div id="container3" class="container">
+		<canvas id="shapePositionRotate"></canvas>
 	</div>
 
 	<div id="settings">
@@ -22,76 +28,68 @@
 		<div><label for="maxZoom">Max Zoom: </label><input type="text" id="maxZoom" size="5" value="3"/></div>
 		<div><label for="zoomLevel">Zoom Level: </label><input type="text" id="zoomLevel" size="5"/></div>
 		<div><button id="zoom">Zoom to Level</button><button id="zoomIn">+</button><button id="zoomOut">-</button></div>
-
 	</div>
+<!--
+-->
 
  	<!-- Custom rendering code -->
 	<script type="text/javascript">
 
 	// Intialize layout
-	var container = document.getElementById("container");
-	var content = document.getElementById("knob1");
+	var container = document.getElementById("container3");
+	var content = document.getElementById("shapePositionRotate");
 	var context = content.getContext('2d');
-
-	// Settings
-	var knobW = container.clientWidth;
-	var knobH = container.clientHeight;
-	var knobRadius = 20;
-	var indicatorW = 10;
-	var indicatorH = 5;
-
 	// Sync current dimensions with canvas
-	content.width = knobW;
-	content.height = knobH;
+	content.width = container.clientWidth;
+	content.height = container.clientHeight;
 
 
-
-	// Canvas renderer
-	var render = function(knobData) {
-		// console.log("render "+knobData.angle+" "+knobData.val+" "+knobData.indicatorX+" "+knobData.indicatorY+" "+knobData.indicatorAngle+" "+knobData.spriteOffset);
-		// Full clearing
-		context.clearRect(0, 0, knobW, knobH);
-		paint(knobData.indicatorX, knobData.indicatorY, knobData.indicatorAngle);
-	};
-
-
-	// Cell Paint Logic
-	var paint = function(indicatorX, indicatorY, indicatorAngle) {
-
-		//draw the knob background
-		context.fillStyle = "#008";
+	var fillCircle = function(context, x, y, radius) {
 		context.beginPath();
-		context.arc(knobW/2, knobH/2, knobRadius+indicatorH, 0, Math.PI*2, true);
+		context.arc(x, y, radius, 0, Math.PI*2, true);
 		context.closePath();
 		context.fill();
+	}
 
-		context.save();
+	this.knob = new Knob(function(knobData) {
+			var indicatorW = 10;
+			var indicatorH = 5;
 
-		context.translate(indicatorX, indicatorY);
-		context.rotate(-indicatorAngle*(Math.PI/180));
+			context.clearRect(0, 0, knobData.knob.__clientWidth, knobData.knob.__clientWidth);
 
-		//draw the knob indicator
-		context.fillStyle = "#efefef";
-		context.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
+			//draw the knob background
+			context.fillStyle = "#008";
+			fillCircle(context, knobData.knob.__clientWidth/2, knobData.knob.__clientHeight/2, knobData.knob.options.indicatorRadius+indicatorH);
 
-		context.restore();
-	};
+			context.save();
 
+			context.translate(knobData.indicator.x, knobData.indicator.y);
+			context.rotate(-knobData.indicator.angle*(Math.PI/180));
 
+			//draw the knob indicator
+			context.fillStyle = "#efefef";
+			context.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
 
-	// Initialize Scroller
-	this.knob = new Knob(render, {
+			context.restore();
+		}, {
 		angleStart:-400,
 		angleEnd:360,
-		indicatorRadius: knobRadius,
+		indicatorRadius: 20,
 		indicatorStartAngle: 0,
 		indicatorAutoPosition: true,
 		indicatorAutoRotate: true
 	});
 
 
+
+
+
+
 	var rect = container.getBoundingClientRect();
 	knob.setPosition(rect.left + container.clientLeft, rect.top + container.clientTop);
+
+	// knob.setPosition(0, 0);
+	// knob.setPosition(10, 10);
 	knob.setDimensions(container.clientWidth, container.clientHeight);
 
 	var knobAngleField = document.getElementById("knobAngle"),

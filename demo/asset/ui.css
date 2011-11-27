@@ -15,8 +15,8 @@ body{
 	background-color:#999;
 }
 
-#container{
-	position: absolute;
+.container{
+	position: relative;
 	left: 20px;
 	top: 20px;
 	width: 140px;
