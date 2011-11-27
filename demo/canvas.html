@@ -7,13 +7,13 @@
 
 </head>
 <body>
-	<div id="container" class="container">
+	<div id="shapePositionContainer" class="container">
 		<canvas id="shapePosition"></canvas>
 	</div>
-	<div id="container2" class="container">
+	<div id="shapeRotateContainer" class="container">
 		<canvas id="shapeRotate"></canvas>
 	</div>
-	<div id="container3" class="container">
+	<div id="shapePositionRotateContainer" class="container">
 		<canvas id="shapePositionRotate"></canvas>
 	</div>
 
@@ -32,16 +32,12 @@
 <!--
 -->
 
+
+	<!-- mouse/touch events -->
+	<script src="asset/ui.js"></script>
+
  	<!-- Custom rendering code -->
 	<script type="text/javascript">
-
-	// Intialize layout
-	var container = document.getElementById("container3");
-	var content = document.getElementById("shapePositionRotate");
-	var context = content.getContext('2d');
-	// Sync current dimensions with canvas
-	content.width = container.clientWidth;
-	content.height = container.clientHeight;
 
 
 	var fillCircle = function(context, x, y, radius) {
@@ -51,26 +47,83 @@
 		context.fill();
 	}
 
-	this.knob = new Knob(function(knobData) {
+	var shapePositionKnobContainer = document.getElementById("shapePositionContainer");
+	var shapePositionKnobContext = document.getElementById("shapePosition").getContext('2d');
+	var shapePositionKnob = new Knob(function(knobData) {
+			var knobRadius = 25,
+				indicatorRadius = 4;
+
+			shapePositionKnobContext.clearRect(0, 0, knobData.knob.__clientWidth, knobData.knob.__clientWidth);
+
+			//draw the knob background
+			shapePositionKnobContext.fillStyle = "#008";
+			fillCircle(shapePositionKnobContext, knobData.knob.__clientWidth/2, knobData.knob.__clientHeight/2, knobRadius);
+
+			//draw the knob indicator
+			shapePositionKnobContext.fillStyle = "#efefef";
+			fillCircle(shapePositionKnobContext, knobData.indicator.x, knobData.indicator.y, indicatorRadius);
+		}, {
+		angleStart:-400,
+		angleEnd:360,
+		indicatorRadius: 18,
+		indicatorStartAngle: 0,
+		indicatorAutoPosition: true
+	});
+
+
+	var shapeRotateKnobContainer = document.getElementById("shapeRotateContainer");
+	var shapeRotateKnobContext = document.getElementById("shapeRotate").getContext('2d');
+	var shapeRotateKnob = new Knob(function(knobData) {
+			var knobRadius = 25,
+				indicatorW = knobRadius*2,
+				indicatorH = 5;
+
+			shapeRotateKnobContext.clearRect(0, 0, knobData.knob.__clientWidth, knobData.knob.__clientWidth);
+
+			//draw the knob background
+			shapeRotateKnobContext.fillStyle = "#008";
+			fillCircle(shapeRotateKnobContext, knobData.knob.__clientWidth/2, knobData.knob.__clientHeight/2, knobRadius);
+
+			shapeRotateKnobContext.save();
+
+			shapeRotateKnobContext.translate(knobData.knob.__clientWidth/2, knobData.knob.__clientHeight/2);
+			shapeRotateKnobContext.rotate(-knobData.indicator.angle*(Math.PI/180));
+
+			//draw the knob indicator
+			shapeRotateKnobContext.fillStyle = "#efefef";
+			shapeRotateKnobContext.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
+
+			shapeRotateKnobContext.restore();
+		}, {
+		angleStart:-400,
+		angleEnd:360,
+		indicatorStartAngle: 0,
+		indicatorAutoRotate: true
+	});
+
+
+	var shapePositionRotateKnobContainer = document.getElementById("shapePositionRotateContainer");
+	var shapePositionRotateKnobContext = document.getElementById("shapePositionRotate").getContext('2d');
+	var shapePositionRotateKnob = new Knob(function(knobData) {
 			var indicatorW = 10;
 			var indicatorH = 5;
 
-			context.clearRect(0, 0, knobData.knob.__clientWidth, knobData.knob.__clientWidth);
+			shapePositionRotateKnobContext.clearRect(0, 0, knobData.knob.__clientWidth, knobData.knob.__clientWidth);
 
 			//draw the knob background
-			context.fillStyle = "#008";
-			fillCircle(context, knobData.knob.__clientWidth/2, knobData.knob.__clientHeight/2, knobData.knob.options.indicatorRadius+indicatorH);
+			shapePositionRotateKnobContext.fillStyle = "#008";
+			fillCircle(shapePositionRotateKnobContext, knobData.knob.__clientWidth/2, knobData.knob.__clientHeight/2, knobData.knob.options.indicatorRadius+indicatorH);
 
-			context.save();
+			shapePositionRotateKnobContext.save();
 
-			context.translate(knobData.indicator.x, knobData.indicator.y);
-			context.rotate(-knobData.indicator.angle*(Math.PI/180));
+			shapePositionRotateKnobContext.translate(knobData.indicator.x, knobData.indicator.y);
+			shapePositionRotateKnobContext.rotate(-knobData.indicator.angle*(Math.PI/180));
 
 			//draw the knob indicator
-			context.fillStyle = "#efefef";
-			context.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
+			shapePositionRotateKnobContext.fillStyle = "#efefef";
+			shapePositionRotateKnobContext.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
 
-			context.restore();
+			shapePositionRotateKnobContext.restore();
 		}, {
 		angleStart:-400,
 		angleEnd:360,
@@ -81,110 +134,11 @@
 	});
 
 
+	setupKnob(shapePositionKnob, shapePositionKnobContainer);
+	setupKnob(shapeRotateKnob, shapeRotateKnobContainer);
+	setupKnob(shapePositionRotateKnob, shapePositionRotateKnobContainer);
 
-
-
-
-	var rect = container.getBoundingClientRect();
-	knob.setPosition(rect.left + container.clientLeft, rect.top + container.clientTop);
-	knob.setDimensions(container.clientWidth, container.clientHeight);
-
-	var knobAngleField = document.getElementById("knobAngle"),
-		knobValueField = document.getElementById("knobValue");
-
-	setInterval(function() {
-		var values = knob.getValues();
-		knobAngleField.value = values.angle.toFixed(2);
-		knobValueField.value = values.val.toFixed(2);
-	}, 500);
-
-
-	// Detect touch capable client
-	if ('ontouchstart' in window) {
-
-		container.addEventListener('touchstart', function(e) {
-			// Don't react if initial down happens on a form element
-			// if (e.touches[0] && e.touches[0].target && e.touches[0].target.tagName.match(/input|textarea|select/i)) {
-			// 	return;
-			// }
-
-			knob.doTouchStart(e.touches, e.timeStamp);
-			e.preventDefault();
-		}, false);
-
-		document.addEventListener('touchmove', function(e) {
-			knob.doTouchMove(e.touches, e.timeStamp, e.scale);
-		}, false);
-
-		document.addEventListener('touchend', function(e) {
-			knob.doTouchEnd(e.timeStamp);
-		}, false);
-
-		document.addEventListener('touchcancel', function(e) {
-			knob.doTouchEnd(e.timeStamp);
-		}, false);
-
-	} else {
-
-		var mousedown = false;
-
-		container.addEventListener('mousedown', function(e) {
-			// Don't react if initial down happens on a form element
-			// if (e.target.tagName.match(/input|textarea|select/i)) {
-			// 	return;
-			// }
-
-			knob.doTouchStart([{
-				pageX: e.pageX,
-				pageY: e.pageY
-			}], e.timeStamp);
-
-			mousedown = true;
-		}, false);
-
-		document.addEventListener('mousemove', function(e) {
-			if (!mousedown) {
-				return;
-			}
-
-			knob.doTouchMove([{
-				pageX: e.pageX,
-				pageY: e.pageY
-			}], e.timeStamp);
-
-			mousedown = true;
-		}, false);
-
-		document.addEventListener('mouseup', function(e) {
-			if (!mousedown) {
-				return;
-			}
-
-			knob.doTouchEnd(e.timeStamp);
-
-			mousedown = false;
-		}, false);
-
-		container.addEventListener('mousewheel', function(e) {
-			knob.doMouseZoom(e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
-		}, false);
-
-	}
-
-
-
-
-
-
-
-
-
-
-
-		</script>
-
-	<!-- Create Scroller, bind UI layer and mouse/touch events -->
-	<!-- <script src="asset/ui.js"></script> -->
+	</script>
 
 
 </body>
