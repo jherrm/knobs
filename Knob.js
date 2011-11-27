@@ -275,6 +275,7 @@ var Knob;
 		*/
 
 		/**
+		 * Set the width and height of the knob.
 		 *
 		 * All values which are falsy (null or zero etc.) are ignored and the old value is kept.
 		 *
@@ -316,9 +317,9 @@ var Knob;
 		},
 
 		/**
-		 * Returns the scroll position and zooming values
+		 * Returns the knob angle and value.
 		 *
-		 * @return {Map} `left` and `top` scroll position and `zoom` level
+		 * @return {Map} `angle` and `value`
 		 */
 		getValues: function() {
 
@@ -351,6 +352,9 @@ var Knob;
 
 		},
 
+		/**
+		 * Touch start handler for knob turning support
+		 */
 		doTouchStart: function(touches, timeStamp) {
 			// console.log('doTouchStart ' + touches + ", " + timeStamp);
 
@@ -363,26 +367,18 @@ var Knob;
 				throw new Error("Invalid timestamp value: " + timeStamp);
 			}
 
-			var self = this;
-
-			var currentTouchLeft, currentTouchTop;
-			var isSingleTouch = touches.length === 1;
-			// if (isSingleTouch) {
-				currentTouchLeft = touches[0].pageX;
-				currentTouchTop = touches[0].pageY;
-			// } else {
-				// Use center point when dealing with two fingers
-				// currentTouchLeft = Math.abs(touches[0].pageX + touches[1].pageX) / 2;
-				// currentTouchTop = Math.abs(touches[0].pageY + touches[1].pageY) / 2;
-			// }
+			var self = this,
+				isSingleTouch = touches.length === 1,
+				currentTouchLeft = touches[0].pageX,
+				currentTouchTop  = touches[0].pageY;
 
 			// Store initial positions
 			self.__initialTouchLeft = currentTouchLeft;
-			self.__initialTouchTop = currentTouchTop;
+			self.__initialTouchTop  = currentTouchTop;
 
 			// Store initial touch positions
 			self.__lastTouchLeft = currentTouchLeft;
-			self.__lastTouchTop = currentTouchTop;
+			self.__lastTouchTop  = currentTouchTop;
 
 			// Store initial move time stamp
 			self.__lastTouchMove = timeStamp;
@@ -408,6 +404,9 @@ var Knob;
 			self.__positions = [];
 		},
 
+		/**
+		 * Touch move handler for knob turning support
+		 */
 		doTouchMove: function(touches, timeStamp, scale) {
 			// console.log('doTouchMove ' + touches + ", " + timeStamp + ", " + scale);
 
@@ -427,19 +426,9 @@ var Knob;
 				return;
 			}
 
-			var currentTouchLeft,
-				currentTouchTop;
-
-			// Compute move based around of center of fingers
-			// if (touches.length === 2) {
-				// currentTouchLeft = Math.abs(touches[0].pageX + touches[1].pageX) / 2;
-				// currentTouchTop = Math.abs(touches[0].pageY + touches[1].pageY) / 2;
-			// } else {
-				currentTouchLeft = touches[0].pageX;
-				currentTouchTop = touches[0].pageY;
-			// }
-
-			var positions = self.__positions;
+			var currentTouchLeft = touches[0].pageX,
+				currentTouchTop  = touches[0].pageY,
+				positions = self.__positions;
 
 			// Are we already is spinning mode?
 			if (self.__isTurning) {
@@ -449,7 +438,7 @@ var Knob;
 					nCurrentAngle  = normalizeAngle(currentAngle);
 
 				// add normalized angle with previous turns
-				var prevTurns = (self.__getTurnCount() + self.__detectCrossover(nPreviousAngle, nCurrentAngle)),
+				var prevTurns = (self.__getTurnCount(self.__angle) + self.__detectCrossover(nPreviousAngle, nCurrentAngle)),
 					nextAngle = nCurrentAngle + (360 * prevTurns);
 
 				self.__angle = self.__validateAngle(nextAngle);
@@ -459,18 +448,17 @@ var Knob;
 			// Otherwise figure out whether we are switching into dragging mode now.
 			} else {
 
-				var minimumTrackingForChange = 3;
-				var minimumTrackingForSpin = 10;
-
-				var distanceX = Math.abs(currentTouchLeft - self.__initialTouchLeft);
-				var distanceY = Math.abs(currentTouchTop - self.__initialTouchTop);
+				var minimumTrackingForChange = 3,
+					minimumTrackingForSpin = 10,
+					distanceX = Math.abs(currentTouchLeft - self.__initialTouchLeft),
+					distanceY = Math.abs(currentTouchTop  - self.__initialTouchTop);
 
 				self.__slideXDetected = self.options.gestureSlideXEnabled && distanceX >= minimumTrackingForChange;
 				self.__slideYDetected = self.options.gestureSlideYEnabled && distanceY >= minimumTrackingForChange;
 				self.__spinDetected   = self.options.gestureSpinEnabled && self.__slideXDetected && self.__slideYDetected;
 
 				self.__isTurning = (self.__slideXDetected || self.__slideYDetected) && (distanceX >= minimumTrackingForSpin || distanceY >= minimumTrackingForSpin);
-				console.log("disx, disy" + distanceX + " " + distanceY)
+				// console.log("disx, disy" + distanceX + " " + distanceY)
 			}
 
 			// Keep list from growing infinitely (holding min 10, max 20 measure points)
@@ -487,6 +475,9 @@ var Knob;
 			self.__lastTouchMove = timeStamp;
 		},
 
+		/**
+		 * Touch end handler for knob turning support
+		 */
 		doTouchEnd: function(timeStamp) {
 			// console.log('doTouchEnd ' + timeStamp);
 
@@ -510,7 +501,6 @@ var Knob;
 
 			// Fully cleanup list
 			self.__positions.length = 0;
-
 		},
 
 
@@ -521,6 +511,11 @@ var Knob;
 		---------------------------------------------------------------------------
 		*/
 
+		/**
+		 * Returns an angle within the angleStart angleEnd constraints applied.
+		 *
+		 * @param angle {Number} Angle to validate
+		 */
 		__validateAngle: function(angle) {
 			var self = this;
 
@@ -566,13 +561,13 @@ var Knob;
 		},
 
 		/**
-		 * Applies the values to the content element
+		 * Applies the values to the callback function.
 		 *
 		 */
 		__publish: function() {
 			var self = this,
-				indicator = self.__getIndicator(),
-				spriteOffset = self.__getSpriteOffset();
+				indicator = self.__getIndicator(self.__angle),
+				spriteOffset = self.__getSpriteOffset(self.__angle);
 
 			// Push values out
 			if (self.__callback) {
@@ -584,62 +579,72 @@ var Knob;
 					spriteOffset: spriteOffset
 				});
 			}
-
 		},
 
-		__getIndicator: function() {
+		/**
+		 * Returns the indicator position and rotation information.
+		 *
+		 * @param angle {Number} angle
+		 *
+		 * @return {Map} `x` and `y` position and `angle`
+		 */
+		__getIndicator: function(angle) {
 
 			var self = this,
 				indicator = {};
 
 			if(self.options.indicatorAutoPosition) {
-				var indicatorPos = self.__getIndicatorPosition(self.__angle);
-				indicator.x = indicatorPos.x;
-				indicator.y = indicatorPos.y;
+				var rads = toRadians(angle);
+				// Subtract Y component because of canvas's inverted Y coordinate compared to output of sin.
+				indicator.x = self.__centerPageX - self.__clientLeft + self.options.indicatorRadius * Math.cos(rads),
+				indicator.y = self.__centerPageY - self.__clientTop  - self.options.indicatorRadius * Math.sin(rads);
 			}
 
 			if(self.options.indicatorAutoRotate) {
-				indicator.angle = self.__angle + self.options.indicatorStartAngle;
+				indicator.angle = angle + self.options.indicatorStartAngle;
 			}
 
 			return indicator;
 		},
 
-		__getIndicatorPosition: function(angle) {
-			var self = this,
-				rads = toRadians(angle);
-
-			// Subtract Y component because of canvas's inverted Y coordinate compared to output of sin.
-			return {
-				x: self.__centerPageX - self.__clientLeft + self.options.indicatorRadius * Math.cos(rads),
-				y: self.__centerPageY - self.__clientTop  - self.options.indicatorRadius * Math.sin(rads)
-			}
-
-		},
-
-		__getSpriteOffset: function() {
+		/**
+		 * Returns the offset for the image within the sprite.
+		 *
+		 * @param angle {Number} angle
+		 *
+		 * @return {Integer} offset of image within sprite
+		 */
+		__getSpriteOffset: function(angle) {
 
 			var self = this,
-				spriteOffset;
+				offset;
 
 			// If there are multiple images (using sprites), figure out which image to show.
 			if(self.options.spriteCount > 1) {
 
-				var spriteDegrees = self.options.spriteDirection == 'cw' ? -self.__angle : self.__angle;
+				var spriteAngle = self.options.spriteDirection == 'cw' ? -angle : angle;
 
 				// Align the background image for sprites
-				spriteDegrees += self.options.spriteStartAngle;
-				var imageIndex = (Math.floor( spriteDegrees / self.options.spriteSeparationAngle) % self.options.spriteCount);
+				spriteAngle += self.options.spriteStartAngle;
+				var imageIndex = (Math.floor(spriteAngle / self.options.spriteSeparationAngle) % self.options.spriteCount);
 				if(imageIndex > 0) {
 					imageIndex -= self.options.spriteCount;
 				}
 
-				spriteOffset = (self.options.spriteSeparationGap * imageIndex-1) + (self.options.imageWidth * imageIndex);
+				offset = (self.options.spriteSeparationGap * imageIndex-1) + (self.options.imageWidth * imageIndex);
 			}
 
-			return spriteOffset;
+			return offset;
 		},
 
+		/**
+		 * Return the angle based on the detected gesture.
+		 *
+		 * @param currentTouchLeft {Number} pageX of the current touch
+		 * @param currentTouchTop  {Number} pageY of the current touch
+		 *
+		 * @return {Number} angle
+		 */
 		__getAngleFromGesture: function(currentTouchLeft, currentTouchTop) {
 
 			var self = this,
@@ -670,27 +675,49 @@ var Knob;
 			return angle;
 		},
 
-		__getTurnCount: function() {
+		/**
+		 * Get the number of turns from the angle.
+		 *  360 to  720 =  1
+		 *   0  to  359 =  0
+		 *   0  to -359 = -1
+		 * -360 to -720 = -2
+		 *
+		 * @param angle {Number}
+		 *
+		 * @return {Integer} number of full turns
+		 */
+		__getTurnCount: function(angle) {
 
 			var self = this,
 				turnAmount = 0,
-				nAngle = normalizeAngle(self.__angle);
+				nAngle = normalizeAngle(angle);
+
 
 			// Because 0-360 is the zeroeth turn, any negative angle is 1 turn behind positive angles.
 			// Also, when self.__angle % 360 = 0 and self.__angle != 0, we need to change the number of
 			// turns depending on the sign o
-			if((self.__angle < 0 && nAngle != 0) ||
-			   (self.__angle > 0 && nAngle == 0)) {
+			if((angle < 0 && nAngle != 0) ||
+			   (angle > 0 && nAngle == 0)) {
 				turnAmount--;
 			}
 
 			// Get the total number of full turns in degrees
 			// ~~ forces integer division
-			turnAmount = (~~(self.__angle/360) + turnAmount);
+			turnAmount = (~~(angle/360) + turnAmount);
 
 			return turnAmount;
 		},
 
+		/**
+		 * Detect if the angle has crossed over the 0/360 boundary.
+		 *
+		 * @param nPreviousAngle {Number} normalized previous angle
+		 * @param nCurrentAngle  {Number} normalized current angle
+		 *
+		 * @return {Integer} 1 if crossover from 360 to 0,
+		 *					-1 if crossover from 0 to 360,
+		 *					 0 if no crossover.
+		 */
 		__detectCrossover: function(nPreviousAngle, nCurrentAngle) {
 			// If the last angle was close to one side of the discontinuity and
 			// the other angle was close to the other side of the discontinuity,
@@ -709,11 +736,14 @@ var Knob;
 			return 0;
 		},
 
+		/**
+		 * Update the page based center of the knob.
+		 */
 		__updateCenterLocation: function() {
 			var self = this;
 
 			// Get the center of knob to base interactions from
-			self.__centerPageX = self.__clientLeft + self.__clientWidth/2  + self.options.centerOffsetX;
+			self.__centerPageX = self.__clientLeft + self.__clientWidth/2 + self.options.centerOffsetX;
 			self.__centerPageY = self.__clientTop + self.__clientHeight/2 + self.options.centerOffsetY;
 		}
 	}
