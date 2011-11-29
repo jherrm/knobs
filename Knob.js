@@ -112,6 +112,10 @@ var Knob;
 			this.options[key] = options[key];
 		}
 
+		if(this.options.valueMin > this.options.valueMax) {
+			throw new Error("valueMin must be less than valueMax");
+		}
+
 	};
 
 	/*
@@ -119,6 +123,24 @@ var Knob;
 		PRIVATE FUNCTIONS
 	---------------------------------------------------------------------------
 	*/
+
+	// Thanks to http://www.trembl.org/codec/737/
+	function map(value, istart, istop, ostart, ostop) {
+		return ostart + (ostop - ostart) * ((value - istart)/(istop - istart));
+	}
+
+	function constrain(value, low, high) {
+		if(low > high) {
+			var tmp = low;
+			low = high;
+			high = tmp;
+		}
+		return (value < low) ? low : ((value > high) ? high : value);
+	};
+
+	function isReal(value) {
+		return (value != Number.NEGATIVE_INFINITY && value != Number.POSITIVE_INFINITY);
+	}
 
 	/**
 	 * @param degrees {Number} Angle in degrees
@@ -137,6 +159,25 @@ var Knob;
 	function toDegrees(radians) {
 		return radians*(180/Math.PI);
 	};
+
+	function angleDistance(angle1, angle2) {
+		var d = Math.abs(angle1 - angle2) % 360;
+
+		return d > 180 ? 360 - d : d;
+	}
+
+	function isAngleIncreasing(prevAngle, nextAngle) {
+		var lowerBound = 30,
+			upperBound = 360 - lowerBound;
+
+		if(prevAngle < lowerBound && nextAngle > upperBound) {
+			return false;
+		} else if(prevAngle > upperBound && nextAngle < lowerBound) {
+			return true;
+		} else {
+			return prevAngle < nextAngle;
+		}
+	}
 
 	/**
 	 * Normalize the angle to 0 - 360.
@@ -434,14 +475,19 @@ var Knob;
 			if (self.__isTurning) {
 
 				var currentAngle = self.__getAngleFromGesture(currentTouchLeft, currentTouchTop),
-					nPreviousAngle = normalizeAngle(self.__angle),
-					nCurrentAngle  = normalizeAngle(currentAngle);
+					prevAngle = self.__angle,
+					nPreviousAngle = normalizeAngle(prevAngle),
+					nCurrentAngle  = normalizeAngle(currentAngle),
+					diff = angleDistance(nPreviousAngle, nCurrentAngle);
 
-				// add normalized angle with previous turns
-				var prevTurns = (self.__getTurnCount(self.__angle) + self.__detectCrossover(nPreviousAngle, nCurrentAngle)),
-					nextAngle = nCurrentAngle + (360 * prevTurns);
 
-				self.__angle = self.__validateAngle(nextAngle);
+				diff = isAngleIncreasing(nPreviousAngle, nCurrentAngle) ? diff : -diff;
+				var nextAngle = self.__validateAngle(self.__angle + diff);
+
+				self.__angle = nextAngle;
+				self.__value = self.__determineValue(prevAngle, nextAngle);
+
+				// console.log(prevAngle, nextAngle)
 
 				self.__publish();
 
@@ -512,52 +558,47 @@ var Knob;
 		*/
 
 		/**
-		 * Returns an angle within the angleStart angleEnd constraints applied.
+		 * Returns an angle with the angleStart angleEnd constraints applied.
 		 *
 		 * @param angle {Number} Angle to validate
 		 */
 		__validateAngle: function(angle) {
 			var self = this;
 
-			// Hold angleStart and angleEnd constraints
-			if(self.options.angleStart < self.options.angleEnd) {
-				// Only allow numbers > angleStart and < than angleEnd
-				angle = Math.min(Math.max(angle, self.options.angleStart), self.options.angleEnd);
-			}
-			else {
-				// Only allow numbers < angleStart and > than angleEnd
-				// angle = Math.max(Math.min(angle, self.options.angleStart), self.options.angleEnd);
-				angle = Math.min(Math.max(angle, self.options.angleEnd), self.options.angleStart);
-			}
-
-			// if previous angle is equal to angleStart or angleEnd, or if the prev/next crosses over the angleStart or angleEnd,
-			// even if the next angle is valid, check to see if it was arrived at through an invalid path
-			// For instance, if angleStart = 0 and angleEnd = 360, a prevAngle of 1 shouldn't be able to jump to 355.
-			// Likewise, if angleStart = 180 and angleEnd = 540, a prevAngle of 169 shouldn't be able to jump to 530.
-
-			// Look for very large jumps in the difference between the previous and current angle.
-			var diff = self.__angle - angle;
-			// Two lines below calculate absolute distance between two angles (e.g. 350° to 15° = 25°)
-			// var d = Math.abs(self.__angle - angle) % 360;
-			// var diff = d > 180 ? 360 - d : d;
-			var cutoff = 225 // 225 = 360 * 0.625
-			if(Math.abs(diff) >= cutoff) {
-				// set the next angle to the closest boundary
-				angle = Math.abs(self.__angle - self.options.angleStart) < Math.abs(self.__angle - self.options.angleEnd) ? self.options.angleStart : self.options.angleEnd;
-				if(angle == Math.POSITIVE_INFINITY || angle == Math.NEGATIVE_INFINITY) {
-					angle = self.__angle;
-				}
-			}
+			angle = constrain(angle, self.options.angleStart, self.options.angleEnd);
 
 			// if prevAngle was at a boundary, only allow a legal natural move to change the existing angle.
-			if(self.__angle == self.options.angleStart && angle == self.options.angleEnd) {
+			var threshold = 30;
+			if(self.__angle == self.options.angleStart && Math.abs(angle-self.__angle) > threshold ) {
 				angle = self.options.angleStart;
 			}
-			if(self.__angle == self.options.angleEnd && angle == self.options.angleStart) {
+			if(self.__angle == self.options.angleEnd && Math.abs(angle-self.__angle) > threshold) {
 				angle = self.options.angleEnd;
 			}
 
 			return angle;
+		},
+
+		/**
+		 * Returns a value with the valueMin valueMax constraints applied.
+		 *
+		 * @param value {Number} Value to validate
+		 */
+		__determineValue: function(prevAngle, nextAngle) {
+			var self = this;
+
+
+			// If angle and value bounds are real, map angle directly to value
+			if (isReal(self.options.angleStart) &&
+				isReal(self.options.angleEnd) &&
+				self.options.valueMin != Number.NEGATIVE_INFINITY &&
+				self.options.valueMax != Number.POSITIVE_INFINITY) {
+				return map(nextAngle, self.options.angleStart, self.options.angleEnd, self.options.valueMin, self.options.valueMax);
+			}
+
+			var value = self.__value + (nextAngle - prevAngle) * self.options.angleValueRatio;
+
+			return constrain(value, self.options.valueMin, self.options.valueMax);
 		},
 
 		/**
@@ -656,85 +697,22 @@ var Knob;
 				var y = self.__centerPageY - currentTouchTop,
 					x = currentTouchLeft - self.__centerPageX;
 				angle = toDegrees(Math.atan2(-y,-x)+Math.PI);
-				console.log("spinning");
 			}
 			else {
 				if (self.__slideXDetected) {
 					var change = (currentTouchLeft - self.__lastTouchLeft) * self.options.angleSlideRatio;
 					angle += (self.__initialTouchLocationY == "top") ? -change : change;
-					console.log("sliding left/right");
 				}
 
 				if (self.__slideYDetected) {
 					var change = (currentTouchTop - self.__lastTouchTop) * self.options.angleSlideRatio;
 					angle += (self.__initialTouchLocationX == "right") ? -change : change;
-					console.log("sliding up/down");
 				}
 			}
 
 			return angle;
 		},
 
-		/**
-		 * Get the number of turns from the angle.
-		 *  360 to  720 =  1
-		 *   0  to  359 =  0
-		 *   0  to -359 = -1
-		 * -360 to -720 = -2
-		 *
-		 * @param angle {Number}
-		 *
-		 * @return {Integer} number of full turns
-		 */
-		__getTurnCount: function(angle) {
-
-			var self = this,
-				turnAmount = 0,
-				nAngle = normalizeAngle(angle);
-
-
-			// Because 0-360 is the zeroeth turn, any negative angle is 1 turn behind positive angles.
-			// Also, when self.__angle % 360 = 0 and self.__angle != 0, we need to change the number of
-			// turns depending on the sign o
-			if((angle < 0 && nAngle != 0) ||
-			   (angle > 0 && nAngle == 0)) {
-				turnAmount--;
-			}
-
-			// Get the total number of full turns in degrees
-			// ~~ forces integer division
-			turnAmount = (~~(angle/360) + turnAmount);
-
-			return turnAmount;
-		},
-
-		/**
-		 * Detect if the angle has crossed over the 0/360 boundary.
-		 *
-		 * @param nPreviousAngle {Number} normalized previous angle
-		 * @param nCurrentAngle  {Number} normalized current angle
-		 *
-		 * @return {Integer} 1 if crossover from 360 to 0,
-		 *					-1 if crossover from 0 to 360,
-		 *					 0 if no crossover.
-		 */
-		__detectCrossover: function(nPreviousAngle, nCurrentAngle) {
-			// If the last angle was close to one side of the discontinuity and
-			// the other angle was close to the other side of the discontinuity,
-			// assume the user has crossed the discontinuity.
-			var lowerBound = 30,
-				upperBound = 360 - lowerBound;
-			if(nPreviousAngle < lowerBound && nCurrentAngle > upperBound) {
-				return -1;
-				console.log("FORD THE RIVER 0 -> 360")
-			}
-			else if(nPreviousAngle > upperBound && nCurrentAngle < lowerBound) {
-				return 1;
-				console.log("FORD THE RIVER 360 -> 0")
-			}
-
-			return 0;
-		},
 
 		/**
 		 * Update the page based center of the knob.
