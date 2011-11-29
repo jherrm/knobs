@@ -41,9 +41,9 @@ var Knob;
 
 			/**
 			 *	How much the value increases per degree turned.
-			 *  Automatically set if both valueMax/valueMin aren't +/- infinity.
+			 *  Only used if both valueMax/valueMin aren't +/- infinity.
 			 **/
-			angleValueRatio: 1,
+			angleValueRatio: 0.2,
 
 			/** How much the angle increases per pixel moved during the slide */
 			angleSlideRatio: 1,
@@ -357,6 +357,18 @@ var Knob;
 			self.__publish();
 		},
 
+		// turnToValue: function(value) {
+		// },
+
+		// turnToAngle: function(angle) {
+		// },
+
+		// turnByValue: function(value) {
+		// },
+
+		// turnByAngle: function(angle) {
+		// },
+
 		/**
 		 * Returns the knob angle and value.
 		 *
@@ -504,6 +516,14 @@ var Knob;
 				self.__spinDetected   = self.options.gestureSpinEnabled && self.__slideXDetected && self.__slideYDetected;
 
 				self.__isTurning = (self.__slideXDetected || self.__slideYDetected) && (distanceX >= minimumTrackingForSpin || distanceY >= minimumTrackingForSpin);
+
+				if(self.__isTurning) {
+					if(self.__spinDetected)   { console.log("spinning") }
+					else {
+						if(self.__slideXDetected) { console.log("sliding left/right") }
+						if(self.__slideYDetected) { console.log("sliding up/down") }
+					}
+				}
 				// console.log("disx, disy" + distanceX + " " + distanceY)
 			}
 
