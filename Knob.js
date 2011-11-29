@@ -124,11 +124,33 @@ var Knob;
 	---------------------------------------------------------------------------
 	*/
 
-	// Thanks to http://www.trembl.org/codec/737/
+	/**
+	 * Convenience function to map a variable from one coordinate space
+	 * to another.
+	 * Thanks to http://www.trembl.org/codec/737/
+	 *
+	 * @param value {Number} value
+	 * @param istart {Number} Lower boundary of first coordinate space
+	 * @param istop {Number} Higher boundary of first coordinate space
+	 * @param ostart {Number} Lower boundary of second coordinate space
+	 * @param ostop {Number} Higher boundary of second coordinate space
+	 *
+	 * @return {Number} The value mapped from the first coordinate space
+	 * to the latter.
+	 */
 	function map(value, istart, istop, ostart, ostop) {
 		return ostart + (ostop - ostart) * ((value - istart)/(istop - istart));
 	}
 
+	/**
+	 * Convenience function to constrain a value between two numbers.
+	 *
+	 * @param value {Number} value
+	 * @param low {Number} Lower number boundary
+	 * @param high {Number} Higher number boundary
+	 *
+	 * @return {Number} A number from low to high.
+	 */
 	function constrain(value, low, high) {
 		if(low > high) {
 			var tmp = low;
@@ -138,11 +160,20 @@ var Knob;
 		return (value < low) ? low : ((value > high) ? high : value);
 	};
 
+	/**
+	 * Convenience function to see if a number isn't +/- Infinity
+	 *
+	 * @param value {Number} value
+	 *
+	 * @return {Boolean} true if value isn't +/- Infinity
+	 */
 	function isReal(value) {
 		return (value != Number.NEGATIVE_INFINITY && value != Number.POSITIVE_INFINITY);
 	}
 
 	/**
+	 * Convert degrees to radians.
+	 *
 	 * @param degrees {Number} Angle in degrees
 	 *
 	 * @return {Number} Angle in radians
@@ -152,6 +183,8 @@ var Knob;
 	};
 
 	/**
+	 * Convert radians to degrees.
+	 *
 	 * @param radians {Number} Angle in radians
 	 *
 	 * @return {Number} Angle in degrees
@@ -160,12 +193,31 @@ var Knob;
 		return radians*(180/Math.PI);
 	};
 
+	/**
+	 * Get the smallest distance between two angles.
+	 *
+	 * @param angle1 {Number} First angle in degrees
+	 * @param angle2 {Number} Second angle in degrees
+	 *
+	 * @return {Number} Angle distance in degrees
+	 **/
 	function angleDistance(angle1, angle2) {
 		var d = Math.abs(angle1 - angle2) % 360;
 
 		return d > 180 ? 360 - d : d;
 	}
 
+	/**
+	 * Returns true if angle is increasing.
+	 * An angle is increasing if going from a lower
+	 * number to a higher number or if the angle
+	 * goes from one extreme to another (e.g. 0 -> 360)
+	 *
+	 * @param prevAngle {Number} Previous angle in degrees
+	 * @param nextAngle {Number} Next angle in degrees
+	 *
+	 * @return {Boolean} True if the angle is increasing
+	 **/
 	function isAngleIncreasing(prevAngle, nextAngle) {
 		var lowerBound = 30,
 			upperBound = 360 - lowerBound;
@@ -616,6 +668,7 @@ var Knob;
 				return map(nextAngle, self.options.angleStart, self.options.angleEnd, self.options.valueMin, self.options.valueMax);
 			}
 
+			// If bounds aren't real, just increase/decrease value based on the change in angle.
 			var value = self.__value + (nextAngle - prevAngle) * self.options.angleValueRatio;
 
 			return constrain(value, self.options.valueMin, self.options.valueMax);
@@ -623,7 +676,6 @@ var Knob;
 
 		/**
 		 * Applies the values to the callback function.
-		 *
 		 */
 		__publish: function() {
 			var self = this,
