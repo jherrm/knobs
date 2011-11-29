@@ -27,21 +27,23 @@ var Knob;
 			/** During spin gestures, point the indicator to the finger as it spins */
 			// followFinger: true,
 
-			/** Angle where the minimum value is if knob has bounds */
+			/** Setting this will prevent the knob from turning below this angle */
 			angleStart: Number.NEGATIVE_INFINITY,
 
-			/** Angle where the maximum value is if knob has bounds */
+			/** Setting this will prevent the knob from turning past this angle */
 			angleEnd: Number.POSITIVE_INFINITY,
 
-			/** Maximum value the knob can go up to */
+			/** The minimum value the knob can go down to */
 			valueMin: Number.NEGATIVE_INFINITY,
 
-			/** Maximum value the knob can go up to */
+			/** The maximum value the knob can go up to */
 			valueMax: Number.POSITIVE_INFINITY,
+			// valueMax: 11, // This one goes to eleven.
 
 			/**
-			 *	How much the value increases per degree turned.
-			 *  Only used if both valueMax/valueMin aren't +/- infinity.
+			 * How much the value increases per degree turned.
+			 * Only used if both angleStart/End and valueMax/valueMin
+			 * are NOT +/- Infinity.
 			 **/
 			angleValueRatio: 0.2,
 
@@ -211,7 +213,7 @@ var Knob;
 	 * Returns true if angle is increasing.
 	 * An angle is increasing if going from a lower
 	 * number to a higher number or if the angle
-	 * goes from one extreme to another (e.g. 0 -> 360)
+	 * crosses bottom to top (e.g. 358 -> 2).
 	 *
 	 * @param prevAngle {Number} Previous angle in degrees
 	 * @param nextAngle {Number} Next angle in degrees
@@ -535,7 +537,7 @@ var Knob;
 				currentTouchTop  = touches[0].pageY,
 				positions = self.__positions;
 
-			// Are we already is spinning mode?
+			// Are we already in turning mode?
 			if (self.__isTurning) {
 
 				var currentAngle = self.__getAngleFromGesture(currentTouchLeft, currentTouchTop),
@@ -555,7 +557,7 @@ var Knob;
 
 				self.__publish();
 
-			// Otherwise figure out whether we are switching into dragging mode now.
+			// Otherwise figure out whether we are switching into turning mode now.
 			} else {
 
 				var minimumTrackingForChange = 3,
@@ -614,7 +616,7 @@ var Knob;
 			// Not touching anymore (when two finger hit the screen there are two touch end events)
 			self.__isTracking = false;
 
-			// Reset dragging flag
+			// Reset turning flag
 			self.__isTurning = false;
 
 			// Fully cleanup list
