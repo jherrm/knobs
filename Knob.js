@@ -715,7 +715,7 @@ var Knob;
 			}
 
 			if(self.options.indicatorAutoRotate) {
-				indicator.angle = angle + self.options.indicatorStartAngle;
+				indicator.angle = angle - self.options.indicatorStartAngle;
 			}
 
 			return indicator;
