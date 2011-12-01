@@ -446,16 +446,16 @@ var Knob;
 		*/
 
 		/**
-		 *
+		 * Mouse wheel/scroll handler for knob turning support
 		 */
-		doMouseZoom: function(wheelDelta, timeStamp, pageX, pageY) {
-			console.log('doMouseZoom ' + wheelDelta + ", " + timeStamp + ", " + pageX + ", " + pageY);
+		doMouseScroll: function(wheelDelta, timeStamp, pageX, pageY) {
+			var self = this;
 
-			// var self = this;
-			// var change = wheelDelta > 0 ? 0.97 : 1.03;
+			// Figure out where the touch was relative to the center
+			var change = constrain(wheelDelta, -20, 20);
+			change = (pageX >= self.__centerPageX) ? -change : change;
 
-			// return self.zoomTo(self.__zoomLevel * change, false, pageX - self.__clientLeft, pageY - self.__clientTop);
-
+			self.__validateAndPublishAngle(self.__angle + change);
 		},
 
 		/**
@@ -539,22 +539,7 @@ var Knob;
 			// Are we already in turning mode?
 			if (self.__isTurning) {
 
-				var currentAngle = self.__getAngleFromGesture(currentTouchLeft, currentTouchTop),
-					prevAngle = self.__angle,
-					nPreviousAngle = normalizeAngle(prevAngle),
-					nCurrentAngle  = normalizeAngle(currentAngle),
-					diff = angleDistance(nPreviousAngle, nCurrentAngle);
-
-
-				diff = isAngleIncreasing(nPreviousAngle, nCurrentAngle) ? diff : -diff;
-				var nextAngle = self.__validateAngle(self.__angle + diff);
-
-				self.__angle = nextAngle;
-				self.__value = self.__determineValue(prevAngle, nextAngle);
-
-				// console.log(prevAngle, nextAngle)
-
-				self.__publish();
+				self.__validateAndPublishAngle(self.__getAngleFromGesture(currentTouchLeft, currentTouchTop));
 
 			// Otherwise figure out whether we are switching into turning mode now.
 			} else {
@@ -629,6 +614,25 @@ var Knob;
 			PRIVATE API
 		---------------------------------------------------------------------------
 		*/
+
+		__validateAndPublishAngle: function(angle) {
+			var self = this,
+				prevAngle = self.__angle,
+				nPreviousAngle = normalizeAngle(prevAngle),
+				nCurrentAngle  = normalizeAngle(angle),
+				diff = angleDistance(nPreviousAngle, nCurrentAngle);
+
+
+			diff = isAngleIncreasing(nPreviousAngle, nCurrentAngle) ? diff : -diff;
+			var nextAngle = self.__validateAngle(self.__angle + diff);
+
+			self.__angle = nextAngle;
+			self.__value = self.__determineValue(prevAngle, nextAngle);
+
+			// console.log(prevAngle, nextAngle)
+
+			self.__publish();
+		},
 
 		/**
 		 * Returns an angle with the angleStart angleEnd constraints applied.
