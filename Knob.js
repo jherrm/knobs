@@ -97,7 +97,7 @@ var Knob;
 			spriteCount: 1,
 
 			/** Which way the images turn when viewing left to right in the sprite */
-			spriteDirection: 'cw', /* cw = clockwise, ccw = counter-clockwise */
+			spriteDirection: 'ccw', /* cw = clockwise, ccw = counter-clockwise */
 
 			/** Angle of the 1st sprite image relative to the default orientation */
 			spriteStartAngle: 0,
