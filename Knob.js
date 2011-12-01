@@ -10,7 +10,6 @@ var Knob;
 	 **/
 
 	Knob = function(callback, options) {
-
 		this.__callback = callback;
 
 		this.options = {
@@ -727,7 +726,7 @@ var Knob;
 		 *
 		 * @param angle {Number} angle
 		 *
-		 * @return {Integer} offset of image within sprite
+		 * @return {Map} `x`, `y` offset of image within sprite
 		 */
 		__getSpriteOffset: function(angle) {
 
@@ -737,19 +736,21 @@ var Knob;
 			// If there are multiple images (using sprites), figure out which image to show.
 			if(self.options.spriteCount > 1) {
 
-				var spriteAngle = self.options.spriteDirection == 'cw' ? -angle : angle;
-
+				var spriteAngle = self.options.spriteDirection === 'ccw' ? angle : -angle;
 				// Align the background image for sprites
 				spriteAngle += self.options.spriteStartAngle;
 				var imageIndex = (Math.floor(spriteAngle / self.options.spriteSeparationAngle) % self.options.spriteCount);
-				if(imageIndex > 0) {
-					imageIndex -= self.options.spriteCount;
+				if(imageIndex < 0) {
+					imageIndex += self.options.spriteCount;
 				}
 
-				offset = (self.options.spriteSeparationGap * imageIndex-1) + (self.options.imageWidth * imageIndex);
+				offset = (self.options.spriteSeparationGap * (imageIndex+1)) + (self.options.spriteWidth * imageIndex);
 			}
 
-			return offset;
+			return {
+				x: offset,
+				y: self.options.spriteSeparationGap
+			};
 		},
 
 		/**
@@ -775,12 +776,12 @@ var Knob;
 			else {
 				if (self.__slideXDetected) {
 					var change = (currentTouchLeft - self.__lastTouchLeft) * self.options.angleSlideRatio;
-					angle += (self.__initialTouchLocationY == "top") ? -change : change;
+					angle += (self.__initialTouchLocationY === "top") ? -change : change;
 				}
 
 				if (self.__slideYDetected) {
 					var change = (currentTouchTop - self.__lastTouchTop) * self.options.angleSlideRatio;
-					angle += (self.__initialTouchLocationX == "right") ? -change : change;
+					angle += (self.__initialTouchLocationX === "right") ? -change : change;
 				}
 			}
 
