@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<title>Knob - Canvas</title>
+	<title>Knob - CSS</title>
 	<link rel="stylesheet" href="asset/ui.css" />
 	<style type="text/css">
 		label.ui-knob { display: block; }
@@ -33,7 +33,7 @@
 			height: 10px;
 			margin: 0;
 			padding: 0;
-			border-radius:8px;
+			border-radius: 8px;
 		}
 
 		#cssRotateIndicator {
@@ -45,6 +45,8 @@
 			margin: 0;
 			padding: 0;
 			border-radius:3px;
+			/* Due to a bug in the anti-liasing*/
+			-webkit-backface-visibility: hidden;
 
 			/* center the div */
 			top:50%;
@@ -62,6 +64,8 @@
 			margin: 0;
 			padding: 0;
 			border-radius:3px;
+			/* Due to a bug in the anti-liasing*/
+			-webkit-backface-visibility: hidden;
 		}
 
 		div.ui-knob-handle .ui-btn-inner { padding-left: 0; padding-right: 0; }
