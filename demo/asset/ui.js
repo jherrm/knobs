@@ -68,6 +68,11 @@ function setupKnob(knob, container) {
 			}], e.timeStamp);
 
 			mousedown = true;
+
+			// Prevent selection on drag
+			if (e.preventDefault)
+				e.preventDefault();
+			e.returnValue = false;
 		}, false);
 
 		document.addEventListener('mouseup', function(e) {
