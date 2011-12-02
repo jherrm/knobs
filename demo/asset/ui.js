@@ -80,8 +80,23 @@ function setupKnob(knob, container) {
 			mousedown = false;
 		}, false);
 
+		// Handle scroll for webkit
 		container.addEventListener('mousewheel', function(e) {
-			knob.doMouseZoom(e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
+			knob.doMouseScroll(e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
+			// Prevent page scroll
+			if (e.preventDefault)
+				e.preventDefault();
+			e.returnValue = false;
+		}, false);
+
+		// Handle scroll for gecko
+		// container.addEventListener('MozMousePixelScroll', function(e) {
+		container.addEventListener('DOMMouseScroll', function(e) {
+			knob.doMouseScroll(-4*e.detail, e.timeStamp, e.pageX, e.pageY);
+			// Prevent page scroll
+			if (e.preventDefault)
+				e.preventDefault();
+			e.returnValue = false;
 		}, false);
 
 	}
