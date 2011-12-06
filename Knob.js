@@ -44,7 +44,7 @@ var Knob;
 			 * Only used if both angleStart/End and valueMax/valueMin
 			 * are NOT +/- Infinity.
 			 **/
-			angleValueRatio: 0.2,
+			angleValueRatio: 0.1,
 
 			/** How much the angle increases per pixel moved during the slide */
 			angleSlideRatio: 1,
@@ -717,9 +717,17 @@ var Knob;
 				indicator.x = self.__centerPageX - self.__clientLeft + self.options.indicatorRadius * Math.cos(rads),
 				indicator.y = self.__centerPageY - self.__clientTop  - self.options.indicatorRadius * Math.sin(rads);
 			}
+			else {
+				// If not positioning, set x & y to the center of the knob
+				indicator.x = self.__centerPageX - self.__clientLeft,
+				indicator.y = self.__centerPageY - self.__clientTop;
+			}
 
 			if(self.options.indicatorAutoRotate) {
 				indicator.angle = angle - self.options.indicatorStartAngle;
+			}
+			else {
+				indicator.angle = 0;
 			}
 
 			return indicator;
