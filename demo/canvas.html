@@ -47,21 +47,68 @@
 		context.fill();
 	}
 
+	var drawKnobBody = function(context, knob) {
+		var knobRadius = 25;
+
+		//draw the knob background
+		context.fillStyle = "#008";
+		fillCircle(context, knob.__clientWidth/2, knob.__clientHeight/2, knobRadius);
+	};
+
+	var drawPositionIndicator = function(context, knob, indicator) {
+		var indicatorRadius = 4;
+		context.fillStyle = "#efefef";
+		fillCircle(context, indicator.x, indicator.y, indicatorRadius);
+	};
+
+	var drawRotateIndicator = function(context, knob, indicator) {
+		var knobRadius = 25,
+			indicatorW = knobRadius*2,
+			indicatorH = 5;
+
+		context.save();
+
+		context.translate(knob.__clientWidth/2, knob.__clientHeight/2);
+		context.rotate(-indicator.angle*(Math.PI/180));
+
+		//draw the knob indicator
+		context.fillStyle = "#efefef";
+		context.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
+
+		context.restore();
+	};
+
+	var drawPositionRotateIndicator = function(context, knob, indicator) {
+		var knobRadius = 25,
+			indicatorW = 10,
+			indicatorH = 5;
+
+		context.save();
+
+		context.translate(indicator.x, indicator.y);
+		context.rotate(-indicator.angle*(Math.PI/180));
+
+		//draw the knob indicator
+		context.fillStyle = "#efefef";
+		context.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
+
+		context.restore();
+	};
+
+	var drawKnob = function(context, knob, indicator, drawIndicatorFn) {
+		context.clearRect(0, 0, knob.__clientWidth, knob.__clientWidth);
+
+		//draw the knob
+		drawKnobBody(context, knob)
+
+		//draw the indicator
+		drawIndicatorFn(context, knob, indicator)
+	}
+
 	var shapePositionKnobContainer = document.getElementById("shapePositionContainer");
 	var shapePositionKnobContext = document.getElementById("shapePosition").getContext('2d');
 	var shapePositionKnob = new Knob(function(knobData) {
-			var knobRadius = 25,
-				indicatorRadius = 4;
-
-			shapePositionKnobContext.clearRect(0, 0, knobData.knob.__clientWidth, knobData.knob.__clientWidth);
-
-			//draw the knob background
-			shapePositionKnobContext.fillStyle = "#008";
-			fillCircle(shapePositionKnobContext, knobData.knob.__clientWidth/2, knobData.knob.__clientHeight/2, knobRadius);
-
-			//draw the knob indicator
-			shapePositionKnobContext.fillStyle = "#efefef";
-			fillCircle(shapePositionKnobContext, knobData.indicator.x, knobData.indicator.y, indicatorRadius);
+			drawKnob(shapePositionKnobContext, knobData.knob, knobData.indicator, drawPositionIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,
@@ -76,26 +123,7 @@
 	var shapeRotateKnobContainer = document.getElementById("shapeRotateContainer");
 	var shapeRotateKnobContext = document.getElementById("shapeRotate").getContext('2d');
 	var shapeRotateKnob = new Knob(function(knobData) {
-			var knobRadius = 25,
-				indicatorW = knobRadius*2,
-				indicatorH = 5;
-
-			shapeRotateKnobContext.clearRect(0, 0, knobData.knob.__clientWidth, knobData.knob.__clientWidth);
-
-			//draw the knob background
-			shapeRotateKnobContext.fillStyle = "#008";
-			fillCircle(shapeRotateKnobContext, knobData.knob.__clientWidth/2, knobData.knob.__clientHeight/2, knobRadius);
-
-			shapeRotateKnobContext.save();
-
-			shapeRotateKnobContext.translate(knobData.knob.__clientWidth/2, knobData.knob.__clientHeight/2);
-			shapeRotateKnobContext.rotate(-knobData.indicator.angle*(Math.PI/180));
-
-			//draw the knob indicator
-			shapeRotateKnobContext.fillStyle = "#efefef";
-			shapeRotateKnobContext.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
-
-			shapeRotateKnobContext.restore();
+			drawKnob(shapeRotateKnobContext, knobData.knob, knobData.indicator, drawRotateIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,
@@ -109,25 +137,7 @@
 	var shapePositionRotateKnobContainer = document.getElementById("shapePositionRotateContainer");
 	var shapePositionRotateKnobContext = document.getElementById("shapePositionRotate").getContext('2d');
 	var shapePositionRotateKnob = new Knob(function(knobData) {
-			var indicatorW = 10;
-			var indicatorH = 5;
-
-			shapePositionRotateKnobContext.clearRect(0, 0, knobData.knob.__clientWidth, knobData.knob.__clientWidth);
-
-			//draw the knob background
-			shapePositionRotateKnobContext.fillStyle = "#008";
-			fillCircle(shapePositionRotateKnobContext, knobData.knob.__clientWidth/2, knobData.knob.__clientHeight/2, knobData.knob.options.indicatorRadius+indicatorH);
-
-			shapePositionRotateKnobContext.save();
-
-			shapePositionRotateKnobContext.translate(knobData.indicator.x, knobData.indicator.y);
-			shapePositionRotateKnobContext.rotate(-knobData.indicator.angle*(Math.PI/180));
-
-			//draw the knob indicator
-			shapePositionRotateKnobContext.fillStyle = "#efefef";
-			shapePositionRotateKnobContext.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
-
-			shapePositionRotateKnobContext.restore();
+			drawKnob(shapePositionRotateKnobContext, knobData.knob, knobData.indicator, drawPositionRotateIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,
