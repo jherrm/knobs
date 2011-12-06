@@ -9,8 +9,10 @@ function setupKnob(knob, container) {
 
 	setInterval(function() {
 		var values = knob.getValues();
-		knobAngleField.value = values.angle.toFixed(2);
-		knobValueField.value = values.val.toFixed(2);
+		if(knobAngleField)
+			knobAngleField.value = values.angle.toFixed(2);
+		if(knobValueField)
+			knobValueField.value = values.val.toFixed(2);
 	}, 500);
 
 
