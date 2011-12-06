@@ -48,11 +48,6 @@
 			/* Due to a bug in the anti-liasing*/
 			-webkit-backface-visibility: hidden;
 
-			/* center the div */
-			top:50%;
-			left:50%;
-			margin-top:-5px; /* = -(height/2 + border + padding-top) */
-			margin-left:-33px;/* = -(width/2 + border + padding-left) */
 		}
 
 		#cssPositionRotateIndicator {
@@ -141,21 +136,6 @@
 		<div id="cssPositionRotateIndicator" class="ui-btn-down"></div>
 	</div>
 
-	<div id="settings">
-		<div><label for="knobAngle">Angle: </label><input type="text" id="knobAngle" size="5" value="0"/></div>
-		<div><label for="knobValue">Value: </label><input type="text" id="knobValue" size="5" value="0"/></div>
-
-		<div><label for="scrollingX">ScrollingX: </label><input type="checkbox" id="scrollingX" checked/></div>
-		<div><label for="scrollingY">ScrollingY: </label><input type="checkbox" id="scrollingY" checked/></div>
-
-		<div><label for="minZoom">Min Zoom: </label><input type="text" id="minZoom" size="5" value="0.5"/></div>
-		<div><label for="maxZoom">Max Zoom: </label><input type="text" id="maxZoom" size="5" value="3"/></div>
-		<div><label for="zoomLevel">Zoom Level: </label><input type="text" id="zoomLevel" size="5"/></div>
-		<div><button id="zoom">Zoom to Level</button><button id="zoomIn">+</button><button id="zoomOut">-</button></div>
-	</div>
-<!--
--->
-
 
 	<!-- mouse/touch events -->
 	<script src="asset/ui.js"></script>
@@ -164,29 +144,36 @@
 	<script type="text/javascript">
 
 
-	var fillCircle = function(context, x, y, radius) {
-		context.beginPath();
-		context.arc(x, y, radius, 0, Math.PI*2, true);
-		context.closePath();
-		context.fill();
+	var drawKnob = function(context, knob, indicator, drawIndicatorFn, $indicatorElement) {
+		$indicatorElement.css({
+			left: indicator.x - $indicatorElement.outerWidth()/2,
+			top:  indicator.y - $indicatorElement.outerHeight()/2
+		});
+
+		var rotateText = 'rotate('+(-indicator.angle)+'deg)';
+		$indicatorElement.css({
+			'transform': rotateText,
+			'-moz-transform': rotateText,
+			'-o-transform': rotateText,
+			'-webkit-transform': rotateText
+		});
 	}
 
-	var cssPositionKnobContainer = document.getElementById("cssPositionContainer");
-	var cssPositionKnobBody = $(document.getElementById("cssPosition"));
-	var cssPositionKnobIndicator = $(document.getElementById("cssPositionIndicator"));
+	var centerKnob = function($knobBody) {
+		// Calculate margins to center knob in container
+		// Use jquery so we can avoid calculating border/padding in the CSS declaration
+		$knobBody.css({
+			"margin-top": -($knobBody.outerHeight()/2),
+			"margin-left":-($knobBody.outerWidth()/2)
+		});
+	}
 
-	// Calculate margins to center knob in container
-	// Use jquery so we can avoid calculating border/padding in the CSS declaration
-	cssPositionKnobBody.css({
-		"margin-top":-(cssPositionKnobBody.outerHeight()/2),
-		"margin-left":-(cssPositionKnobBody.outerWidth()/2),
-	})
 
-	var cssPositionKnob = new Knob(function(knobData) {
-			cssPositionKnobIndicator.css({
-				left: knobData.indicator.x - cssPositionKnobIndicator.outerWidth()/2,
-				top:  knobData.indicator.y - cssPositionKnobIndicator.outerHeight()/2
-			});
+	var cssPositionKnobContainer = document.getElementById("cssPositionContainer"),
+		cssPositionKnobBody = $(document.getElementById("cssPosition")),
+		cssPositionKnobIndicator = $(document.getElementById("cssPositionIndicator")),
+		cssPositionKnob = new Knob(function(knobData) {
+			drawKnob(cssPositionKnobBody, knobData.knob, knobData.indicator, undefined, cssPositionKnobIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,
@@ -197,25 +184,15 @@
 		indicatorAutoPosition: true
 	});
 
-	var cssRotateKnobContainer = document.getElementById("cssRotateContainer");
-	var cssRotateKnobBody = $(document.getElementById("cssRotate"));
-	var cssRotateKnobIndicator = $(document.getElementById("cssRotateIndicator"));
+	centerKnob(cssPositionKnobBody);
+	setupKnob(cssPositionKnob, cssPositionKnobContainer);
 
-	// Calculate margins to center knob in container
-	// Use jquery so we can avoid calculating border/padding in the CSS declaration
-	cssRotateKnobBody.css({
-		"margin-top":-(cssRotateKnobBody.outerHeight()/2),
-		"margin-left":-(cssRotateKnobBody.outerWidth()/2),
-	})
 
-	var cssRotateKnob = new Knob(function(knobData) {
-			var rotateText = 'rotate('+(-knobData.indicator.angle)+'deg)';
-			cssRotateKnobIndicator.css({
-				'transform': rotateText,
-				'-moz-transform': rotateText,
-				'-o-transform': rotateText,
-				'-webkit-transform': rotateText
-			});
+	var cssRotateKnobContainer = document.getElementById("cssRotateContainer"),
+		cssRotateKnobBody = $(document.getElementById("cssRotate")),
+		cssRotateKnobIndicator = $(document.getElementById("cssRotateIndicator")),
+		cssRotateKnob = new Knob(function(knobData) {
+			drawKnob(cssRotateKnobBody, knobData.knob, knobData.indicator, undefined, cssRotateKnobIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,
@@ -225,29 +202,16 @@
 		indicatorAutoRotate: true
 	});
 
+	centerKnob(cssRotateKnobBody);
+	setupKnob(cssRotateKnob, cssRotateKnobContainer);
 
 
-	var cssPositionRotateKnobContainer = document.getElementById("cssPositionRotateContainer");
-	var cssPositionRotateKnobBody = $(document.getElementById("cssPositionRotate"));
-	var cssPositionRotateKnobIndicator = $(document.getElementById("cssPositionRotateIndicator"));
 
-	// Calculate margins to center knob in container
-	// Use jquery so we can avoid calculating border/padding in the CSS declaration
-	cssPositionRotateKnobBody.css({
-		"margin-top":-(cssPositionRotateKnobBody.outerHeight()/2),
-		"margin-left":-(cssPositionRotateKnobBody.outerWidth()/2),
-	})
-
-	var cssPositionRotateKnob = new Knob(function(knobData) {
-			var rotateText = 'rotate('+(-knobData.indicator.angle)+'deg)';
-			cssPositionRotateKnobIndicator.css({
-				left: knobData.indicator.x - cssPositionRotateKnobIndicator.outerWidth()/2,
-				top:  knobData.indicator.y - cssPositionRotateKnobIndicator.outerHeight()/2,
-				'transform': rotateText,
-				'-moz-transform': rotateText,
-				'-o-transform': rotateText,
-				'-webkit-transform': rotateText
-			});
+	var cssPositionRotateKnobContainer = document.getElementById("cssPositionRotateContainer"),
+		cssPositionRotateKnobBody = $(document.getElementById("cssPositionRotate")),
+		cssPositionRotateKnobIndicator = $(document.getElementById("cssPositionRotateIndicator")),
+		cssPositionRotateKnob = new Knob(function(knobData) {
+			drawKnob(cssPositionRotateKnobBody, knobData.knob, knobData.indicator, undefined, cssPositionRotateKnobIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,
@@ -257,12 +221,12 @@
 		indicatorAutoRotate: true
 	});
 
-
-
-
-	setupKnob(cssPositionKnob, cssPositionKnobContainer);
-	setupKnob(cssRotateKnob, cssRotateKnobContainer);
+	centerKnob(cssPositionRotateKnobBody);
 	setupKnob(cssPositionRotateKnob, cssPositionRotateKnobContainer);
+
+
+
+
 
 	</script>
 

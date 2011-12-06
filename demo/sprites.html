@@ -1,0 +1,171 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Knob - Canvas</title>
+	<link rel="stylesheet" href="asset/ui.css" />
+	<script src="../Knob.js"></script>
+
+</head>
+<body>
+	<div id="spriteContainer" class="container">
+		<canvas id="spriteContent"></canvas>
+	</div>
+	<div id="spritePositionContainer" class="container">
+		<canvas id="spritePositionContent"></canvas>
+	</div>
+	<div id="spriteRotateContainer" class="container">
+		<canvas id="spriteRotateContent"></canvas>
+	</div>
+
+	<!-- mouse/touch events -->
+	<script src="asset/ui.js"></script>
+
+ 	<!-- Custom rendering code -->
+	<script type="text/javascript">
+
+	(function() {
+		// Canvas width and height should match its parent container
+		var canvases = document.getElementsByTagName('canvas');
+		for(var i=0; i < canvases.length;i++) {
+			canvases[i].width  = canvases[i].parentElement.clientWidth;
+			canvases[i].height = canvases[i].parentElement.clientHeight;
+		}
+	})();
+
+	var drawCenteredImage = function(context, image) {
+		context.drawImage(image, -image.width/2, -image.height/2, image.width, image.height);
+	}
+
+	var drawPositionIndicator = function(context, knob, indicator) {
+		drawCenteredImage(context, spritePositionIndicatorImage);
+	};
+
+	var drawRotateIndicator = function(context, knob, indicator) {
+		drawCenteredImage(context, spriteRotateIndicatorImage);
+	};
+
+	var drawIndicator = function(context, knob, indicator, drawIndicatorFn) {
+		context.save();
+
+		context.translate(indicator.x, indicator.y);
+		context.rotate(-indicator.angle*(Math.PI/180));
+
+		if(drawIndicatorFn)
+			drawIndicatorFn(context, knob, indicator);
+
+		context.restore();
+	};
+
+	var drawKnob = function(context, knob, indicator, drawIndicatorFn, spriteOffset, spriteImage) {
+
+		var spriteX = Math.floor(context.canvas.width/2  - knob.options.spriteWidth/2),
+			spriteY = Math.floor(context.canvas.height/2 - knob.options.spriteHeight/2);
+
+		context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+		context.drawImage(spriteImage,
+						  spriteOffset.x, spriteOffset.y, knob.options.spriteWidth, knob.options.spriteHeight,
+								 spriteX,        spriteY, knob.options.spriteWidth, knob.options.spriteHeight);
+
+		drawIndicator(context, knob, indicator, drawIndicatorFn)
+	}
+
+	var loadImage = function(callback, path) {
+		var image = new Image();
+		image.onload = function() {
+			if(callback) { callback.call(this); }
+		}
+		image.src = path;
+		return image;
+	}
+
+
+
+
+	/**
+	 * Pre-rendered knob using sprites.
+	 */
+	var spriteKnobContainer = document.getElementById("spriteContainer"),
+		spriteKnobContext   = document.getElementById("spriteContent").getContext('2d'),
+		spriteImage,
+		spriteKnob = new Knob(function(knobData) {
+
+			drawKnob(spriteKnobContext, knobData.knob, knobData.indicator, undefined, knobData.spriteOffset, spriteImage);
+
+		}, {
+		spriteCount: 120,
+		spriteSeparationGap: 1,
+		spriteWidth: 67,
+		spriteHeight: 67,
+		spriteDirection: 'ccw'
+	});
+
+	spriteImage = loadImage(function() { setupKnob(spriteKnob, spriteKnobContainer); },
+								"../garageband_images_renamed/round_arrow_120.png");
+
+
+	/**
+	 * Knob with repeating sprites and a positioned indicator image.
+	 */
+	var spritePositionKnobContainer = document.getElementById("spritePositionContainer"),
+		spritePositionKnobContext   = document.getElementById("spritePositionContent").getContext('2d'),
+		spritePositionImage,
+		spritePositionIndicatorImage,
+		spritePositionKnob = new Knob(function(knobData) {
+
+			drawKnob(spritePositionKnobContext, knobData.knob, knobData.indicator, drawPositionIndicator, knobData.spriteOffset, spritePositionImage);
+
+		}, {
+		// angleSlideRatio: 0.6,
+		spriteCount: 5,
+		spriteSeparationGap: 1,
+		spriteWidth: 100,
+		spriteHeight: 100,
+		spriteDirection: 'cw',
+		indicatorRadius: 26,
+		indicatorAutoPosition: true
+
+	});
+
+	spritePositionIndicatorImage = loadImage(function() {
+			spritePositionImage = loadImage(function() {
+				setupKnob(spritePositionKnob, spritePositionKnobContainer);
+			}, "../garageband_images_renamed/hammond.png");
+		}, "../garageband_images_renamed/hammond_indicator.png");
+
+
+	/**
+	 * Knob with repeating sprites and a rotating indicator image.
+	 */
+	var spriteRotateKnobContainer = document.getElementById("spriteRotateContainer"),
+		spriteRotateKnobContext   = document.getElementById("spriteRotateContent").getContext('2d'),
+		spriteRotateImage,
+		spriteRotateIndicatorImage,
+		spriteRotateKnob = new Knob(function(knobData) {
+
+			drawKnob(spriteRotateKnobContext, knobData.knob, knobData.indicator, drawRotateIndicator, knobData.spriteOffset, spriteRotateImage);
+
+		}, {
+		// angleSlideRatio: 0.8,
+		spriteStartAngle: 90,
+		spriteCount: 17,
+		spriteSeparationGap: 1,
+		spriteWidth: 93,
+		spriteHeight: 93,
+		spriteDirection: 'cw',
+		indicatorStartAngle: 90,
+		indicatorAutoRotate: true
+	});
+
+	spriteRotateIndicatorImage = loadImage(function() {
+			spriteRotateImage = loadImage(function() {
+				setupKnob(spriteRotateKnob, spriteRotateKnobContainer);
+			}, "../garageband_images_renamed/synth.png");
+		}, "../garageband_images_renamed/synth_indicator.png");
+
+
+	</script>
+
+
+</body>
+</html>
