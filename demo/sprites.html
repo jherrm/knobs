@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<title>Knob - Canvas</title>
+	<title>Knob - Sprites</title>
 	<link rel="stylesheet" href="asset/ui.css" />
 	<script src="../Knob.js"></script>
 
@@ -33,16 +33,14 @@
 	})();
 
 	var drawCenteredImage = function(context, image) {
-		context.drawImage(image, -image.width/2, -image.height/2, image.width, image.height);
+		if(context && image) {
+			context.drawImage(image, -image.width/2, -image.height/2, image.width, image.height);
+		}
 	}
 
-	var drawPositionIndicator = function(context, knob, indicator) {
-		drawCenteredImage(context, spritePositionIndicatorImage);
-	};
-
-	var drawRotateIndicator = function(context, knob, indicator) {
-		drawCenteredImage(context, spriteRotateIndicatorImage);
-	};
+	function drawIndicatorImage(image) {
+		return function(c, k, i) { drawCenteredImage(c, image); }
+	}
 
 	var drawIndicator = function(context, knob, indicator, drawIndicatorFn) {
 		context.save();
@@ -79,43 +77,51 @@
 		return image;
 	}
 
+	var createSpriteKnob = function(options, canvas, spriteImagePath, indicatorImagePath) {
 
+		var context = canvas.getContext('2d'),
+			container = canvas.parentElement,
+			spriteImage, indicatorImage,
+			knob = new Knob(function(knobData) {
+
+				drawKnob(context, knobData.knob, knobData.indicator, drawIndicatorImage(indicatorImage), knobData.spriteOffset, spriteImage);
+
+			}, options);
+
+		if(typeof indicatorImagePath !== "undefined") {
+			indicatorImage = loadImage(function() {
+				spriteImage = loadImage(function() {
+					setupKnob(knob, container);
+				}, spriteImagePath);
+			}, indicatorImagePath);
+		}
+		else {
+			spriteImage = loadImage(function() {
+				setupKnob(knob, container);
+			}, spriteImagePath);
+		}
+	}
 
 
 	/**
 	 * Pre-rendered knob using sprites.
 	 */
-	var spriteKnobContainer = document.getElementById("spriteContainer"),
-		spriteKnobContext   = document.getElementById("spriteContent").getContext('2d'),
-		spriteImage,
-		spriteKnob = new Knob(function(knobData) {
-
-			drawKnob(spriteKnobContext, knobData.knob, knobData.indicator, undefined, knobData.spriteOffset, spriteImage);
-
-		}, {
+	var options = {
 		spriteCount: 120,
 		spriteSeparationGap: 1,
 		spriteWidth: 67,
 		spriteHeight: 67,
 		spriteDirection: 'ccw'
-	});
-
-	spriteImage = loadImage(function() { setupKnob(spriteKnob, spriteKnobContainer); },
-								"../garageband_images_renamed/round_arrow_120.png");
+	}
+	createSpriteKnob(options,
+					document.getElementById("spriteContent"),
+					"asset/garageband/33gc_thumb_27.png");
 
 
 	/**
 	 * Knob with repeating sprites and a positioned indicator image.
 	 */
-	var spritePositionKnobContainer = document.getElementById("spritePositionContainer"),
-		spritePositionKnobContext   = document.getElementById("spritePositionContent").getContext('2d'),
-		spritePositionImage,
-		spritePositionIndicatorImage,
-		spritePositionKnob = new Knob(function(knobData) {
-
-			drawKnob(spritePositionKnobContext, knobData.knob, knobData.indicator, drawPositionIndicator, knobData.spriteOffset, spritePositionImage);
-
-		}, {
+	var options = {
 		// angleSlideRatio: 0.6,
 		spriteCount: 5,
 		spriteSeparationGap: 1,
@@ -124,28 +130,17 @@
 		spriteDirection: 'cw',
 		indicatorRadius: 26,
 		indicatorAutoPosition: true
-
-	});
-
-	spritePositionIndicatorImage = loadImage(function() {
-			spritePositionImage = loadImage(function() {
-				setupKnob(spritePositionKnob, spritePositionKnobContainer);
-			}, "../garageband_images_renamed/hammond.png");
-		}, "../garageband_images_renamed/hammond_indicator.png");
+	}
+	createSpriteKnob(options,
+					document.getElementById("spritePositionContent"),
+					"asset/garageband/Hammond_knob.png",
+					"asset/garageband/hammond_overdrive_dot.png");
 
 
 	/**
 	 * Knob with repeating sprites and a rotating indicator image.
 	 */
-	var spriteRotateKnobContainer = document.getElementById("spriteRotateContainer"),
-		spriteRotateKnobContext   = document.getElementById("spriteRotateContent").getContext('2d'),
-		spriteRotateImage,
-		spriteRotateIndicatorImage,
-		spriteRotateKnob = new Knob(function(knobData) {
-
-			drawKnob(spriteRotateKnobContext, knobData.knob, knobData.indicator, drawRotateIndicator, knobData.spriteOffset, spriteRotateImage);
-
-		}, {
+	var options = {
 		// angleSlideRatio: 0.8,
 		spriteStartAngle: 90,
 		spriteCount: 17,
@@ -155,17 +150,12 @@
 		spriteDirection: 'cw',
 		indicatorStartAngle: 90,
 		indicatorAutoRotate: true
-	});
-
-	spriteRotateIndicatorImage = loadImage(function() {
-			spriteRotateImage = loadImage(function() {
-				setupKnob(spriteRotateKnob, spriteRotateKnobContainer);
-			}, "../garageband_images_renamed/synth.png");
-		}, "../garageband_images_renamed/synth_indicator.png");
-
+	}
+	createSpriteKnob(options,
+					document.getElementById("spriteRotateContent"),
+					"asset/garageband/40synth.png",
+					"asset/garageband/39Synth_Thumb.png");
 
 	</script>
-
-
 </body>
 </html>
