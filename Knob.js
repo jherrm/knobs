@@ -63,7 +63,7 @@ var Knob;
 			---------------------------------------------------------------------------
 			*/
 
-			/** Angle the inicator is at when first rendered */
+			/** Angle the indicator is at when first rendered */
 			indicatorStartAngle: 0,
 
 			/** Automatically rotate the indicator based on the angle */
@@ -328,10 +328,10 @@ var Knob;
 		---------------------------------------------------------------------------
 		*/
 
-		/** {Number} Left position of finger at start */
+		/** {Number} The previous left position of finger */
 		__lastTouchLeft: null,
 
-		/** {Number} Top position of finger at start */
+		/** {Number} The previous top position of finger */
 		__lastTouchTop: null,
 
 		/** {Date} Timestamp of last move of finger. Used to limit tracking range for deceleration speed. */
@@ -454,6 +454,7 @@ var Knob;
 			// Figure out where the touch was relative to the center
 			var change = constrain(wheelDelta, -20, 20);
 			change = (pageX >= self.__centerPageX) ? -change : change;
+			change *= self.options.angleSlideRatio;
 
 			self.__validateAndPublishAngle(self.__angle + change);
 		},
