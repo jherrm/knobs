@@ -56,25 +56,25 @@
 	}
 
 	var drawPositionIndicator = function(context, knob, indicator) {
-		var indicatorRadius = 4;
+		var indicatorRadius = 5;
 
 		context.fillStyle = "#efefef";
 		fillCircle(context, 0, 0, indicatorRadius);
 	};
 
 	var drawRotateIndicator = function(context, knob, indicator) {
-		var knobRadius = 25,
+		var knobRadius = 32,
 			indicatorW = knobRadius*2,
-			indicatorH = 5;
+			indicatorH = 10;
 
 		context.fillStyle = "#efefef";
 		context.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
 	};
 
 	var drawPositionRotateIndicator = function(context, knob, indicator) {
-		var knobRadius = 25,
+		var knobRadius = 32,
 			indicatorW = 10,
-			indicatorH = 5;
+			indicatorH = 6;
 
 		context.fillStyle = "#efefef";
 		context.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
@@ -93,7 +93,7 @@
 	};
 
 	var drawKnobBody = function(context, knob) {
-		var knobRadius = 25;
+		var knobRadius = 32;
 
 		//draw the knob background
 		context.fillStyle = "#008";
@@ -117,7 +117,7 @@
 		angleEnd:360,
 		valueMin:0,
 		valueMax:100,
-		indicatorRadius: 18,
+		indicatorRadius: 22,
 		indicatorStartAngle: 0,
 		indicatorAutoPosition: true
 	});
@@ -150,7 +150,7 @@
 		angleEnd:360,
 		valueMin:0,
 		valueMax:100,
-		indicatorRadius: 20,
+		indicatorRadius: 22,
 		indicatorStartAngle: 0,
 		indicatorAutoPosition: true,
 		indicatorAutoRotate: true
