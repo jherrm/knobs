@@ -1,3 +1,5 @@
+var activeKnobs = {};
+
 function setupKnob(knob, container) {
 
 	var rect = container.getBoundingClientRect();
@@ -20,17 +22,27 @@ function setupKnob(knob, container) {
 	if ('ontouchstart' in window) {
 
 		container.addEventListener('touchstart', function(e) {
-			// Don't react if initial down happens on a form element
-			// if (e.touches[0] && e.touches[0].target && e.touches[0].target.tagName.match(/input|textarea|select/i)) {
-			// 	return;
-			// }
 
-			knob.doTouchStart(e.touches, e.timeStamp);
+			// Keep track of the knobs currently being touched to support multitouch.
+			activeKnobs[e.targetTouches[0].identifier] = knob;
+
+			knob.doTouchStart(e.targetTouches, e.timeStamp);
+
 			e.preventDefault();
 		}, false);
 
 		document.addEventListener('touchmove', function(e) {
-			knob.doTouchMove(e.touches, e.timeStamp, e.scale);
+
+			// Support multi-touch knobs by only passing the appropriate touch events.
+			for(var i=0; i < e.changedTouches.length; i++) {
+
+				var k = activeKnobs[e.changedTouches[i].identifier];
+
+				if(typeof k !== "undefined") {
+					k.doTouchMove([e.changedTouches[i]], e.timeStamp, e.scale);
+				}
+			}
+
 		}, false);
 
 		document.addEventListener('touchend', function(e) {
