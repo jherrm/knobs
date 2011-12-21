@@ -11,7 +11,7 @@ Knob.js does the heavy lifting for things like:
 *    Figuring out the position and angle of the indicator dot.
 *    Doing the math for displaying custom rendered knobs using image sprites.
 
-Knob.js is a purely logical component - rather than drawing or moving things around, it only crunches the numbers and gives back positions and angles. This means that you can render your virtual knobs using CSS, &lt;canvas&gt;, &lt;svg&gt;, or whatever way you like.
+Knob.js is a purely logical component - rather than drawing or moving things around, it only crunches the numbers and gives back positions and angles. This means that you can render your virtual knobs using CSS, &lt;canvas&gt;, &lt;svg&gt;, or however you like.
 
 - - -
 
@@ -59,7 +59,7 @@ Download the [minified library](http://jherm.github.com/knobs/build/Knob.js) and
 
 
 ```html
-	< script src="js/Knob.js"></ script>
+	<script src="js/Knob.js"></script>
 ```
 
 <!--
@@ -69,7 +69,7 @@ Download the [minified library](http://jherm.github.com/knobs/build/Knob.js) and
 This code creates a knob that goes from zero to eleven, starting at 220 degrees and going to -40 degrees (that's 8 o'clock to 4 o'clock for people that like thinking in clockfaces).
 
 ```html
-	< script>
+	<script>
 
 	var knob = new Knob(function(knob, angle, val, indicator, spriteOffset) {
 		// apply knob/indicator position/angle to UI
@@ -80,11 +80,13 @@ This code creates a knob that goes from zero to eleven, starting at 220 degrees 
 		valueMax: 11 // this one goes to eleven
 	});
 
-	</ script>
+	</script>
 ```
+
+- - -
 
 ### Acknowledgements ###
 
-Knob.js wouldn't be here without Apple's Garageband for iOS. The workers there really put a lot of thought into the way a virtual knob should work. Thank you.
+Knob.js wouldn't be here without Apple's Garageband for iOS. The designers/developers really put a lot of thought into the way a virtual knob should work. Thanks.
 
 The layout of the javascript was heavily influenced by <a href="http://github.com/zynga/scroller">Zynga's Scroller</a>.
