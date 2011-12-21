@@ -119,12 +119,12 @@
 	var svgPositionKnobContainer = document.getElementById("svgPositionContainer"),
 		svgPositionKnobBody = $(document.getElementById("svgPosition")),
 		svgPositionKnobIndicator = $(document.getElementById("svgPositionIndicator")),
-		svgPositionKnob = new Knob(function(knobData) {
+		svgPositionKnob = new Knob(function(knob, angle, val, indicator, spriteOffset) {
 			var indicatorOrigin = {
 				x: 0,
 				y: 0
 			}
-			drawKnob(knobData.knob, knobData.indicator, indicatorOrigin, svgPositionKnobIndicator);
+			drawKnob(knob, indicator, indicatorOrigin, svgPositionKnobIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,
@@ -141,13 +141,13 @@
 	var svgRotateKnobContainer = document.getElementById("svgRotateContainer"),
 		svgRotateKnobBody = $(document.getElementById("svgRotate")),
 		svgRotateKnobIndicator = $(document.getElementById("svgRotateIndicator")),
-		svgRotateKnob = new Knob(function(knobData) {
+		svgRotateKnob = new Knob(function(knob, angle, val, indicator, spriteOffset) {
 			var indicatorOrigin = {
 				x: svgRotateKnobIndicator.attr('width')/2,
 				y: svgRotateKnobIndicator.attr('height')/2
 			}
 
-			drawKnob(knobData.knob, knobData.indicator, indicatorOrigin, svgRotateKnobIndicator);
+			drawKnob(knob, indicator, indicatorOrigin, svgRotateKnobIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,
@@ -163,13 +163,13 @@
 	var svgPositionRotateKnobContainer = document.getElementById("svgPositionRotateContainer"),
 		svgPositionRotateKnobBody = $(document.getElementById("svgPositionRotate")),
 		svgPositionRotateKnobIndicator = $(document.getElementById("svgPositionRotateIndicator")),
-		svgPositionRotateKnob = new Knob(function(knobData) {
+		svgPositionRotateKnob = new Knob(function(knob, angle, val, indicator, spriteOffset) {
 			var indicatorOrigin = {
 				x: svgPositionRotateKnobIndicator.attr('width')/2,
 				y: svgPositionRotateKnobIndicator.attr('height')/2
 			}
 
-			drawKnob(knobData.knob, knobData.indicator, indicatorOrigin, svgPositionRotateKnobIndicator);
+			drawKnob(knob, indicator, indicatorOrigin, svgPositionRotateKnobIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,

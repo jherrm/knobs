@@ -690,13 +690,7 @@ var Knob;
 
 			// Push values out
 			if (self.__callback) {
-				self.__callback({
-					knob: self,
-					angle: self.__angle,
-					val: self.__value,
-					indicator: indicator,
-					spriteOffset: spriteOffset
-				});
+				self.__callback(self, self.__angle, self.__value, indicator, spriteOffset);
 			}
 		},
 
@@ -744,7 +738,7 @@ var Knob;
 		__getSpriteOffset: function(angle) {
 
 			var self = this,
-				offset;
+				offset = 0;
 
 			// If there are multiple images (using sprites), figure out which image to show.
 			if(self.options.spriteCount > 1) {

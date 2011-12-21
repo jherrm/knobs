@@ -82,9 +82,9 @@
 		var context = canvas.getContext('2d'),
 			container = canvas.parentElement,
 			spriteImage, indicatorImage,
-			knob = new Knob(function(knobData) {
+			knob = new Knob(function(knob, angle, val, indicator, spriteOffset) {
 
-				drawKnob(context, knobData.knob, knobData.indicator, drawIndicatorImage(indicatorImage), knobData.spriteOffset, spriteImage);
+				drawKnob(context, knob, indicator, drawIndicatorImage(indicatorImage), spriteOffset, spriteImage);
 
 			}, options);
 

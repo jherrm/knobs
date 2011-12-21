@@ -110,8 +110,8 @@
 
 	var shapePositionKnobContainer = document.getElementById("shapePositionContainer"),
 		shapePositionKnobContext = document.getElementById("shapePosition").getContext('2d'),
-		shapePositionKnob = new Knob(function(knobData) {
-			drawKnob(shapePositionKnobContext, knobData.knob, knobData.indicator, drawPositionIndicator);
+		shapePositionKnob = new Knob(function(knob, angle, val, indicator, spriteOffset) {
+			drawKnob(shapePositionKnobContext, knob, indicator, drawPositionIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,
@@ -127,8 +127,8 @@
 
 	var shapeRotateKnobContainer = document.getElementById("shapeRotateContainer"),
 		shapeRotateKnobContext = document.getElementById("shapeRotate").getContext('2d'),
-		shapeRotateKnob = new Knob(function(knobData) {
-			drawKnob(shapeRotateKnobContext, knobData.knob, knobData.indicator, drawRotateIndicator);
+		shapeRotateKnob = new Knob(function(knob, angle, val, indicator, spriteOffset) {
+			drawKnob(shapeRotateKnobContext, knob, indicator, drawRotateIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,
@@ -143,8 +143,9 @@
 
 	var shapePositionRotateKnobContainer = document.getElementById("shapePositionRotateContainer"),
 		shapePositionRotateKnobContext = document.getElementById("shapePositionRotate").getContext('2d'),
-		shapePositionRotateKnob = new Knob(function(knobData) {
-			drawKnob(shapePositionRotateKnobContext, knobData.knob, knobData.indicator, drawPositionRotateIndicator);
+		shapePositionRotateKnob = new Knob(function(knob, angle, val, indicator, spriteOffset) {
+			console.log(val)
+			drawKnob(shapePositionRotateKnobContext, knob, indicator, drawPositionRotateIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,

@@ -172,8 +172,8 @@
 	var cssPositionKnobContainer = document.getElementById("cssPositionContainer"),
 		cssPositionKnobBody = $(document.getElementById("cssPosition")),
 		cssPositionKnobIndicator = $(document.getElementById("cssPositionIndicator")),
-		cssPositionKnob = new Knob(function(knobData) {
-			drawKnob(cssPositionKnobBody, knobData.knob, knobData.indicator, undefined, cssPositionKnobIndicator);
+		cssPositionKnob = new Knob(function(knob, angle, val, indicator, spriteOffset) {
+			drawKnob(cssPositionKnobBody, knob, indicator, undefined, cssPositionKnobIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,
@@ -191,8 +191,8 @@
 	var cssRotateKnobContainer = document.getElementById("cssRotateContainer"),
 		cssRotateKnobBody = $(document.getElementById("cssRotate")),
 		cssRotateKnobIndicator = $(document.getElementById("cssRotateIndicator")),
-		cssRotateKnob = new Knob(function(knobData) {
-			drawKnob(cssRotateKnobBody, knobData.knob, knobData.indicator, undefined, cssRotateKnobIndicator);
+		cssRotateKnob = new Knob(function(knob, angle, val, indicator, spriteOffset) {
+			drawKnob(cssRotateKnobBody, knob, indicator, undefined, cssRotateKnobIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,
@@ -210,8 +210,8 @@
 	var cssPositionRotateKnobContainer = document.getElementById("cssPositionRotateContainer"),
 		cssPositionRotateKnobBody = $(document.getElementById("cssPositionRotate")),
 		cssPositionRotateKnobIndicator = $(document.getElementById("cssPositionRotateIndicator")),
-		cssPositionRotateKnob = new Knob(function(knobData) {
-			drawKnob(cssPositionRotateKnobBody, knobData.knob, knobData.indicator, undefined, cssPositionRotateKnobIndicator);
+		cssPositionRotateKnob = new Knob(function(knob, angle, val, indicator, spriteOffset) {
+			drawKnob(cssPositionRotateKnobBody, knob, indicator, undefined, cssPositionRotateKnobIndicator);
 		}, {
 		angleStart:-400,
 		angleEnd:360,
