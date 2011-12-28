@@ -4,7 +4,7 @@
 	<meta charset='utf-8'>
 	<meta name='viewport' content='width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;'>
 
-	<title>jherm/knobs @ GitHub</title>
+	<title>Multitouch knobs in javascript</title>
 
 	<link rel="stylesheet" media="only screen and (max-device-width: 1024px) and (orientation:portrait)" href="css/portrait.css" type="text/css" />
 	<link rel="stylesheet" media="only screen and (max-device-width: 1024px) and (orientation:landscape)" href="css/landscape.css" type="text/css" />
@@ -57,6 +57,8 @@
 			padding: 20px;
 		}
 
+		.attention { color:#d00; }
+
 	</style>
 
 
@@ -70,6 +72,7 @@
 
 		// prevent dragging the page in touch based browsers
 		// $('body').bind('touchmove', function(event) { event.originalEvent.preventDefault(); });
+
 
 		$('.house100').knob({
 			'minAngle': Number.NEGATIVE_INFINITY,
@@ -162,7 +165,7 @@
 </head>
 
 <body>
-	<a href="http://github.com/jherm/knobs"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+	<a href="http://github.com/jherrm/knobs"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
 
 	<div style='margin:0 auto;text-align:center;width:325px;background-color:#f00'>
 		<div class='logo'>kn</div>
@@ -175,6 +178,7 @@
 	</div>
 	<p style="clear:both;"></p>
 	<div style='margin:0 auto;width:700px;'>
+		<h2 class="attention">The knobs on this page are using an old version of the knobs jQuery plugin. The new version "Knob.js" doesn't depend on jQuery and allows for many different display options like <a href="http://jherrman.com/knobs/demo/css.html">CSS</a>, <a href="http://jherrman.com/knobs/demo/svg.html">SVG</a>, and <a href="http://jherrman.com/knobs/demo/canvas.html">&lt;canvas&gt;</a></h2>
 		<div class="description">
 			Virtual knobs that work on desktops and touch based devices through the magic of javascript and HTML.<br />This project tries to emulate the behavior of the knobs in Apple's GarageBand for the iPad.
 		</div>
@@ -209,27 +213,27 @@
 	<div id="container" style="margin-top:50px;">
 		<h2>Download</h2>
 		<div class="download">
-			<a href="http://github.com/jherm/knobs/zipball/master">
+			<a href="http://github.com/jherrm/knobs/zipball/master">
 				<img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-			<a href="http://github.com/jherm/knobs/tarball/master">
+			<a href="http://github.com/jherrm/knobs/tarball/master">
 				<img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
 		</div>
 		<p>
 			You can download this project in either
-			<a href="http://github.com/jherm/knobs/zipball/master">zip</a> or
-			<a href="http://github.com/jherm/knobs/tarball/master">tar</a> formats.
+			<a href="http://github.com/jherfm/knobs/zipball/master">zip</a> or
+			<a href="http://github.com/jherfm/knobs/tarball/master">tar</a> formats.
 		</p>
 		<p>You can also clone the project with <a href="http://git-scm.com">Git</a>
 			by running:
-			<pre>$ git clone git://github.com/jherm/knobs</pre>
+			<pre>$ git clone git://github.com/jherrm/knobs</pre>
 		</p>
 
 		<div class="footer">
-			get the source code on GitHub : <a href="http://github.com/jherm/knobs">jherm/knobs</a>
+			get the source code on GitHub : <a href="http://github.com/jherrm/knobs">jherrm/knobs</a>
 		</div>
 
 	</div>
 
-	
+
 </body>
 </html>
