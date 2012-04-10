@@ -208,6 +208,24 @@ var Knob;
 	function angleDistance(angle1, angle2) {
 		return angle1 % 360 - angle2 % 360;
 	}
+
+	/**
+	 * Get the angle from x and y coordinates using
+	 * the specified origin.
+	 *
+	 * @param x {Number}
+	 * @param y {Number}
+	 *
+	 * @return {Number} Angle distance in degrees
+	 **/
+	function angleFromCoord(x, y, originX, originY) {
+		var ny = originY - y,
+				nx = x - originX;
+
+		// http://stackoverflow.com/questions/1311049/how-to-map-atan2-to-degrees-0-360
+		return toDegrees(Math.atan2(-ny,-nx)+Math.PI);
+	}
+
 	/**
 	 * Returns true if angle is increasing.
 	 * An angle is increasing if going from a lower
@@ -771,7 +789,7 @@ var Knob;
 		__getAngleFromGesture: function(currentTouchLeft, currentTouchTop) {
 
 			var self = this,
-				angle = self.__angle;
+					angle = self.__angle;
 
 			// handle spin, then handle slides
 			if(self.__spinDetected) {
@@ -779,6 +797,7 @@ var Knob;
 				var y = self.__centerPageY - currentTouchTop,
 					x = currentTouchLeft - self.__centerPageX;
 				angle = toDegrees(Math.atan2(-y,-x)+Math.PI);
+				angle = angleFromCoord(currentTouchLeft, currentTouchTop, self.__centerPageX, self.__centerPageY);
 			}
 			else {
 				if (self.__slideXDetected) {
