@@ -1,5 +1,5 @@
 var Knob;
-(function() {
+(function(undefined) {
 
 	/**
 	 *   Default
@@ -110,7 +110,8 @@ var Knob;
 		};
 
 		for (var key in options) {
-			this.options[key] = options[key];
+			if(this.options[key] !== undefined)
+				this.options[key] = options[key];
 		}
 
 		if(this.options.valueMin > this.options.valueMax) {
