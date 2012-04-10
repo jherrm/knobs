@@ -162,17 +162,6 @@ var Knob;
 	};
 
 	/**
-	 * Convenience function to see if a number isn't +/- Infinity
-	 *
-	 * @param value {Number} value
-	 *
-	 * @return {Boolean} true if value isn't +/- Infinity
-	 */
-	function isReal(value) {
-		return (value != Number.NEGATIVE_INFINITY && value != Number.POSITIVE_INFINITY);
-	}
-
-	/**
 	 * Convert degrees to radians.
 	 *
 	 * @param degrees {Number} Angle in degrees
@@ -667,8 +656,8 @@ var Knob;
 
 
 			// If angle and value bounds are real, map angle directly to value
-			if (isReal(self.options.angleStart) &&
-				isReal(self.options.angleEnd) &&
+			if (isFinite(self.options.angleStart) &&
+				isFinite(self.options.angleEnd) &&
 				self.options.valueMin != Number.NEGATIVE_INFINITY &&
 				self.options.valueMax != Number.POSITIVE_INFINITY) {
 				return map(nextAngle, self.options.angleStart, self.options.angleEnd, self.options.valueMin, self.options.valueMax);
