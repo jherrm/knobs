@@ -189,14 +189,25 @@ var Knob;
 	 * @param angle1 {Number} First angle in degrees
 	 * @param angle2 {Number} Second angle in degrees
 	 *
-	 * @return {Number} Angle distance in degrees
+	 * @return {Number} Angle distance in degrees (0 >= angle <= 180)
 	 **/
-	function angleDistance(angle1, angle2) {
+	function smallestAngleDistance(angle1, angle2) {
 		var d = Math.abs(angle1 - angle2) % 360;
 
 		return d > 180 ? 360 - d : d;
 	}
 
+	/**
+	 * Get the raw distance between two angles.
+	 *
+	 * @param angle1 {Number} First angle in degrees
+	 * @param angle2 {Number} Second angle in degrees
+	 *
+	 * @return {Number} Angle distance in degrees
+	 **/
+	function angleDistance(angle1, angle2) {
+		return angle1 % 360 - angle2 % 360;
+	}
 	/**
 	 * Returns true if angle is increasing.
 	 * An angle is increasing if going from a lower
@@ -610,7 +621,7 @@ var Knob;
 				prevAngle = self.__angle,
 				nPreviousAngle = normalizeAngle(prevAngle),
 				nCurrentAngle  = normalizeAngle(angle),
-				diff = angleDistance(nPreviousAngle, nCurrentAngle);
+				diff = smallestAngleDistance(nPreviousAngle, nCurrentAngle);
 
 
 			diff = isAngleIncreasing(nPreviousAngle, nCurrentAngle) ? diff : -diff;
