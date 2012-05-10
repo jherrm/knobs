@@ -4,9 +4,9 @@ var Knob;
   /**
    *   Default
    * Orientation
-   *     90
-   *  180 + 0
-   *     270
+   *      90
+   *  180  +  0
+   *      270
    **/
 
   Knob = function(callback, options) {
@@ -225,6 +225,10 @@ var Knob;
 
     // http://stackoverflow.com/questions/1311049/how-to-map-atan2-to-degrees-0-360
     return toDegrees(Math.atan2(-ny,-nx)+Math.PI);
+  }
+
+  function pointDistance(x0, y0, x1, y1) {
+    return Math.sqrt((x0 -= x1) * x0 + (y0 -= y1) * y0);
   }
 
   /**
@@ -482,8 +486,6 @@ var Knob;
      * Touch start handler for knob turning support
      */
     doTouchStart: function(touches, timeStamp) {
-      // console.log('doTouchStart ' + touches + ", " + timeStamp);
-
       // Array-like check is enough here
       if (touches.length == null) {
         throw new Error("Invalid touch list: " + touches);
@@ -526,8 +528,15 @@ var Knob;
       // Spinning starts directly with two fingers, otherwise lazy with an offset
       self.__isTurning = !isSingleTouch;
 
+      self.__spinDetected = true;
+
+      self.__totalDistance = 0;
+
       // Some features are disabled in multi touch scenarios
       self.__isSingleTouch = isSingleTouch;
+
+      // Reset locking flag
+      self.__isGestureLocked = false;
 
       // Clearing data structure
       self.__positions = [];
@@ -537,8 +546,6 @@ var Knob;
      * Touch move handler for knob turning support
      */
     doTouchMove: function(touches, timeStamp, scale) {
-      // console.log('doTouchMove ' + touches + ", " + timeStamp + ", " + scale);
-
       // Array-like check is enough here
       if (touches.length == null) {
         throw new Error("Invalid touch list: " + touches);
@@ -556,69 +563,52 @@ var Knob;
       }
 
       var currentTouchLeft = touches[0].pageX,
-        currentTouchTop  = touches[0].pageY,
-        positions = self.__positions;
-
-      // Are we already in turning mode?
-      // if (self.__isTurning) {
-
-        self.__validateAndPublishAngle(self.__getAngleFromGesture(currentTouchLeft, currentTouchTop));
-
-      // Otherwise figure out whether we are switching into turning mode now.
-      // } else {
-
-        // var minimumTrackingForChange = 3,
-        //  minimumTrackingForSpin = 10,
-        //  distanceX = Math.abs(currentTouchLeft - self.__lastCheckpointTouchLeft),
-        //  distanceY = Math.abs(currentTouchTop  - self.__lastCheckpointTouchTop);
-
-        // self.__slideXDetected = self.options.gestureSlideXEnabled && distanceX >= minimumTrackingForChange;
-        // self.__slideYDetected = self.options.gestureSlideYEnabled && distanceY >= minimumTrackingForChange;
-        // self.__spinDetected   = self.options.gestureSpinEnabled && self.__slideXDetected && self.__slideYDetected;
+          currentTouchTop  = touches[0].pageY,
+          positions = self.__positions;
 
 
-        self.__spinDetected = true;
+      self.__validateAndPublishAngle(self.__getAngleFromGesture(currentTouchLeft, currentTouchTop));
 
+      self.__isTurning = true;
 
+      if (!self.__isGestureLocked) {
 
-        // IDEAS ON HOW TO MAKE GESTURE DETECTION MORE LIKE GARAGEBAND
+        var minimumTrackingForChange = 35,
+            minimumDistanceForLocking = 40,
+            maximumSlideVariance = 5,
+            distanceX = Math.abs(currentTouchLeft - self.__initialTouchLeft),
+            distanceY = Math.abs(currentTouchTop  - self.__initialTouchTop);
 
-        // Current Problems
+        self.__slideXDetected = self.options.gestureSlideXEnabled && distanceX >= minimumTrackingForChange && distanceY < maximumSlideVariance;
+        self.__slideYDetected = self.options.gestureSlideYEnabled && distanceY >= minimumTrackingForChange && distanceX < maximumSlideVariance;
 
-        // find where initialTouch is compared to the origin
-        // depending on the side touched, spin clockwise or ccw
-        // amount turned depends on the distance between the current point and the last checkpoint, as well as the distance from origin
-        // after a certain amount of time, lock the detected gesture in
-
-
-
-        // initial touch sets the radius for a new circle with the origin of the knob
-        // default to spin
-
-        // measure the average angle for the last N positions
-        // every M positions, store the average in a past averages array
-        // once L averages have been stored, compare those averages
-        // if the standard deviation of the averages is high, then we have a spin
-        // if the standard deviation of the averages is low, then we have a straight line
-        //
-
-
-
-
-
-
-
-        // self.__isTurning = (self.__slideXDetected || self.__slideYDetected) && (distanceX >= minimumTrackingForSpin || distanceY >= minimumTrackingForSpin);
-
-        // if(self.__isTurning) {
-        //  if(self.__spinDetected)   { console.log("spinning") }
-        //  else {
-        //    if(self.__slideXDetected) { console.log("sliding left/right") }
-        //    if(self.__slideYDetected) { console.log("sliding up/down") }
-        //  }
+        // if(self.__isTurning && !self.__isGestureLocked) {
+        //   if(self.__spinDetected)   { console.log("spinning") }
+        //   if(self.__slideXDetected) { console.log("sliding left/right") }
+        //   if(self.__slideYDetected) { console.log("sliding up/down") }
         // }
-        // console.log("disx, disy" + distanceX + " " + distanceY)
-      // }
+
+        if(self.__totalDistance > minimumDistanceForLocking) {
+          self.__isGestureLocked = true;
+          if(self.__slideXDetected && self.__slideYDetected) {
+            // gesture isn't definitively in one direction or another,
+            // so clear the slides and lock in the spin
+            self.__slideXDetected = self.__slideYDetected = false;
+            self.__spinDetected = true;
+          }
+          else if(self.__slideXDetected) {
+            // lock in the slide X
+            self.__spinDetected = self.__slideYDetected = false;
+          }
+          else if(self.__slideYDetected) {
+            // lock in the slide Y
+            self.__spinDetected = self.__slideXDetected = false;
+          }
+
+        }
+
+        self.__totalDistance += pointDistance(self.__lastTouchLeft, self.__lastTouchTop, currentTouchLeft, currentTouchTop);
+      }
 
       // Keep list from growing infinitely (holding min 10, max 20 measure points)
       if (positions.length > 60) {
@@ -626,7 +616,12 @@ var Knob;
       }
 
       // Track scroll movement for decleration
-      positions.push(currentTouchLeft, currentTouchTop, timeStamp);
+      positions.push({
+        left: currentTouchLeft,
+        top: currentTouchTop,
+        time: timeStamp
+      });
+
 
       // Update last touch positions and time stamp for next event
       self.__lastTouchLeft = currentTouchLeft;
@@ -638,8 +633,6 @@ var Knob;
      * Touch end handler for knob turning support
      */
     doTouchEnd: function(timeStamp) {
-      // console.log('doTouchEnd ' + timeStamp);
-
       if (typeof timeStamp !== "number") {
         throw new Error("Invalid timestamp value: " + timeStamp);
       }
@@ -830,7 +823,7 @@ var Knob;
       // handle spin, then handle slides
       if(self.__spinDetected) {
         angle = angleFromCoord(currentTouchLeft, currentTouchTop, self.__centerPageX, self.__centerPageY);
-        console.log('prevangle', self.__angle, 'currentAngle', angle, 'initialAngleDiff', self.__initialAngleDiff)
+
         // TODO: slowly decrease the initialAngleDiff so the indicator eventually matches the finger as it spins (like garageband)
         angle -= self.__initialAngleDiff;
       }
