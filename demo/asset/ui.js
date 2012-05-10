@@ -22,35 +22,39 @@ function setupKnob(knob, container) {
 	if ('ontouchstart' in window) {
 
 		container.addEventListener('touchstart', function(e) {
+			var timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
 
 			// Keep track of the knobs currently being touched to support multitouch.
 			activeKnobs[e.targetTouches[0].identifier] = knob;
 
-			knob.doTouchStart(e.targetTouches, e.timeStamp);
+			knob.doTouchStart(e.targetTouches, timeStamp);
 
 			e.preventDefault();
 		}, false);
 
 		document.addEventListener('touchmove', function(e) {
+			var timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
 
 			// Support multi-touch knobs by only passing the appropriate touch events.
-			for(var i=0; i < e.changedTouches.length; i++) {
+			for(var i = 0, l = e.changedTouches.length; i < l; i++) {
 
 				var k = activeKnobs[e.changedTouches[i].identifier];
 
 				if(typeof k !== "undefined") {
-					k.doTouchMove([e.changedTouches[i]], e.timeStamp, e.scale);
+					k.doTouchMove([e.changedTouches[i]], timeStamp, e.scale);
 				}
 			}
 
 		}, false);
 
 		document.addEventListener('touchend', function(e) {
-			knob.doTouchEnd(e.timeStamp);
+			var timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
+			knob.doTouchEnd(timeStamp);
 		}, false);
 
 		document.addEventListener('touchcancel', function(e) {
-			knob.doTouchEnd(e.timeStamp);
+			var timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
+			knob.doTouchEnd(timeStamp);
 		}, false);
 
 	} else {
