@@ -718,11 +718,13 @@ var Knob;
         isFinite(self.options.angleEnd) &&
         self.options.valueMin != Number.NEGATIVE_INFINITY &&
         self.options.valueMax != Number.POSITIVE_INFINITY) {
-        return map(nextAngle, self.options.angleStart, self.options.angleEnd, self.options.valueMin, self.options.valueMax);
+        // mapping angleStart->valueMax and angleEnd->valueMin to increase the value as the knob turns clockwise
+        return map(nextAngle, self.options.angleStart, self.options.angleEnd, self.options.valueMax, self.options.valueMin);
       }
 
       // If bounds aren't real, just increase/decrease value based on the change in angle.
-      var value = self.__value + (nextAngle - prevAngle) * self.options.angleValueRatio;
+      // it's prevAngle - nextAngle to increase the value as the knob turns clockwise
+      var value = self.__value + (prevAngle - nextAngle) * self.options.angleValueRatio;
 
       return constrain(value, self.options.valueMin, self.options.valueMax);
     },
