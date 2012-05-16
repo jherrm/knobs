@@ -912,15 +912,15 @@ var Knob;
       var self = this;
 
       // If angle and value bounds are real, map angle directly to value
-      if (isFinite(self.options.angleStart) &&
-        isFinite(self.options.angleEnd) &&
-        self.options.valueMin != Number.NEGATIVE_INFINITY &&
-        self.options.valueMax != Number.POSITIVE_INFINITY) {
+      if (isFinite(self.options.valueMin) &&
+        isFinite(self.options.valueMax) &&
+        self.options.angleStart != Number.NEGATIVE_INFINITY &&
+        self.options.angleEnd != Number.POSITIVE_INFINITY) {
         return map(value, self.options.valueMin, self.options.valueMax, self.options.angleStart, self.options.angleEnd);
       }
 
       // If bounds aren't real, just increase/decrease angle based on the change in value.
-      var angle = self.__angle + (valueMax - self.__value) / self.options.angleValueRatio;
+      var angle = self.__angle + (value - self.__value) / self.options.angleValueRatio;
 
       return self.__validateAngle(angle, true);
     },
