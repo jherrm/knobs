@@ -530,7 +530,7 @@ var Knob;
       // Spinning starts directly with two fingers, otherwise lazy with an offset
       self.__isTurning = !isSingleTouch;
 
-      self.__spinDetected = true;
+      self.__spinDetected = self.options.gestureSpinEnabled;
 
       self.__totalDistance = 0;
 
@@ -596,7 +596,7 @@ var Knob;
             // gesture isn't definitively in one direction or another,
             // so clear the slides and lock in the spin
             self.__slideXDetected = self.__slideYDetected = false;
-            self.__spinDetected = true;
+            self.__spinDetected = self.options.gestureSpinEnabled;
           }
           else if(self.__slideXDetected) {
             // lock in the slide X
