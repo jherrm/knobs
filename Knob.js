@@ -824,7 +824,7 @@ var Knob;
       var nextAngle = self.__validateAngle(self.__angle + diff);
 
       self.__angle = nextAngle;
-      self.__value = self.__determineValue(forcePublish ? nextAngle : prevAngle, nextAngle);
+      self.__value = self.__valueFromAngles(forcePublish ? nextAngle : prevAngle, nextAngle);
 
       // console.log(prevAngle, nextAngle)
 
@@ -860,7 +860,13 @@ var Knob;
      *
      * @param value {Number} Value to validate
      */
-    __determineValue: function(prevAngle, nextAngle) {
+    /**
+     * Returns a value with the valueMin valueMax constraints applied from the given angles.
+     *
+     * @param prevAngle {Number} previous angle of the knob
+     * @param nextAngle {Number} next angle of the knob
+     */
+    __valueFromAngles: function(prevAngle, nextAngle) {
       var self = this;
 
 
@@ -899,7 +905,7 @@ var Knob;
       // If bounds aren't real, just increase/decrease angle based on the change in value.
       var angle = self.__angle + (valueMax - self.__value) / self.options.angleValueRatio;
 
-      return constrain(angle, self.options.angleMin, self.options.angleMax);
+      return self.__validateAngle(angle, true);
     },
 
     /**
