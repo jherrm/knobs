@@ -578,7 +578,7 @@ var Knob;
      */
     val: function(value) {
       if(value) {
-        this.__validateAndPublishAngle(this.__angleFromValue(value), true);
+        this.__validateAndPublishValue(value, true);
       }
       return this.__value;
     },
@@ -826,7 +826,18 @@ var Knob;
       self.__angle = nextAngle;
       self.__value = self.__valueFromAngles(forcePublish ? nextAngle : prevAngle, nextAngle);
 
-      // console.log(prevAngle, nextAngle)
+      self.__publish();
+    },
+
+    __validateAndPublishValue: function(value, forcePublish) {
+
+      var self = this;
+
+      // if(forcePublish) {
+        self.__value = self.__validateValue(value, true);
+      // }
+
+      self.__angle = self.__angleFromValue(self.__value);
 
       self.__publish();
     },
