@@ -53,6 +53,9 @@ var Knob;
     if (inputEl.hasAttribute('max')) {
       options.valueMax = parseFloat(inputEl.getAttribute('max'));
     }
+    if (inputEl.hasAttribute('value')) {
+      options.value = parseFloat(inputEl.getAttribute('value'));
+    }
     if (inputEl.hasAttribute('data-angle-start')) {
       options.angleStart = parseFloat(inputEl.getAttribute('data-angle-start'));
     }
@@ -142,6 +145,9 @@ var Knob;
       valueMax: Number.POSITIVE_INFINITY,
       // valueMax: 11, // This one goes to eleven.
 
+      /** The current value of the knob */
+      value: 0,
+
       /**
        * How much the value increases per degree turned.
        * Only used if both angleStart/End and valueMax/valueMin
@@ -221,6 +227,7 @@ var Knob;
       throw new Error("valueMin must be less than valueMax");
     }
 
+    this.val(this.options.value);
   };
 
   /*
