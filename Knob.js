@@ -16,20 +16,6 @@ var Knob;
       throw new Error('No input element specified for knob.');
     }
 
-    var parseBool = function(boolStr) {
-      return boolStr && boolStr.toLowerCase() == 'true';
-    }
-
-    var parseDirection = function(dirStr) {
-      if(dirStr) {
-        dirStr = dirStr.toLowerCase();
-        if(dirStr == 'cw' || dirStr == 'ccw') {
-         return dirStr;
-        }
-      }
-      return undefined;
-    }
-
 /*
   <input id="prog_knob"
          type="range"
@@ -242,6 +228,34 @@ var Knob;
     PRIVATE FUNCTIONS
   ---------------------------------------------------------------------------
   */
+
+  /**
+   * Parse input to a boolean.
+   *
+   * @param boolStr {String} True or false
+   *
+   * @return {Boolean}
+   **/
+  function parseBool(boolStr) {
+    return boolStr && boolStr.toLowerCase() == 'true';
+  };
+
+  /**
+   * Parse input to a turning direction.
+   *
+   * @param dirStr {String} Turning direction
+   *
+   * @return {String} 'cw' or 'ccw' (clockwise or counter-clockwise)
+   **/
+  function parseDirection(dirStr) {
+    if(dirStr) {
+      dirStr = dirStr.toLowerCase();
+      if(dirStr == 'cw' || dirStr == 'ccw') {
+       return dirStr;
+      }
+    }
+    return undefined;
+  };
 
   /**
    * Convenience function to map a variable from one coordinate space
