@@ -1,164 +1,162 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<title>Knob - Canvas</title>
-	<link rel="stylesheet" href="asset/ui.css" />
-	<script src="../Knob.js"></script>
+  <title>Knob - Canvas</title>
+  <link rel="stylesheet" href="asset/ui.css" />
+  <meta name="viewport" content="user-scalable=no, width=device-width">
 
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="../Knob.js"></script>
 </head>
 <body>
-	<div id="shapePositionContainer" class="container">
-		<canvas id="shapePosition"></canvas>
-	</div>
-	<div id="shapeRotateContainer" class="container">
-		<canvas id="shapeRotate"></canvas>
-	</div>
-	<div id="shapePositionRotateContainer" class="container">
-		<canvas id="shapePositionRotate"></canvas>
-	</div>
 
-<!--
-	<div id="settings">
-		<div><label for="knobAngle">Angle: </label><input type="text" id="knobAngle" size="5" value="0"/></div>
-		<div><label for="knobValue">Value: </label><input type="text" id="knobValue" size="5" value="0"/></div>
+  <input id="position"
+         name="position"
+         type="range"
+         value="50"
+         min="0" max="100"
+         data-angle-start="-400"
+         data-angle-end="360"
+         data-indicator-auto-position="true"
+         data-indicator-radius="22"
+          />
 
-		<div><label for="scrollingX">ScrollingX: </label><input type="checkbox" id="scrollingX" checked/></div>
-		<div><label for="scrollingY">ScrollingY: </label><input type="checkbox" id="scrollingY" checked/></div>
+  <input id="rotate"
+         name="rotate"
+         type="range"
+         value="50"
+         min="0" max="100"
+         data-angle-start="-400"
+         data-angle-end="360"
+         data-indicator-auto-rotate="true"
+          />
 
-		<div><label for="minZoom">Min Zoom: </label><input type="text" id="minZoom" size="5" value="0.5"/></div>
-		<div><label for="maxZoom">Max Zoom: </label><input type="text" id="maxZoom" size="5" value="3"/></div>
-		<div><label for="zoomLevel">Zoom Level: </label><input type="text" id="zoomLevel" size="5"/></div>
-		<div><button id="zoom">Zoom to Level</button><button id="zoomIn">+</button><button id="zoomOut">-</button></div>
-	</div>
--->
+  <input id="position-rotate"
+         name="rotate"
+         type="range"
+         value="50"
+         min="0" max="100"
+         data-angle-start="-400"
+         data-angle-end="360"
+         data-indicator-auto-position="true"
+         data-indicator-auto-rotate="true"
+         data-indicator-radius="22"
+          />
+
+  <!-- mouse/touch events -->
+  <script src="asset/ui.js"></script>
+
+  <!-- Custom rendering code -->
+  <script type="text/javascript">
+
+  var fillCircle = function(context, x, y, radius) {
+    context.beginPath();
+    context.arc(x, y, radius, 0, Math.PI*2, true);
+    context.closePath();
+    context.fill();
+  }
+
+  var drawPositionIndicator = function(context, knob, indicator) {
+    var indicatorRadius = 5;
+
+    context.fillStyle = "#efefef";
+    fillCircle(context, 0, 0, indicatorRadius);
+  };
+
+  var drawRotateIndicator = function(context, knob, indicator) {
+    var knobRadius = 32,
+      indicatorW = knobRadius*2,
+      indicatorH = 10;
+
+    context.fillStyle = "#efefef";
+    context.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
+  };
+
+  var drawPositionRotateIndicator = function(context, knob, indicator) {
+    var knobRadius = 32,
+      indicatorW = 10,
+      indicatorH = 6;
+
+    context.fillStyle = "#efefef";
+    context.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
+  };
+
+  var drawIndicator = function(context, knob, indicator) {
+    context.save();
+
+    context.translate(indicator.x, indicator.y);
+    context.rotate(-indicator.angle*(Math.PI/180));
+
+    if(knob.options.indicatorAutoPosition && knob.options.indicatorAutoRotate) {
+      drawPositionRotateIndicator(context, knob, indicator);
+    }
+    else if(knob.options.indicatorAutoPosition) {
+      drawPositionIndicator(context, knob, indicator);
+    }
+    else if(knob.options.indicatorAutoRotate) {
+      drawRotateIndicator(context, knob, indicator);
+    }
+
+    context.restore();
+  };
+
+  var drawKnobBody = function(context, knob) {
+    var knobRadius = 32;
+
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+    //draw the knob background
+    context.fillStyle = "#008";
+    fillCircle(context, context.canvas.width/2, context.canvas.height/2, knobRadius);
+  };
+
+  var drawKnobCanvas = function(knob, indicator) {
+    var context = $(knob.element).siblings('canvas')[0].getContext('2d');
+
+    drawKnobBody(context, knob)
+
+    drawIndicator(context, knob, indicator);
+  }
+
+  var createKnobCanvas = function(knob, id) {
+    var $input     = $(knob.element),
+        $container = $('<div class="container '+ id + '">'),
+        $body      = $('<canvas class="'+ id + '">');
+
+    $container.append($body);
+
+    $input.hide();
+    $container.insertBefore($input);
+    $container.append($input);
+
+    $body[0].width  = $body[0].parentElement.clientWidth;
+    $body[0].height = $body[0].parentElement.clientHeight;
+
+    setupKnob(knob, $container[0]);
+  }
+
+  var positionKnob = new Knob(document.getElementById('position'),
+    function(knob, indicator) {
+      drawKnobCanvas(knob, indicator);
+    }
+  );
+  createKnobCanvas(positionKnob, 'position');
+
+  var rotateKnob = new Knob(document.getElementById('rotate'),
+    function(knob, indicator) {
+      drawKnobCanvas(knob, indicator);
+    }
+  );
+  createKnobCanvas(rotateKnob, 'rotate');
+
+  var positionRotateKnob = new Knob(document.getElementById('position-rotate'),
+    function(knob, indicator) {
+      drawKnobCanvas(knob, indicator);
+    }
+  );
+  createKnobCanvas(positionRotateKnob, 'position-rotate');
 
 
-	<!-- mouse/touch events -->
-	<script src="asset/ui.js"></script>
-
- 	<!-- Custom rendering code -->
-	<script type="text/javascript">
-
-	(function() {
-		// Canvas width and height should match its parent container
-		var canvases = document.getElementsByTagName('canvas');
-		for(var i=0; i < canvases.length;i++) {
-			canvases[i].width  = canvases[i].parentElement.clientWidth;
-			canvases[i].height = canvases[i].parentElement.clientHeight;
-		}
-	})();
-
-	var fillCircle = function(context, x, y, radius) {
-		context.beginPath();
-		context.arc(x, y, radius, 0, Math.PI*2, true);
-		context.closePath();
-		context.fill();
-	}
-
-	var drawPositionIndicator = function(context, knob, indicator) {
-		var indicatorRadius = 5;
-
-		context.fillStyle = "#efefef";
-		fillCircle(context, 0, 0, indicatorRadius);
-	};
-
-	var drawRotateIndicator = function(context, knob, indicator) {
-		var knobRadius = 32,
-			indicatorW = knobRadius*2,
-			indicatorH = 10;
-
-		context.fillStyle = "#efefef";
-		context.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
-	};
-
-	var drawPositionRotateIndicator = function(context, knob, indicator) {
-		var knobRadius = 32,
-			indicatorW = 10,
-			indicatorH = 6;
-
-		context.fillStyle = "#efefef";
-		context.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
-	};
-
-	var drawIndicator = function(context, knob, indicator, drawIndicatorFn) {
-		context.save();
-
-		context.translate(indicator.x, indicator.y);
-		context.rotate(-indicator.angle*(Math.PI/180));
-
-		if(drawIndicatorFn)
-			drawIndicatorFn(context, knob, indicator);
-
-		context.restore();
-	};
-
-	var drawKnobBody = function(context, knob) {
-		var knobRadius = 32;
-
-		//draw the knob background
-		context.fillStyle = "#008";
-		fillCircle(context, context.canvas.width/2, context.canvas.height/2, knobRadius);
-	};
-
-	var drawKnob = function(context, knob, indicator, drawIndicatorFn) {
-		context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-		drawKnobBody(context, knob)
-
-		drawIndicator(context, knob, indicator, drawIndicatorFn)
-	}
-
-	var shapePositionKnobContainer = document.getElementById("shapePositionContainer"),
-		shapePositionKnobContext = document.getElementById("shapePosition").getContext('2d'),
-		shapePositionKnob = new Knob(function(knob, angle, val, indicator, spriteOffset) {
-			drawKnob(shapePositionKnobContext, knob, indicator, drawPositionIndicator);
-		}, {
-		angleStart:-400,
-		angleEnd:360,
-		valueMin:0,
-		valueMax:100,
-		indicatorRadius: 22,
-		indicatorStartAngle: 0,
-		indicatorAutoPosition: true
-	});
-
-	setupKnob(shapePositionKnob, shapePositionKnobContainer);
-
-
-	var shapeRotateKnobContainer = document.getElementById("shapeRotateContainer"),
-		shapeRotateKnobContext = document.getElementById("shapeRotate").getContext('2d'),
-		shapeRotateKnob = new Knob(function(knob, angle, val, indicator, spriteOffset) {
-			drawKnob(shapeRotateKnobContext, knob, indicator, drawRotateIndicator);
-		}, {
-		angleStart:-400,
-		angleEnd:360,
-		valueMin:0,
-		valueMax:100,
-		indicatorStartAngle: 0,
-		indicatorAutoRotate: true
-	});
-
-	setupKnob(shapeRotateKnob, shapeRotateKnobContainer);
-
-
-	var shapePositionRotateKnobContainer = document.getElementById("shapePositionRotateContainer"),
-		shapePositionRotateKnobContext = document.getElementById("shapePositionRotate").getContext('2d'),
-		shapePositionRotateKnob = new Knob(function(knob, angle, val, indicator, spriteOffset) {
-			console.log(val)
-			drawKnob(shapePositionRotateKnobContext, knob, indicator, drawPositionRotateIndicator);
-		}, {
-		angleStart:-400,
-		angleEnd:360,
-		valueMin:0,
-		valueMax:100,
-		indicatorRadius: 22,
-		indicatorStartAngle: 0,
-		indicatorAutoPosition: true,
-		indicatorAutoRotate: true
-	});
-
-	setupKnob(shapePositionRotateKnob, shapePositionRotateKnobContainer);
-
-	</script>
+  </script>
 </body>
 </html>
