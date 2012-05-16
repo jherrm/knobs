@@ -16,33 +16,33 @@ var Knob;
       throw new Error('No input element specified for knob.');
     }
 
-/*
-  <input id="prog_knob"
-         type="range"
-         name="progressive_knob"
-         min="1" max="10"
-         data-angle-start="-400"
-         data-angle-end="360"
-         data-angle-value-ratio="0.1"
-         data-angle-slide-ratio="1"
-         data-gesture-spin-enabled="true"
-         data-gesture-slidex-enabled="true"
-         data-gesture-slidey-enabled="true"
-         data-center-offset-x="0"
-         data-center-offset-y="0"
-         data-indicator-auto-rotate="false"
-         data-indicator-auto-position="false"
-         data-indicator-start-angle="0"
-         data-indicator-radius="0"
-         data-sprite-width="67"
-         data-sprite-height="67"
-         data-sprite-count="1"
-         data-sprite-direction="ccw"
-         data-sprite-start-angle="0"
-         data-sprite-separation-angle="3"
-         data-sprite-separation-gap="0"
-          />
-*/
+    /*
+    <input id="prog_knob"
+           type="range"
+           name="progressive_knob"
+           min="1" max="10"
+           data-angle-start="-400"
+           data-angle-end="360"
+           data-angle-value-ratio="0.1"
+           data-angle-slide-ratio="1"
+           data-gesture-spin-enabled="true"
+           data-gesture-slidex-enabled="true"
+           data-gesture-slidey-enabled="true"
+           data-center-offset-x="0"
+           data-center-offset-y="0"
+           data-indicator-auto-rotate="false"
+           data-indicator-auto-position="false"
+           data-indicator-start-angle="0"
+           data-indicator-radius="0"
+           data-sprite-width="67"
+           data-sprite-height="67"
+           data-sprite-count="1"
+           data-sprite-direction="ccw"
+           data-sprite-start-angle="0"
+           data-sprite-separation-angle="3"
+           data-sprite-separation-gap="0"
+            />
+    */
 
     // parse the attributes from the input element
     var options = {}
