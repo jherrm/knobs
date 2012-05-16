@@ -433,33 +433,35 @@ var Knob;
       self.__publish();
     },
 
-    // turnToValue: function(value) {
-    // },
+    /**
+     * Gets or sets the knob value.
+     *
+     * @return {Number} `value`
+     */
+    val: function(value) {
+      if(value) {
+        this.__validateAndPublishAngle(this.__angleFromValue(value), true);
+      }
+      return this.__value;
+    },
 
-    // turnToAngle: function(angle) {
-    // },
+    /**
+     * Gets or sets the knob angle.
+     *
+     * @return {Number} `angle`
+     */
+    angle: function(angle) {
+      if(angle) {
+        this.__validateAndPublishAngle(angle, true);
+      }
+      return this.__angle;
+    },
 
     // turnByValue: function(value) {
     // },
 
     // turnByAngle: function(angle) {
     // },
-
-    /**
-     * Returns the knob angle and value.
-     *
-     * @return {Map} `angle` and `value`
-     */
-    getValues: function() {
-
-      var self = this;
-
-      return {
-        angle: self.__angle,
-        val: self.__value
-      };
-
-    },
 
 
     /*
@@ -663,19 +665,25 @@ var Knob;
     ---------------------------------------------------------------------------
     */
 
-    __validateAndPublishAngle: function(angle) {
-      var self = this,
-        prevAngle = self.__angle,
-        nPreviousAngle = normalizeAngle(prevAngle),
-        nCurrentAngle  = normalizeAngle(angle),
-        diff = smallestAngleDistance(nPreviousAngle, nCurrentAngle);
+    __validateAndPublishAngle: function(angle, forcePublish) {
+
+      var self = this, prevAngle, nPreviousAngle, nCurrentAngle, diff;
+
+      if(forcePublish) {
+        this.__angle = self.__validateAngle(angle, true);
+      }
+
+      prevAngle = self.__angle,
+      nPreviousAngle = normalizeAngle(prevAngle),
+      nCurrentAngle  = normalizeAngle(angle),
+      diff = smallestAngleDistance(nPreviousAngle, nCurrentAngle);
 
 
       diff = isAngleIncreasing(nPreviousAngle, nCurrentAngle) ? diff : -diff;
       var nextAngle = self.__validateAngle(self.__angle + diff);
 
       self.__angle = nextAngle;
-      self.__value = self.__determineValue(prevAngle, nextAngle);
+      self.__value = self.__determineValue(forcePublish ? nextAngle : prevAngle, nextAngle);
 
       // console.log(prevAngle, nextAngle)
 
@@ -687,18 +695,20 @@ var Knob;
      *
      * @param angle {Number} Angle to validate
      */
-    __validateAngle: function(angle) {
+    __validateAngle: function(angle, force) {
       var self = this;
 
       angle = constrain(angle, self.options.angleStart, self.options.angleEnd);
 
-      // if prevAngle was at a boundary, only allow a legal natural move to change the existing angle.
-      var threshold = 30;
-      if(self.__angle == self.options.angleStart && Math.abs(angle-self.__angle) > threshold ) {
-        angle = self.options.angleStart;
-      }
-      if(self.__angle == self.options.angleEnd && Math.abs(angle-self.__angle) > threshold) {
-        angle = self.options.angleEnd;
+      if(!force) {
+        // if prevAngle was at a boundary, only allow a legal natural move to change the existing angle.
+        var threshold = 30;
+        if(self.__angle == self.options.angleStart && Math.abs(angle-self.__angle) > threshold ) {
+          angle = self.options.angleStart;
+        }
+        if(self.__angle == self.options.angleEnd && Math.abs(angle-self.__angle) > threshold) {
+          angle = self.options.angleEnd;
+        }
       }
 
       return angle;
@@ -727,6 +737,28 @@ var Knob;
       var value = self.__value + (prevAngle - nextAngle) * self.options.angleValueRatio;
 
       return constrain(value, self.options.valueMin, self.options.valueMax);
+    },
+
+    /**
+     * Returns the angle that corresponds to the given value.
+     *
+     * @param value {Number} angle represented by the value
+     */
+    __angleFromValue: function(value) {
+      var self = this;
+
+      // If angle and value bounds are real, map angle directly to value
+      if (isFinite(self.options.angleStart) &&
+        isFinite(self.options.angleEnd) &&
+        self.options.valueMin != Number.NEGATIVE_INFINITY &&
+        self.options.valueMax != Number.POSITIVE_INFINITY) {
+        return map(value, self.options.valueMin, self.options.valueMax, self.options.angleStart, self.options.angleEnd);
+      }
+
+      // If bounds aren't real, just increase/decrease angle based on the change in value.
+      var angle = self.__angle + (valueMax - self.__value) / self.options.angleValueRatio;
+
+      return constrain(angle, self.options.angleMin, self.options.angleMax);
     },
 
     /**
