@@ -856,10 +856,16 @@ var Knob;
     },
 
     /**
-     * Returns a value with the valueMin valueMax constraints applied.
+     * Returns a value with the valueMin and valueMax constraints applied.
      *
      * @param value {Number} Value to validate
      */
+    __validateValue: function(value, force) {
+      var self = this;
+
+      return constrain(value, self.options.valueMin, self.options.valueMax);
+    },
+
     /**
      * Returns a value with the valueMin valueMax constraints applied from the given angles.
      *
@@ -883,7 +889,7 @@ var Knob;
       // it's prevAngle - nextAngle to increase the value as the knob turns clockwise
       var value = self.__value + (prevAngle - nextAngle) * self.options.angleValueRatio;
 
-      return constrain(value, self.options.valueMin, self.options.valueMax);
+      return self.__validateValue(value);
     },
 
     /**
