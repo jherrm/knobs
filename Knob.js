@@ -774,7 +774,7 @@ var Knob;
 
       // Push values out
       if (self.__callback) {
-        self.__callback(self, self.__angle, self.__value, indicator, spriteOffset);
+        self.__callback(self, indicator, spriteOffset);
       }
     },
 
