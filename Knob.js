@@ -648,7 +648,10 @@ var Knob;
       }
 
       // Not touching anymore (when two finger hit the screen there are two touch end events)
-      self.__isTracking = false;
+
+      // *** Temporarily commented out due to problems with multitouch
+      // *** Touch end on one knob causes all knobs to stop
+      // self.__isTracking = false;
 
       // Reset turning flag
       self.__isTurning = false;
