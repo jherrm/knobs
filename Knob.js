@@ -804,7 +804,6 @@ var Knob;
 
       self.__angle = nextAngle;
       self.__value = self.__determineValue(forcePublish ? nextAngle : prevAngle, nextAngle);
-      self.element.value = self.__value;
 
       // console.log(prevAngle, nextAngle)
 
@@ -889,6 +888,9 @@ var Knob;
       var self = this,
         indicator = self.__getIndicator(self.__angle),
         spriteOffset = self.__getSpriteOffset(self.__angle);
+
+      // Set the input element's value
+      self.element.value = self.__value;
 
       // Push values out
       if (self.__callback) {
