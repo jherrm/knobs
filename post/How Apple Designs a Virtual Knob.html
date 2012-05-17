@@ -1,0 +1,424 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>How Apple Designs a Virtual Knob</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+/* 
+   This document has been created with Marked.app <http://markedapp.com>, Copyright 2011 Brett Terpstra
+   Please leave this notice in place, along with any additional credits below.
+   ---------------------------------------------------------------
+   Title: GitHub
+   Author: Brett Terpstra
+   Description: Github README style. Includes theme for Pygmentized code blocks.
+*/
+html,body{color:black}*{margin:0;padding:0}body{font:13.34px helvetica,arial,freesans,clean,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.4;padding:3px;background:#fff;border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px}p{margin:1em 0}a{color:#4183c4;text-decoration:none}#wrapper{background-color:#fff;border:3px solid #eee!important;padding:0 30px;margin:15px}#wrapper{font-size:14px;line-height:1.6}#wrapper>*:first-child{margin-top:0!important}#wrapper>*:last-child{margin-bottom:0!important}h1,h2,h3,h4,h5,h6{margin:0;padding:0}h1{margin:15px 0;padding-bottom:2px;font-size:24px;border-bottom:1px solid #eee}h2{margin:20px 0 10px 0;font-size:18px}h3{margin:20px 0 10px 0;padding-bottom:2px;font-size:14px;border-bottom:1px solid #ddd}h4{font-size:14px;line-height:26px;padding:18px 0 4px;font-weight:bold;text-transform:uppercase}h5{font-size:13px;line-height:26px;padding:14px 0 0;font-weight:bold;text-transform:uppercase}h6{color:#666;font-size:14px;line-height:26px;padding:18px 0 0;font-weight:normal;font-variant:italic}hr{background:transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;border:0 none;color:#ccc;height:4px;margin:20px 0;padding:0}#wrapper>h2:first-child,#wrapper>h1:first-child,#wrapper>h1:first-child+h2{border:0;margin:0;padding:0}#wrapper>h3:first-child,#wrapper>h4:first-child,#wrapper>h5:first-child,#wrapper>h6:first-child{margin:0;padding:0}h4+p,h5+p,h6+p{margin-top:0}li p.first{display:inline-block}ul,ol{margin:15px 0 15px 25px}ul li,ol li{margin-top:7px;margin-bottom:7px}ul li>*:last-child,ol li>*:last-child{margin-bottom:0}ul li>*:first-child,ol li>*:first-child{margin-top:0}#wrapper>ul,#wrapper>ol{margin-top:21px;margin-left:36px}dl{margin:0;padding:20px 0 0}dl dt{font-size:14px;font-weight:bold;line-height:normal;margin:0;padding:20px 0 0}dl dt:first-child{padding:0}dl dd{font-size:13px;margin:0;padding:3px 0 0}blockquote{margin:14px 0;border-left:4px solid #ddd;padding-left:11px;color:#555}table{border-collapse:collapse;margin:20px 0 0;padding:0}table tr{border-top:1px solid #ccc;background-color:#fff;margin:0;padding:0}table tr:nth-child(2n){background-color:#f8f8f8}table tr th,table tr td{border:1px solid #ccc;text-align:left;margin:0;padding:6px 13px}img{max-width:100%;height:auto}code,tt{margin:0 2px;padding:2px 5px;white-space:nowrap;border:1px solid #ccc;background-color:#f8f8f8;border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;font-size:12px}pre>code{margin:0;padding:0;white-space:pre;border:0;background:transparent;font-size:13px}.highlight pre,pre{background-color:#f8f8f8;border:1px solid #ccc;font-size:13px;line-height:19px;overflow:auto;padding:6px 10px;border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px}#wrapper>pre,#wrapper>div.highlight{margin:10px 0 0}pre code,pre tt{background-color:transparent;border:0}#wrapper{background-color:#fff;border:1px solid #cacaca;padding:30px}.poetry pre{font-family:Georgia,Garamond,serif!important;font-style:italic;font-size:110%!important;line-height:1.6em;display:block;margin-left:1em}.poetry pre code{font-family:Georgia,Garamond,serif!important}sup,sub,a.footnote{font-size:1.4ex;height:0;line-height:1;vertical-align:super;position:relative}sub{vertical-align:sub;top:-1px}@media print{body{background:#fff}img,pre,blockquote,table,figure{page-break-inside:avoid}#wrapper{background:#fff;border:0}code{background-color:#fff;color:#444!important;padding:0 .2em;border:1px solid #dedede}pre code{background-color:#fff!important;overflow:visible}pre{background:#fff}}@media screen{body.inverted,.inverted #wrapper,.inverted hr .inverted p,.inverted td,.inverted li,.inverted h1,.inverted h2,.inverted h3,.inverted h4,.inverted h5,.inverted h6,.inverted th,.inverted .math,.inverted caption,.inverted dd,.inverted dt,.inverted blockquote{color:#eee!important;border-color:#555}.inverted td,.inverted th{background:#333}.inverted pre,.inverted code,.inverted tt{background:#444!important}.inverted h2{border-color:#555}.inverted hr{border-color:#777;border-width:1px!important}::selection{background:rgba(157,193,200,.5)}h1::selection{background-color:rgba(45,156,208,.3)}h2::selection{background-color:rgba(90,182,224,.3)}h3::selection,h4::selection,h5::selection,h6::selection,li::selection,ol::selection{background-color:rgba(133,201,232,.3)}code::selection{background-color:rgba(0,0,0,.7);color:#eee}code span::selection{background-color:rgba(0,0,0,.7)!important;color:#eee!important}a::selection{background-color:rgba(255,230,102,.2)}.inverted a::selection{background-color:rgba(255,230,102,.6)}td::selection,th::selection,caption::selection{background-color:rgba(180,237,95,.5)}.inverted{background:#0b2531}.inverted #wrapper,.inverted{background:rgba(37,42,42,1)}.inverted a{color:rgba(172,209,213,1)}}.highlight .c{color:#998;font-style:italic}.highlight .err{color:#a61717;background-color:#e3d2d2}.highlight .k{font-weight:bold}.highlight .o{font-weight:bold}.highlight .cm{color:#998;font-style:italic}.highlight .cp{color:#999;font-weight:bold}.highlight .c1{color:#998;font-style:italic}.highlight .cs{color:#999;font-weight:bold;font-style:italic}.highlight .gd{color:#000;background-color:#fdd}.highlight .gd .x{color:#000;background-color:#faa}.highlight .ge{font-style:italic}.highlight .gr{color:#a00}.highlight .gh{color:#999}.highlight .gi{color:#000;background-color:#dfd}.highlight .gi .x{color:#000;background-color:#afa}.highlight .go{color:#888}.highlight .gp{color:#555}.highlight .gs{font-weight:bold}.highlight .gu{color:#800080;font-weight:bold}.highlight .gt{color:#a00}.highlight .kc{font-weight:bold}.highlight .kd{font-weight:bold}.highlight .kn{font-weight:bold}.highlight .kp{font-weight:bold}.highlight .kr{font-weight:bold}.highlight .kt{color:#458;font-weight:bold}.highlight .m{color:#099}.highlight .s{color:#d14}.highlight .na{color:#008080}.highlight .nb{color:#0086b3}.highlight .nc{color:#458;font-weight:bold}.highlight .no{color:#008080}.highlight .ni{color:#800080}.highlight .ne{color:#900;font-weight:bold}.highlight .nf{color:#900;font-weight:bold}.highlight .nn{color:#555}.highlight .nt{color:#000080}.highlight .nv{color:#008080}.highlight .ow{font-weight:bold}.highlight .w{color:#bbb}.highlight .mf{color:#099}.highlight .mh{color:#099}.highlight .mi{color:#099}.highlight .mo{color:#099}.highlight .sb{color:#d14}.highlight .sc{color:#d14}.highlight .sd{color:#d14}.highlight .s2{color:#d14}.highlight .se{color:#d14}.highlight .sh{color:#d14}.highlight .si{color:#d14}.highlight .sx{color:#d14}.highlight .sr{color:#009926}.highlight .s1{color:#d14}.highlight .ss{color:#990073}.highlight .bp{color:#999}.highlight .vc{color:#008080}.highlight .vg{color:#008080}.highlight .vi{color:#008080}.highlight .il{color:#099}.highlight .gc{color:#999;background-color:#eaf2f5}.type-csharp .highlight .k{color:#00F}.type-csharp .highlight .kt{color:#00F}.type-csharp .highlight .nf{color:#000;font-weight:normal}.type-csharp .highlight .nc{color:#2b91af}.type-csharp .highlight .nn{color:#000}.type-csharp .highlight .s{color:#a31515}.type-csharp .highlight .sc{color:#a31515}
+</style>
+
+</head>
+<body class="normal">
+  <div id="wrapper">
+      <p><link href="../demo/asset/ui.css" rel="stylesheet"></link>
+<link href="knobs.css" rel="stylesheet"></link>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../Knob.js"></script>
+<script src="../demo/asset/ui.js"></script></p>
+
+<h1 id="howappledesignsavirtualknob">How Apple Designs a Virtual Knob</h1>
+
+<p>When Apple introduced Garageband for the iPad back in March 2011, I knew I just had to try it out. It wasn&#8217;t just the ability to create music that drew me in, it was the realization that this was a flagship app that uses the strengths of a multitouch interface to create experiences that weren&#8217;t possible with a keyboard and mouse. My favorite example is how you can hit a note on the sound sampler keyboard then drag your fingers left and right to modulate the pitch. I feel that this strategy of discovering new multitouch interactions is even more clear with the introduction of iPhoto for iOS, even if it <a href="http://ignorethecode.net/blog/2012/03/14/mystery_meat_iphoto/">has some problems</a>.</p>
+
+<p>Some time after a new interface is introduced, a handful of concepts tend to &#8220;win&#8221; and become a standard way of interacting with the interface. Keyboard shortcuts and right click contextual menus aren&#8217;t tied to a specific OS, they&#8217;re part of the standard toolset you get by using a keyboard and mouse. Multitouch is well on its way of defining its own toolset of useful interactions like pinch-to-zoom, swipe, long tap, and many others. With Garageband and iPhoto, Apple is exploring uncharted waters in user interaction and I&#8217;m going to talk about one simple control that has a few surprises in both use and implementation: the virtual knob.</p>
+
+<h2 id="applesthreewaystoturnavirtualknob">Apple&#8217;s Three Ways to Turn a Virtual Knob</h2>
+
+<p>After using the knobs in Garageband for a while, I noticed that they didn&#8217;t always react the way I thought they would. Most of the time the little indicator dot on the knob would follow my finger as I spun the knob around in a circle. Other times the knob wouldn&#8217;t follow my finger at all and seemed to go in random directions. I eventually figured out that I had stumbled on three different ways to turn a virtual knob. I was so impressed by this added functionality that I had to try and reproduce it myself, which led to me writing <a href="http://jherrm.github.com/knob">Knob.js</a>, a javascript implementation of multitouch knobs that attempt to replicate the knobs found in Garageband. Knob.js powers all of the examples used in this post.</p>
+
+<figure>
+<img src="gestures_diagram.png" alt="" title="Apple's Three Ways to Turn a Virtual Knob" /></figure>
+
+
+
+<h3 id="spin">Spin</h3>
+
+<p>The natural interaction with a knob is to spin, so being able to touch the knob and drag it in a circle is key to a successful virtual knob. If your finger is hiding the indicator you can drag away from the knob so you can see what&#8217;s going on. Dragging further away from the center of the knob also lets you be more precise in setting the value.</p>
+
+<p><input id="spin_knob"
+       name="spin_knob"
+       type="range"
+       data-indicator-auto-position="true"
+       data-indicator-radius="22"
+       data-gesture-slidex-enabled="false"
+       data-gesture-slidey-enabled="false"
+        /></p>
+
+<h3 id="verticalslide">Vertical Slide</h3>
+
+<p>Just as pinch-to-zoom actually wraps zoom, pan and rotate in one gesture<a href="#fn:1" id="fnref:1" title="see footnote" class="footnote">[1]</a>, Apple&#8217;s knobs also do double duty as sliders. By sliding your finger in a vertical line, the knob will lock into vertical slider mode. This makes it super easy to make the knob spin several full revolutions without giving your finger a workout. Just like a real life physical knob, the direction the knob spins is dependent on which side of the knob you turn. If you start sliding down on the right side of the knob, it will spin clockwise, and if you start sliding down on the left side of the knob it turns counter-clockwise.</p>
+
+<p><input id="vertical_knob"
+       name="vertical_knob"
+       type="range"
+       data-indicator-auto-position="true"
+       data-indicator-radius="22"
+       data-gesture-spin-enabled="false"
+       data-gesture-slidex-enabled="false"
+        /></p>
+
+<p>Another bonus of using the vertical slide gesture with multitouch is you can easily change multiple knobs with one gesture on one hand. Using one finger per knob, drag straight up or down as if they were sliders on a audio mixing board.</p>
+
+<h3 id="horizontalslide">Horizontal Slide</h3>
+
+<p>Like the vertical slide, if you start sliding in a horizontal line the knob will lock into horizontal slider mode. Start sliding at the top and moving right causes the knob to spin clockwise, and starting at the bottom and going right will spin the knob counter-clockwise.</p>
+
+<p><input id="horizontal_knob"
+       name="horizontal_knob"
+       type="range"
+       data-indicator-auto-position="true"
+       data-indicator-radius="22"
+       data-gesture-spin-enabled="false"
+       data-gesture-slidey-enabled="false"
+        /></p>
+
+<h3 id="alltogethernow">All Together Now</h3>
+
+<p>The demos above restrict the functionality to show each type of interaction one at a time. Try all three together here:</p>
+
+<p><input id="all_knob"
+       name="all_knob"
+       type="range"
+       data-indicator-auto-position="true"
+       data-indicator-radius="22"
+        /></p>
+
+<h2 id="howweretheybuilt">How Were They Built?</h2>
+
+<p>When I set out to replicate the knobs in Garageband, the first thing I did was open up the Garageband.ipa file and extract the assets. What I found was that in order to recreate the classic knobs from various instruments and amps, the developers used several techniques to bring the knobs to life in an efficient and realistic way.</p>
+
+<h3 id="knobswithstaticbackgrounds">Knobs with static backgrounds</h3>
+
+<p>Non-moving background with a positioned indicator.
+<input id="position_knob"
+       name="position_knob"
+       type="range"
+       data-indicator-auto-position="true"
+       data-indicator-radius="20"
+       data-sprite-width="100"
+       data-sprite-height="100"
+       data-center-offset-x="2"
+       data-center-offset-y="2"
+        /></p>
+
+<p>Non-moving background with a rotated indicator.</p>
+
+<p><input id="rotate_knob"
+       name="rotate_knob"
+       type="range"
+       data-indicator-auto-rotate="true"
+       data-angle-slide-ratio="1"
+        /></p>
+
+<p>Non-moving background with a positioned and rotated indicator.</p>
+
+<h3 id="knobswithrepeatingbackgrounds">Knobs with repeating backgrounds</h3>
+
+<p>Sprite based background images.
+Positioned indicator image.</p>
+
+<p>Sprite based background images.
+Rotated indicator image.</p>
+
+<p>Sprite based background images.
+Positioned and rotated indicator image.</p>
+
+<h3 id="fullyrendered3dknobs">Fully Rendered 3D Knobs</h3>
+
+<p>Some knobs just can&#8217;t be reproduced with static images or repeating backgrounds. Instead of embedding an OpenGL 3D model of the knob, Apple chose to use a similar solution to the repeating background knobs. They basically created a 3D model of then knob then took a picture of it as they spun it around 3 degrees at a time. Since a circle has 360 degrees that means they&#8217;re creating 120 different snapshots of the knob! They line them up in order and save it off as a single image that looks like this:</p>
+
+<figure>
+<img src="rendered_tiny.png" alt="" title="Birdseye view of all 120 knob sprites" /></figure>
+
+
+
+<figure>
+<img src="rendered_medium.png" alt="" title="Zoomed in view of knob sprites" /></figure>
+
+
+
+
+<figure>
+<img src="rendered_full.png" alt="" title="Actual size view of knob sprites" /></figure>
+
+
+
+
+
+<p>Out of the 25 knobs in Garageband that are able to be turned in all directions, 18 were created using this method. Thanks to <s>Google</s> <a href="http://sketchup.google.com/3dwarehouse/">Trimble 3D Warehouse</a>, I was able to find some 3D knobs and recreate the process using blender and photoshop:</p>
+
+<figure>
+<img src="oven_knob.png" alt="" /></figure>
+
+
+
+<p><input id="oven_knob"
+       name="oven_knob"
+       type="range"
+       value="50"
+       min="0" max="100"
+       data-sprite-count="120"
+       data-sprite-width="100"
+       data-sprite-height="100"
+       data-sprite-direction="cw"
+        /></p>
+
+<hr />
+
+<p>Thanks to WebGL we can even do one better and use an actual 3D knob!</p>
+
+<h2 id="garagebandsecrets">Garageband Secrets</h2>
+
+<p>While going through the assets extracted from the Garageband, I ended up finding some knobs that didn&#8217;t make the cut for inclusion in the final release.
+ I&#8217;m happy to breathe some life into these knobs for the first time outside of Apple labs.</p>
+
+<h3 id="testknob">Test Knob</h3>
+
+<p>Before Apple settled on one image for every 3 degrees for 3D knobs, they tested out one image for every 5 degrees - 72 sprites in all. I can only assume they thought the jump from frame to frame was too jarring and was worth the increase in file size.</p>
+
+<p><input id="test_knob"
+       name="test_knob"
+       type="range"
+       value="50"
+       min="0" max="100"
+       data-angle-slide-ratio="0.4"
+       data-sprite-count="72"
+       data-sprite-separation-gap="1"
+       data-sprite-separation-angle="5"
+       data-sprite-width="91"
+       data-sprite-height="91"
+        /></p>
+
+<h3 id="knobrejects">Knob Rejects</h3>
+
+<p>There were also three knobs that were fully finished but not included. Two were simple color/material changes to existing knobs, but the round arrow knob is new. I especially enjoy the specular highlights that appear on the rounded part of the arrow as you spin it.</p>
+
+<p><input id="secret_arrow"
+       name="secret_arrow"
+       type="range"
+       value="50"
+       min="0" max="100"
+       data-sprite-count="120"
+       data-sprite-separation-gap="1"
+        /></p>
+
+<p><input id="secret_red"
+       name="secret_red"
+       type="range"
+       value="50"
+       min="0" max="100"
+       data-sprite-count="120"
+       data-sprite-separation-gap="1"
+        /></p>
+
+<p><input id="secret_metal"
+       name="secret_metal"
+       type="range"
+       value="50"
+       min="0" max="100"
+       data-sprite-count="120"
+       data-sprite-separation-gap="1"
+        /></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Apple&#8217;s attention to detail is what has propelled it to be the most valuable company on earth. Whether it&#8217;s the click of a physical button or the math behind inertial scrolling, Apple employees work really hard to make products that are deceptively simple and just feel right. The virtual knobs found in Garageband are no exception and I hope others enjoyed learning about them as much as I have.</p>
+
+<script type="text/javascript">
+
+var createKnobCSS = function(knob, id) {
+  var $input     = $(knob.element),
+      $container = $('<div class="container '+ id + '">'),
+      $body      = $('<div class="ui-knob ui-shadow '+ id + '">'),
+      $indicator = $('<div class="ui-indicator '+ id + '">');
+
+  $container.append($body);
+  $container.append($indicator);
+
+  $input.hide();
+  $container.insertBefore($input);
+  $container.append($input);
+
+  // center knob in container
+  $body.css({
+    "margin-top": -($body.outerHeight()/2),
+    "margin-left":-($body.outerWidth()/2)
+  });
+
+  setupKnob(knob, $container[0]);
+}
+
+var drawKnobCSS = function(knob, indicator) {
+  var $indicator = $(knob.element).siblings('.ui-indicator');
+  $indicator.css({
+    left: indicator.x - $indicator.outerWidth()/2,
+    top:  indicator.y - $indicator.outerHeight()/2
+  });
+
+  var rotateText = 'rotate('+(-indicator.angle)+'deg)';
+  $indicator.css({
+    'transform': rotateText,
+    '-webkit-transform': rotateText,
+    '-moz-transform': rotateText,
+    '-o-transform': rotateText
+  });
+}
+
+var spinKnob = new Knob(document.getElementById('spin_knob'),
+  function(knob, indicator) {
+    drawKnobCSS(knob, indicator);
+  }
+);
+createKnobCSS(spinKnob, 'spin_knob');
+
+var verticalKnob = new Knob(document.getElementById('vertical_knob'),
+  function(knob, indicator) {
+    drawKnobCSS(knob, indicator);
+  }
+);
+createKnobCSS(verticalKnob, 'vertical_knob');
+
+var horizontalKnob = new Knob(document.getElementById('horizontal_knob'),
+  function(knob, indicator) {
+    drawKnobCSS(knob, indicator);
+  }
+);
+createKnobCSS(horizontalKnob, 'horizontal_knob');
+
+var allKnob = new Knob(document.getElementById('all_knob'),
+  function(knob, indicator) {
+    drawKnobCSS(knob, indicator);
+  }
+);
+createKnobCSS(allKnob, 'all_knob');
+
+var rotateKnob = new Knob(document.getElementById('rotate_knob'),
+  function(knob, indicator) {
+    drawKnobCSS(knob, indicator);
+  }
+);
+createKnobCSS(rotateKnob, 'rotate_knob');
+
+</script>
+
+<script type="text/javascript">
+  var drawCenteredImage = function(context, image) {
+    if(context && image) {
+      context.drawImage(image, -image.width/2, -image.height/2, image.width, image.height);
+    }
+  }
+
+  function drawIndicatorImage(image) {
+    return function(c, k, i) { drawCenteredImage(c, image); }
+  }
+
+  var drawIndicator = function(context, knob, indicator, drawIndicatorFn) {
+    context.save();
+
+    context.translate(indicator.x, indicator.y);
+    context.rotate(-indicator.angle*(Math.PI/180));
+
+    if(drawIndicatorFn)
+      drawIndicatorFn(context, knob, indicator);
+
+    context.restore();
+  };
+
+  var drawKnobSprite = function(knob, indicator, drawIndicatorFn, spriteOffset, spriteImage) {
+    var canvas = $(knob.element).siblings('canvas')[0];
+
+    if(!canvas) { return; }
+
+    var context = canvas.getContext('2d'),
+        spriteX = Math.floor(context.canvas.width/2  - knob.options.spriteWidth/2),
+        spriteY = Math.floor(context.canvas.height/2 - knob.options.spriteHeight/2);
+
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+    context.drawImage(spriteImage,
+              spriteOffset.x, spriteOffset.y, knob.options.spriteWidth, knob.options.spriteHeight,
+              spriteX,        spriteY,        knob.options.spriteWidth, knob.options.spriteHeight);
+
+    drawIndicator(context, knob, indicator, drawIndicatorFn);
+  }
+
+  var loadImage = function(callback, path) {
+    var image = new Image();
+    image.onload = function() {
+      if(callback) { callback.call(this); }
+    }
+    image.src = path;
+    return image;
+  }
+
+  var createKnobSprite = function(id, spriteImagePath, indicatorImagePath) {
+    var context,
+        spriteImage,
+        indicatorImage,
+        knob = new Knob(document.getElementById(id),
+          function(knob, indicator, spriteOffset) {
+            drawKnobSprite(knob, indicator, drawIndicatorImage(indicatorImage), spriteOffset, spriteImage);
+          }
+        ),
+        $input     = $(knob.element),
+        $container = $('<div class="container '+ id + '">'),
+        $body      = $('<canvas class="'+ id + '">');
+
+    $container.append($body);
+
+    $input.hide();
+    $container.insertBefore($input);
+    $container.append($input);
+
+    context = $body[0].getContext('2d');
+
+    $body[0].width  = $body[0].parentElement.clientWidth;
+    $body[0].height = $body[0].parentElement.clientHeight;
+
+    if(typeof indicatorImagePath !== "undefined") {
+      indicatorImage = loadImage(function() {
+        spriteImage = loadImage(function() {
+          setupKnob(knob, $container[0]);
+        }, spriteImagePath);
+      }, indicatorImagePath);
+    }
+    else {
+      spriteImage = loadImage(function() {
+        setupKnob(knob, $container[0]);
+      }, spriteImagePath);
+    }
+  }
+
+  createKnobSprite('position_knob', 'house.png', 'house_indicator.png');
+  createKnobSprite('oven_knob', 'oven_knob.png');
+  createKnobSprite('test_knob', 'test_knob.png');
+  createKnobSprite('secret_arrow', 'secret_arrow.png');
+  createKnobSprite('secret_red', 'secret_red.png');
+  createKnobSprite('secret_metal', 'secret_metal.png');
+
+</script>
+
+<div class="footnotes">
+<hr />
+<ol>
+
+<li id="fn:1">
+<p>Unlike Mobile Safari, in the most popular versions of the browser in Android (as of May 2012), pinch-to-zoom only does zooming. This means that centering the content and zooming in on it require two separate actions - pinch to zoom, then drag to pan. This is the kind of thing that drives iOS natives crazy, yet doesn&#8217;t seem important enough for Google to fix until version 4 of their OS. <a href="#fnref:1" title="return to article" class="reversefootnote">&#160;&#8617;</a></p>
+</li>
+
+</ol>
+</div>
+
+    </div>
+</body>
+</html>
