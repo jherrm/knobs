@@ -2,14 +2,18 @@ var activeKnobs = {};
 
 function setupKnob(knob, container) {
 
-	var rect = container.getBoundingClientRect();
-	knob.setPosition(rect.left + container.clientLeft, rect.top + container.clientTop);
+	// var rect = container.getBoundingClientRect();
+	// knob.setPosition(rect.left + container.clientLeft, rect.top + container.clientTop);
+	knob.setPosition(container.offsetLeft, container.offsetTop);
 	knob.setDimensions(container.clientWidth, container.clientHeight);
 
 	// Detect touch capable client
 	if ('ontouchstart' in window) {
 
 		container.addEventListener('touchstart', function(e) {
+			// reset the position in case knob moved
+			knob.setPosition(container.offsetLeft, container.offsetTop);
+
 			var timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
 			// Keep track of the knobs currently being touched to support multitouch.
 			activeKnobs[e.targetTouches[0].identifier] = knob;
@@ -44,6 +48,8 @@ function setupKnob(knob, container) {
 		var mousedown = false;
 
 		container.addEventListener('mousedown', function(e) {
+			// reset the position in case knob moved
+			knob.setPosition(container.offsetLeft, container.offsetTop);
 
 			knob.doTouchStart([{
 				pageX: e.pageX,
