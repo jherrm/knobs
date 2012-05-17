@@ -619,7 +619,7 @@ var Knob;
       change = (pageX >= self.__centerPageX) ? -change : change;
       change *= self.options.angleSlideRatio;
 
-      self.__validateAndPublishAngle(self.__angle + change);
+      self.__validateAndPublishAngle(self.__angle + change, true);
     },
 
     /**
