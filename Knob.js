@@ -156,7 +156,7 @@ var Knob;
       angleValueRatio: 0.1,
 
       /** How much the angle increases per pixel moved during the slide */
-      angleSlideRatio: 1,
+      angleSlideRatio: 1.25,
 
       /** Number of pixels the rotational center of the knob is shifted from element's center along the X axis */
       centerOffsetX: 0,
