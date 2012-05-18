@@ -1,13 +1,13 @@
-<link href="../demo/asset/ui.css" rel="stylesheet"></link>
+<link href="ui.css" rel="stylesheet"></link>
 <link href="knobs.css" rel="stylesheet"></link>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="../Knob.js"></script>
-<script src="../demo/asset/ui.js"></script>
+<script src="ui.js"></script>
 
 How Apple Designs a Virtual Knob
 ================================
 
-When Apple introduced Garageband for the iPad back in March 2011, I knew I just had to try it out. It wasn't just the ability to create music that drew me in, it was the realization that this was a flagship app that uses the strengths of a multitouch interface to create experiences that weren't possible with a keyboard and mouse. My favorite example is how you can hit a note on the sound sampler keyboard then drag your fingers left and right to modulate the pitch. I feel that this strategy of discovering new multitouch interactions is even more clear with the introduction of iPhoto for iOS, even if it [has some problems](http://ignorethecode.net/blog/2012/03/14/mystery_meat_iphoto/).
+When Apple introduced Garageband for the iPad back in March 2011, I knew I just had to try it out. It wasn't just the ability to create music that drew me in, it was the realization that this was a flagship app that uses the strengths of a multitouch interface to create experiences that weren't possible with a keyboard and mouse. My favorite example is how you can hit a note on the sound sampler keyboard then drag your fingers left and right to bend the pitch. I feel that this strategy of discovering new multitouch interactions is even more clear with the introduction of iPhoto for iOS, even if it [has some problems](http://ignorethecode.net/blog/2012/03/14/mystery_meat_iphoto/).
 
 
 Some time after a new interface is introduced, a handful of concepts tend to "win" and become a standard way of interacting with the interface. Keyboard shortcuts and right click contextual menus aren't tied to a specific OS, they're part of the standard toolset you get by using a keyboard and mouse. Multitouch is well on its way of defining its own toolset of useful interactions like pinch-to-zoom, swipe, long tap, and many others. With Garageband and iPhoto, Apple is exploring uncharted waters in user interaction and I'm going to talk about one simple control that has a few surprises in both use and implementation: the virtual knob.
@@ -15,7 +15,7 @@ Some time after a new interface is introduced, a handful of concepts tend to "wi
 Apple's Three Ways to Turn a Virtual Knob
 -----------------------------------------
 
-After using the knobs in Garageband for a while, I noticed that they didn't always react the way I thought they would. Most of the time the little indicator dot on the knob would follow my finger as I spun the knob around in a circle. Other times the knob wouldn't follow my finger at all and seemed to go in random directions. I eventually figured out that I had stumbled on three different ways to turn a virtual knob. I was so impressed by this added functionality that I had to try and reproduce it myself, which led to me writing [Knob.js](http://jherrm.github.com/knob), a javascript implementation of multitouch knobs that attempt to replicate the knobs found in Garageband. Knob.js powers all of the examples used in this post.
+After using the knobs in Garageband for a while, I noticed that they didn't always react the way I thought they would. Most of the time the little indicator dot on the knob would follow my finger as I spun the knob around in a circle. Other times the knob wouldn't follow my finger at all and seemed to go in random directions. I eventually figured out that I had stumbled on three different ways to turn a virtual knob. I was so impressed by this added functionality that I had to try and reproduce it myself, which led to me writing [Knob.js](http://jherrm.github.com/knobs), a javascript implementation of multitouch knobs that attempt to replicate the knobs found in Garageband. Knob.js powers all of the examples used in this post.
 
 ![](gestures_diagram.png "Apple's Three Ways to Turn a Virtual Knob")
 
@@ -74,7 +74,8 @@ When I set out to replicate the knobs in Garageband, the first thing I did was o
 
 ### Knobs with static backgrounds
 
-Non-moving background with a positioned indicator.
+Below we have a knob made with two images: a non-moving knob "background" and an indicator. The indicator is simply repositioned to create the turning effect. In Garageband, the _generic_, _clavinet_, and _panner_ knobs all use this technique.
+
 <input id="position_knob"
        name="position_knob"
        type="range"
@@ -86,7 +87,7 @@ Non-moving background with a positioned indicator.
        data-center-offset-y="2"
         />
 
-Non-moving background with a rotated indicator.
+Here's another knob with a non-moving background, but instead of positioning the indicator to simulate turning, it rotates the indicator instead. Another neat thing about this knob is it, along with the first few knobs shown at the beginning of this post, are completely done with CSS rather than with images. The _pad_ knob in Garageband uses this method.
 
 <input id="rotate_knob"
        name="rotate_knob"
@@ -96,17 +97,36 @@ Non-moving background with a rotated indicator.
         />
 
 
-Non-moving background with a positioned and rotated indicator.
+A third variation of a knob with a non-moving background is found by combining the other two indicator transformations. An indicator that's both positioned and rotated offers a nice way to emulate real knobs. The _rhodes_ electric piano knobs in Garageband show off this style.
+
+<input id="position-rotate_knob"
+       name="position-rotate_knob"
+       type="range"
+       data-indicator-auto-position="true"
+       data-indicator-auto-rotate="true"
+       data-angle-slide-ratio="1"
+       data-indicator-radius="21"
+        />
 
 ### Knobs with repeating backgrounds
-Sprite based background images.
-Positioned indicator image.
 
-Sprite based background images.
-Rotated indicator image.
+Apple uses repeating backgrounds for knobs that change more than just their indicator as they're spun around. To make one of these knobs just create the knob image without the indicator, rotate the image a few degrees and save a new image until the pattern is repeated. Combine all of the generated images side by side into one wide grid.
 
-Sprite based background images.
-Positioned and rotated indicator image.
+Here's one that I made:
+
+![](toaster_knob.png)
+
+<input id="repeated_knob"
+       name="repeated_knob"
+       type="range"
+       data-sprite-count="12"
+       data-sprite-width="100"
+       data-sprite-height="100"
+       data-sprite-direction="cw"
+        />
+
+Of course you can also combine a repeating background with the indicator styles. The _hammond_ knobs on the organs in Garageband are an example of a repeating background and a positioned indicator. The knobs on the generic synthesizers show off a repeated background and an indicator that's rotated and positioned.
+
 
 ### Fully Rendered 3D Knobs
 Some knobs just can't be reproduced with static images or repeating backgrounds. Instead of embedding an OpenGL 3D model of the knob, Apple chose to use a similar solution to the repeating background knobs. They basically created a 3D model of then knob then took a picture of it as they spun it around 3 degrees at a time. Since a circle has 360 degrees that means they're creating 120 different snapshots of the knob! They line them up in order and save it off as a single image that looks like this:
@@ -125,8 +145,6 @@ Out of the 25 knobs in Garageband that are able to be turned in all directions, 
 <input id="oven_knob"
        name="oven_knob"
        type="range"
-       value="50"
-       min="0" max="100"
        data-sprite-count="120"
        data-sprite-width="100"
        data-sprite-height="100"
@@ -135,7 +153,7 @@ Out of the 25 knobs in Garageband that are able to be turned in all directions, 
 
 * * *
 
-Thanks to WebGL we can even do one better and use an actual 3D knob!
+Thanks to WebGL we could even do one better and use an actual 3D knob! Unfortunately that will have to wait for another day!
 
 Garageband Secrets
 ------------------
@@ -274,6 +292,13 @@ var rotateKnob = new Knob(document.getElementById('rotate_knob'),
 );
 createKnobCSS(rotateKnob, 'rotate_knob');
 
+var positionRotateKnob = new Knob(document.getElementById('position-rotate_knob'),
+  function(knob, indicator) {
+    drawKnobCSS(knob, indicator);
+  }
+);
+createKnobCSS(positionRotateKnob, 'position-rotate_knob');
+
 </script>
 
 <script type="text/javascript">
@@ -365,6 +390,7 @@ createKnobCSS(rotateKnob, 'rotate_knob');
   }
 
   createKnobSprite('position_knob', 'house.png', 'house_indicator.png');
+  createKnobSprite('repeated_knob', 'toaster_knob.png');
   createKnobSprite('oven_knob', 'oven_knob.png');
   createKnobSprite('test_knob', 'test_knob.png');
   createKnobSprite('secret_arrow', 'secret_arrow.png');
