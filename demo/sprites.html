@@ -57,6 +57,17 @@
          data-sprite-direction="cw"
           />
 
+<input id="position_knob"
+       name="position_knob"
+       type="range"
+       data-indicator-auto-position="true"
+       data-indicator-radius="20"
+       data-sprite-width="100"
+       data-sprite-height="100"
+       data-center-offset-x="2"
+       data-center-offset-y="2"
+        />
+
   <!-- mouse/touch events -->
   <script src="asset/ui.js"></script>
 
@@ -86,10 +97,13 @@
   };
 
   var drawKnobSprite = function(knob, indicator, drawIndicatorFn, spriteOffset, spriteImage) {
-    var context = $(knob.element).siblings('canvas')[0].getContext('2d');
+    var canvas = $(knob.element).siblings('canvas')[0];
 
-    var spriteX = Math.floor(context.canvas.width/2  - knob.options.spriteWidth/2),
-      spriteY = Math.floor(context.canvas.height/2 - knob.options.spriteHeight/2);
+    if(!canvas) { return; }
+
+    var context = canvas.getContext('2d'),
+        spriteX = Math.floor(context.canvas.width/2  - knob.options.spriteWidth/2),
+        spriteY = Math.floor(context.canvas.height/2 - knob.options.spriteHeight/2);
 
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
@@ -148,6 +162,7 @@
     }
   }
 
+  createKnobSprite('position_knob', '../post/house.png', '../post/house_indicator.png');
   createKnobSprite('position', 'asset/garageband/33gc_thumb_27.png');
   createKnobSprite('rotate', 'asset/garageband/Hammond_knob.png', 'asset/garageband/hammond_overdrive_dot.png');
   createKnobSprite('position-rotate', 'asset/garageband/40synth.png', 'asset/garageband/39Synth_Thumb.png');
