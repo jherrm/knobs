@@ -5,12 +5,12 @@
   <link rel="stylesheet" href="asset/ui.css" />
   <meta name="viewport" content="user-scalable=no, width=device-width">
 
-  <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>-->
   <script type="text/javascript" src="../jquery.min.js"></script>
   <script type="text/javascript" src="../Knob.js"></script>
 </head>
 <body>
-
+  <h1>Sprite rendered knobs</h1>
+  <p>Static background with a positioned indicator. No rotation limitation.</p>
   <input id="position-sprite-knob"
          name="position-sprite-knob"
          type="range"
@@ -21,7 +21,7 @@
          data-center-offset-x="2"
          data-center-offset-y="2"
           />
-
+  <p>Fully rendered knob. No rotation limitation.</p>
   <input id="secret_arrow"
          name="secret_arrow"
          type="range"
@@ -37,17 +37,14 @@
 
   <script type="text/javascript">
 
-  var positionKnobSprite  = KnobHelper.createKnobSprite(document.getElementById('position-sprite-knob'),
-                                                  'position-sprite-knob',
-                                                  '../post/house.png',
-                                                  '../post/house_indicator.png'
-                                                 );
-
-  var spriteKnobSprite    = KnobHelper.createKnobSprite(document.getElementById('secret_arrow'),
-                                                  'secret_arrow',
-                                                  '../post/secret_arrow.png'
-                                                 );
-
+  const knobs = [
+    {id:'position-sprite-knob', image:'knobs/house.png', indicator:'knobs/house_indicator.png'},
+    {id:'secret_arrow', image:'knobs/gb/round_arrow_120.png'},
+  ]
+  knobs.map(({id, image, indicator}) => {
+    const el = document.getElementById(id)
+    KnobHelper.createKnobSprite(el, id, image, indicator)
+  })
   </script>
 </body>
 </html>
