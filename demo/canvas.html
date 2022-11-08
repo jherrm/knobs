@@ -5,38 +5,39 @@
   <link rel="stylesheet" href="asset/ui.css" />
   <meta name="viewport" content="user-scalable=no, width=device-width">
 
-  <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>-->
   <script type="text/javascript" src="../jquery.min.js"></script>
   <script type="text/javascript" src="../Knob.js"></script>
 </head>
 <body>
 
-  <input id="position_canvas_knob"
-         name="position_canvas_knob"
+  <h1>Canvas rendered knobs</h1>
+  <p>Static background with a positioned indicator. No rotation limitation.</p>
+  <input id="position-canvas-knob"
+         name="position-canvas-knob"
          type="range"
-         value="50"
-         min="0" max="100"
          data-indicator-auto-position="true"
          data-indicator-radius="22"
           />
 
-  <input id="rotate_canvas_knob"
-         name="rotate_canvas_knob"
+  <p>Static background with a rotated indicator. min value: 0, max value:100, start angle: -200, end angle: 200</p>
+  <input id="rotate-canvas-knob"
+         name="rotate-canvas-knob"
          type="range"
          value="50"
          min="0" max="100"
-         data-angle-start="-400"
-         data-angle-end="360"
+         data-angle-start="-200"
+         data-angle-end="200"
          data-indicator-auto-rotate="true"
           />
 
-  <input id="position-rotate_canvas_knob"
-         name="position-rotate_canvas_knob"
+  <p>Static background with a rotated and positioned indicator. min value: 0, max value:100, start angle: 210, end angle: -30</p>
+  <input id="position-rotate-canvas-knob"
+         name="position-rotate-canvas-knob"
          type="range"
          value="50"
          min="0" max="100"
-         data-angle-start="-400"
-         data-angle-end="360"
+         data-angle-start="210"
+         data-angle-end="-30"
          data-indicator-auto-position="true"
          data-indicator-auto-rotate="true"
          data-indicator-radius="22"
@@ -48,20 +49,9 @@
   <script type="text/javascript" src="asset/knob_helper.js"></script>
   <script type="text/javascript">
 
-  var positionKnobCanvas       = KnobHelper.createKnobCanvas(
-                                  document.getElementById('position_canvas_knob'),
-                                  'position_canvas_knob'
-                                 );
-
-  var rotateKnobCanvas         = KnobHelper.createKnobCanvas(
-                                  document.getElementById('rotate_canvas_knob'),
-                                  'rotate_canvas_knob'
-                                 );
-
-  var positionRotateKnobCanvas = KnobHelper.createKnobCanvas(
-                                  document.getElementById('position-rotate_canvas_knob'),
-                                  'position-rotate_canvas_knob'
-                                 );
+  ['position-canvas-knob', 'rotate-canvas-knob', 'position-rotate-canvas-knob'].map((name) => {
+      KnobHelper.createKnobCanvas(document.getElementById(name), name)
+  })
 
   </script>
 
