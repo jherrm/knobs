@@ -1,162 +1,59 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>Knob - Canvas</title>
+  <title>Knobs - Canvas</title>
   <link rel="stylesheet" href="asset/ui.css" />
   <meta name="viewport" content="user-scalable=no, width=device-width">
 
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script src="../Knob.js"></script>
+  <script type="text/javascript" src="../jquery.min.js"></script>
+  <script type="text/javascript" src="../Knob.js"></script>
 </head>
 <body>
 
-  <input id="position"
-         name="position"
+  <h1>Canvas rendered knobs</h1>
+  <p>Static background with a positioned indicator. No rotation limitation.</p>
+  <input id="position-canvas-knob"
+         name="position-canvas-knob"
          type="range"
-         value="50"
-         min="0" max="100"
-         data-angle-start="-400"
-         data-angle-end="360"
          data-indicator-auto-position="true"
          data-indicator-radius="22"
           />
 
-  <input id="rotate"
-         name="rotate"
+  <p>Static background with a rotated indicator. min value: 0, max value:100, start angle: -200, end angle: 200</p>
+  <input id="rotate-canvas-knob"
+         name="rotate-canvas-knob"
          type="range"
          value="50"
          min="0" max="100"
-         data-angle-start="-400"
-         data-angle-end="360"
+         data-angle-start="-200"
+         data-angle-end="200"
          data-indicator-auto-rotate="true"
           />
 
-  <input id="position-rotate"
-         name="rotate"
+  <p>Static background with a rotated and positioned indicator. min value: 0, max value:100, start angle: 210, end angle: -30</p>
+  <input id="position-rotate-canvas-knob"
+         name="position-rotate-canvas-knob"
          type="range"
          value="50"
          min="0" max="100"
-         data-angle-start="-400"
-         data-angle-end="360"
+         data-angle-start="210"
+         data-angle-end="-30"
          data-indicator-auto-position="true"
          data-indicator-auto-rotate="true"
          data-indicator-radius="22"
           />
 
   <!-- mouse/touch events -->
-  <script src="asset/ui.js"></script>
+  <script type="text/javascript" src="asset/ui.js"></script>
 
-  <!-- Custom rendering code -->
+  <script type="text/javascript" src="asset/knob_helper.js"></script>
   <script type="text/javascript">
 
-  var fillCircle = function(context, x, y, radius) {
-    context.beginPath();
-    context.arc(x, y, radius, 0, Math.PI*2, true);
-    context.closePath();
-    context.fill();
-  }
-
-  var drawPositionIndicator = function(context, knob, indicator) {
-    var indicatorRadius = 5;
-
-    context.fillStyle = "#efefef";
-    fillCircle(context, 0, 0, indicatorRadius);
-  };
-
-  var drawRotateIndicator = function(context, knob, indicator) {
-    var knobRadius = 32,
-      indicatorW = knobRadius*2,
-      indicatorH = 10;
-
-    context.fillStyle = "#efefef";
-    context.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
-  };
-
-  var drawPositionRotateIndicator = function(context, knob, indicator) {
-    var knobRadius = 32,
-      indicatorW = 10,
-      indicatorH = 6;
-
-    context.fillStyle = "#efefef";
-    context.fillRect(-indicatorW/2, -indicatorH/2, indicatorW, indicatorH);
-  };
-
-  var drawIndicator = function(context, knob, indicator) {
-    context.save();
-
-    context.translate(indicator.x, indicator.y);
-    context.rotate(-indicator.angle*(Math.PI/180));
-
-    if(knob.options.indicatorAutoPosition && knob.options.indicatorAutoRotate) {
-      drawPositionRotateIndicator(context, knob, indicator);
-    }
-    else if(knob.options.indicatorAutoPosition) {
-      drawPositionIndicator(context, knob, indicator);
-    }
-    else if(knob.options.indicatorAutoRotate) {
-      drawRotateIndicator(context, knob, indicator);
-    }
-
-    context.restore();
-  };
-
-  var drawKnobBody = function(context, knob) {
-    var knobRadius = 32;
-
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-    //draw the knob background
-    context.fillStyle = "#008";
-    fillCircle(context, context.canvas.width/2, context.canvas.height/2, knobRadius);
-  };
-
-  var drawKnobCanvas = function(knob, indicator) {
-    var context = $(knob.element).siblings('canvas')[0].getContext('2d');
-
-    drawKnobBody(context, knob)
-
-    drawIndicator(context, knob, indicator);
-  }
-
-  var createKnobCanvas = function(knob, id) {
-    var $input     = $(knob.element),
-        $container = $('<div class="container '+ id + '">'),
-        $body      = $('<canvas class="'+ id + '">');
-
-    $container.append($body);
-
-    $input.hide();
-    $container.insertBefore($input);
-    $container.append($input);
-
-    $body[0].width  = $body[0].parentElement.clientWidth;
-    $body[0].height = $body[0].parentElement.clientHeight;
-
-    setupKnob(knob, $container[0]);
-  }
-
-  var positionKnob = new Knob(document.getElementById('position'),
-    function(knob, indicator) {
-      drawKnobCanvas(knob, indicator);
-    }
-  );
-  createKnobCanvas(positionKnob, 'position');
-
-  var rotateKnob = new Knob(document.getElementById('rotate'),
-    function(knob, indicator) {
-      drawKnobCanvas(knob, indicator);
-    }
-  );
-  createKnobCanvas(rotateKnob, 'rotate');
-
-  var positionRotateKnob = new Knob(document.getElementById('position-rotate'),
-    function(knob, indicator) {
-      drawKnobCanvas(knob, indicator);
-    }
-  );
-  createKnobCanvas(positionRotateKnob, 'position-rotate');
-
+  ['position-canvas-knob', 'rotate-canvas-knob', 'position-rotate-canvas-knob'].map((name) => {
+      KnobHelper.createKnobCanvas(document.getElementById(name), name)
+  })
 
   </script>
+
 </body>
 </html>

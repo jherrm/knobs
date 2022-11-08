@@ -1,215 +1,58 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>Knob - CSS</title>
+  <title>Knobs - CSS</title>
   <link rel="stylesheet" href="asset/ui.css" />
+  <link rel="stylesheet" href="asset/css_knobs.css" />
   <meta name="viewport" content="user-scalable=no, width=device-width">
 
-  <style type="text/css">
-
-    .ui-shadow {
-         -moz-box-shadow: 0px 1px 4px rgba(0,0,0,.3);
-      -webkit-box-shadow: 0px 1px 4px rgba(0,0,0,.3);
-              box-shadow: 0px 1px 4px rgba(0,0,0,.3);
-    }
-
-    .ui-knob {
-      position: relative;
-      display:  inline-block;
-      overflow: visible;
-      width:  64px;
-      height: 64px;
-      padding: 0px;
-
-      border:1px solid #ddd;
-      border-radius:50px;
-
-      /* center the div */
-      top:50%;
-      left:50%;
-
-      border: 0px solid #ccc;
-      background: #eee;
-      font-weight: bold;
-      color: #444;
-      text-shadow: 0 1px 1px #f6f6f6;
-      background-image: -moz-linear-gradient(top, #fdfdfd, #dddddd);
-      background-image: -webkit-gradient(linear,left top,left bottom, color-stop(0, #fdfdfd), color-stop(1, #dddddd));
-      -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fdfdfd', EndColorStr='#dddddd')";
-    }
-
-    .ui-indicator {
-      position: absolute;
-      display: block;
-      z-index: 10;
-      margin: 0;
-      padding: 0;
-      border-radius:3px;
-      /* Due to a display bug with anti-aliasing */
-      -webkit-backface-visibility: hidden;
-
-      border: 1px solid #808080;
-      background: #fdfdfd;
-      font-weight: bold;
-      color: #111111;
-      text-shadow: 0 1px 1px  #ffffff;
-      background-image: -moz-linear-gradient(top, #eeeeee, #dddddd);
-      background-image: -webkit-gradient(linear,left top,left bottom, color-stop(0, #eeeeee), color-stop(1, #dddddd));
-      -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#eeeeee', EndColorStr='#dddddd')";
-    }
-
-    .position.ui-indicator {
-      width: 10px;
-      height: 10px;
-      border-radius: 8px;
-    }
-
-    .rotate.ui-indicator {
-      width: 64px;
-      height: 10px;
-    }
-
-    .position-rotate.ui-indicator {
-      width: 10px;
-      height: 6px;
-    }
-
-
-  </style>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script src="../Knob.js"></script>
+  <script type="text/javascript" src="../jquery.min.js"></script>
+  <script type="text/javascript" src="../Knob.js"></script>
 
 </head>
 <body>
-
-<!--
-  <input id="prog_knob"
+  <h1>CSS rendered knobs</h1>
+  <p>Static background with a positioned indicator. No rotation limitation.</p>
+  <input id="position-css-knob"
+         name="position-css-knob"
          type="range"
-         name="progressive_knob"
-         min="1" max="10"
-         data-angle-start="-400"
-         data-angle-end="360"
-         data-angle-value-ratio="0.1"
-         data-angle-slide-ratio="1"
-         data-gesture-spin-enabled="true"
-         data-gesture-slidex-enabled="true"
-         data-gesture-slidey-enabled="true"
-         data-center-offset-x="0"
-         data-center-offset-y="0"
-         data-indicator-auto-rotate="false"
-         data-indicator-auto-position="false"
-         data-indicator-start-angle="0"
-         data-indicator-radius="0"
-         data-sprite-width="67"
-         data-sprite-height="67"
-         data-sprite-count="1"
-         data-sprite-direction="ccw"
-         data-sprite-start-angle="0"
-         data-sprite-separation-angle="3"
-         data-sprite-separation-gap="0"
-          />
--->
-
-  <input id="position"
-         name="position"
-         type="range"
-         value="50"
-         min="0" max="100"
          data-indicator-auto-position="true"
          data-indicator-radius="22"
-         data-gesture-spin-enabled="false"
-         data-gesture-slidex-enabled="false"
-         data-gesture-slidey-enabled="false"
           />
 
-  <input id="rotate"
-         name="rotate"
+  <p>Static background with a rotated indicator. min value: 0, max value:100, start angle: -200, end angle: 200</p>
+  <input id="rotate-css-knob"
+         name="rotate-css-knob"
          type="range"
          value="50"
          min="0" max="100"
-         data-angle-start="-400"
-         data-angle-end="360"
+         data-angle-start="-200"
+         data-angle-end="200"
          data-indicator-auto-rotate="true"
           />
 
-  <input id="position-rotate"
-         name="rotate"
+  <p>Static background with a rotated and positioned indicator. min value: 0, max value:100, start angle: 210, end angle: -30</p>
+  <input id="position-rotate-css-knob"
+         name="position-rotate-css-knob"
          type="range"
          value="50"
          min="0" max="100"
-         data-angle-start="-400"
-         data-angle-end="360"
+         data-angle-start="210"
+         data-angle-end="-30"
          data-indicator-auto-position="true"
          data-indicator-auto-rotate="true"
          data-indicator-radius="22"
           />
 
   <!-- mouse/touch events -->
-  <script src="asset/ui.js"></script>
+  <script type="text/javascript" src="asset/ui.js"></script>
+  <script type="text/javascript" src="asset/knob_helper.js"></script>
 
-  <!-- Custom rendering code -->
   <script type="text/javascript">
 
-  var createKnobCSS = function(knob, id) {
-    var $input     = $(knob.element),
-        $container = $('<div class="container '+ id + '">'),
-        $body      = $('<div class="ui-knob ui-shadow '+ id + '">'),
-        $indicator = $('<div class="ui-indicator '+ id + '">');
-
-    $container.append($body);
-    $container.append($indicator);
-
-    // $input.hide();
-    $container.insertBefore($input);
-    $container.append($input);
-
-    // center knob in container
-    $body.css({
-      "margin-top": -($body.outerHeight()/2),
-      "margin-left":-($body.outerWidth()/2)
-    });
-
-    setupKnob(knob, $container[0]);
-  }
-
-  var drawKnobCSS = function(knob, indicator) {
-    var $indicator = $(knob.element).siblings('.ui-indicator');
-    $indicator.css({
-      left: indicator.x - $indicator.outerWidth()/2,
-      top:  indicator.y - $indicator.outerHeight()/2
-    });
-
-    var rotateText = 'rotate('+(-indicator.angle)+'deg)';
-    $indicator.css({
-      'transform': rotateText,
-      '-webkit-transform': rotateText,
-      '-moz-transform': rotateText,
-      '-o-transform': rotateText
-    });
-  }
-
-  var positionKnob = new Knob(document.getElementById('position'),
-    function(knob, indicator) {
-      drawKnobCSS(knob, indicator);
-    }
-  );
-  createKnobCSS(positionKnob, 'position');
-
-  var rotateKnob = new Knob(document.getElementById('rotate'),
-    function(knob, indicator) {
-      drawKnobCSS(knob, indicator);
-    }
-  );
-  createKnobCSS(rotateKnob, 'rotate');
-
-  var positionRotateKnob = new Knob(document.getElementById('position-rotate'),
-    function(knob, indicator) {
-      drawKnobCSS(knob, indicator);
-    }
-  );
-  createKnobCSS(positionRotateKnob, 'position-rotate');
-
-
+  ['position-css-knob', 'rotate-css-knob', 'position-rotate-css-knob'].map((name) => {
+      KnobHelper.createKnobCSS(document.getElementById(name), name)
+  })
   </script>
 
 </body>

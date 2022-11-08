@@ -1,100 +1,130 @@
-var activeKnobs = {};
+const activeKnobs = {};
+
+function getPlatform() {
+  // 2022 way of detecting. Note : this userAgentData feature is available only in secure contexts (HTTPS)
+  if (typeof navigator.userAgentData !== 'undefined' && navigator.userAgentData != null) {
+    return navigator.userAgentData.platform;
+  }
+  // Deprecated but still works for most of the browser
+  if (typeof navigator.platform !== 'undefined') {
+    if (typeof navigator.userAgent !== 'undefined' && /android/.test(navigator.userAgent.toLowerCase())) {
+      // android device’s navigator.platform is often set as 'linux', so let’s use userAgent for them
+      return 'android';
+    }
+    return navigator.platform;
+  }
+  return 'unknown';
+}
 
 function setupKnob(knob, container) {
 
-	var rect = container.getBoundingClientRect();
-	knob.setPosition(rect.left + container.clientLeft, rect.top + container.clientTop);
-	knob.setDimensions(container.clientWidth, container.clientHeight);
+  // var rect = container.getBoundingClientRect();
+  // knob.setPosition(rect.left + container.clientLeft, rect.top + container.clientTop);
+  knob.setPosition(container.offsetLeft, container.offsetTop);
+  knob.setDimensions(container.clientWidth, container.clientHeight);
 
-	// Detect touch capable client
-	if ('ontouchstart' in window) {
+  // Detect touch capable client
+  if ('ontouchstart' in window) {
 
-		container.addEventListener('touchstart', function(e) {
-			var timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
-			// Keep track of the knobs currently being touched to support multitouch.
-			activeKnobs[e.targetTouches[0].identifier] = knob;
-			knob.doTouchStart(e.targetTouches, timeStamp);
-			e.preventDefault();
-		}, false);
+    container.addEventListener('touchstart', function(e) {
+      // reset the position in case knob moved
+      knob.setPosition(container.offsetLeft, container.offsetTop);
 
-		document.addEventListener('touchmove', function(e) {
-			var timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
-			// Support multi-touch knobs by only passing the appropriate touch events.
-			for(var i = 0, l = e.changedTouches.length; i < l; i++) {
-				var k = activeKnobs[e.changedTouches[i].identifier];
-				if(typeof k !== "undefined") {
-					k.doTouchMove([e.changedTouches[i]], timeStamp, e.scale);
-				}
-			}
+      const timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
+      // Keep track of the knobs currently being touched to support multitouch.
+      activeKnobs[e.targetTouches[0].identifier] = knob;
+      knob.doTouchStart(e.targetTouches, timeStamp);
+      e.preventDefault();
+    }, false);
 
-		}, false);
+    document.addEventListener('touchmove', function(e) {
+      const timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
+      // Support multi-touch knobs by only passing the appropriate touch events.
+      for(const i = 0, l = e.changedTouches.length; i < l; i++) {
+        const k = activeKnobs[e.changedTouches[i].identifier];
+        if(typeof k !== "undefined") {
+          k.doTouchMove([e.changedTouches[i]], timeStamp, e.scale);
+        }
+      }
 
-		document.addEventListener('touchend', function(e) {
-			var timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
-			knob.doTouchEnd(timeStamp);
-		}, false);
+    }, false);
 
-		document.addEventListener('touchcancel', function(e) {
-			var timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
-			knob.doTouchEnd(timeStamp);
-		}, false);
+    document.addEventListener('touchend', function(e) {
+      const timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
+      knob.doTouchEnd(timeStamp);
+    }, false);
 
-	} else {
-		// No touch capable client detected, use mouse interactions
-		var mousedown = false;
+    document.addEventListener('touchcancel', function(e) {
+      const timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
+      knob.doTouchEnd(timeStamp);
+    }, false);
 
-		container.addEventListener('mousedown', function(e) {
+  } else {
+    // No touch capable client detected, use mouse interactions
+    let mousedown = false;
+    const naturalScrolling = !/win|linux/.test(getPlatform().toLowerCase())
 
-			knob.doTouchStart([{
-				pageX: e.pageX,
-				pageY: e.pageY
-			}], e.timeStamp);
+    container.addEventListener('mousedown', function(e) {
+      // reset the position in case knob moved
+      knob.setPosition(container.offsetLeft, container.offsetTop);
 
-			mousedown = true;
-		}, false);
+      knob.doTouchStart([{
+        pageX: e.pageX,
+        pageY: e.pageY
+      }], e.timeStamp);
 
-		document.addEventListener('mousemove', function(e) {
-			if (!mousedown) { return; }
+      mousedown = true;
+    }, false);
 
-			knob.doTouchMove([{
-				pageX: e.pageX,
-				pageY: e.pageY
-			}], e.timeStamp);
+    document.addEventListener('mousemove', function(e) {
+      if (!mousedown) { return; }
 
-			mousedown = true;
+      knob.doTouchMove([{
+        pageX: e.pageX,
+        pageY: e.pageY
+      }], e.timeStamp);
 
-			// Prevent selection on drag
-			if (e.preventDefault)
-				e.preventDefault();
-			e.returnValue = false;
-		}, false);
+      mousedown = true;
 
-		document.addEventListener('mouseup', function(e) {
-			if (!mousedown) { return; }
+      // Prevent selection on drag
+      if (e.preventDefault)
+        e.preventDefault();
+      e.returnValue = false;
+    }, false);
 
-			knob.doTouchEnd(e.timeStamp);
+    document.addEventListener('mouseup', function(e) {
+      if (!mousedown) { return; }
 
-			mousedown = false;
-		}, false);
+      knob.doTouchEnd(e.timeStamp);
 
-		// Handle scroll for webkit
-		container.addEventListener('mousewheel', function(e) {
-			knob.doMouseScroll(e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
-			// Prevent page scroll
-			if (e.preventDefault)
-				e.preventDefault();
-			e.returnValue = false;
-		}, false);
+      mousedown = false;
+    }, false);
 
-		// Handle scroll for gecko
-		// container.addEventListener('MozMousePixelScroll', function(e) {
-		container.addEventListener('DOMMouseScroll', function(e) {
-			knob.doMouseScroll(-4*e.detail, e.timeStamp, e.pageX, e.pageY);
-			// Prevent page scroll
-			if (e.preventDefault)
-				e.preventDefault();
-			e.returnValue = false;
-		}, false);
+    // Handle scroll for webkit
+    container.addEventListener('mousewheel', function(e) {
+      // reset the position in case knob moved
+      knob.setPosition(container.offsetLeft, container.offsetTop);
 
-	}
+      const delta = naturalScrolling ? e.wheelDelta : -e.wheelDelta
+      knob.doMouseScroll(delta, e.timeStamp, e.pageX, e.pageY);
+      // Prevent page scroll
+      if (e.preventDefault)
+        e.preventDefault();
+      e.returnValue = false;
+    }, false);
+
+    // Handle scroll for gecko
+    // container.addEventListener('MozMousePixelScroll', function(e) {
+    container.addEventListener('DOMMouseScroll', function(e) {
+      // reset the position in case knob moved
+      knob.setPosition(container.offsetLeft, container.offsetTop);
+      let delta = -4*e.detail
+      delta = naturalScrolling ? -delta : -delta
+      knob.doMouseScroll(delta, e.timeStamp, e.pageX, e.pageY);
+      // Prevent page scroll
+      if (e.preventDefault)
+        e.preventDefault();
+      e.returnValue = false;
+    }, false);
+  }
 }
