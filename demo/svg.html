@@ -5,39 +5,39 @@
   <link rel="stylesheet" href="asset/ui.css" />
   <meta name="viewport" content="user-scalable=no, width=device-width">
 
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="../jquery.min.js"></script>
   <script src="../Knob.js"></script>
 </head>
 <body>
 
-  <input id="position"
+  <h1>SVG rendered knobs</h1>
+  <p>Static background with a positioned indicator. No rotation limitation.</p>
+  <input id="position-svg-knob"
          name="position"
          type="range"
-         value="50"
-         min="0" max="100"
-         data-angle-start="-400"
-         data-angle-end="360"
          data-indicator-auto-position="true"
          data-indicator-radius="22"
           />
 
-  <input id="rotate"
+  <p>Static background with a rotated indicator. min value: 0, max value:100, start angle: -200, end angle: 200</p>
+  <input id="rotate-svg-knob"
          name="rotate"
          type="range"
          value="50"
          min="0" max="100"
-         data-angle-start="-400"
-         data-angle-end="360"
+         data-angle-start="-200"
+         data-angle-end="200"
          data-indicator-auto-rotate="true"
           />
 
-  <input id="position-rotate"
+  <p>Static background with a rotated and positioned indicator. min value: 0, max value:100, start angle: 210, end angle: -30</p>
+  <input id="position-rotate-svg-knob"
          name="rotate"
          type="range"
          value="50"
          min="0" max="100"
-         data-angle-start="-400"
-         data-angle-end="360"
+         data-angle-start="210"
+         data-angle-end="-30"
          data-indicator-auto-position="true"
          data-indicator-auto-rotate="true"
          data-indicator-radius="22"
@@ -45,99 +45,14 @@
 
   <!-- mouse/touch events -->
   <script src="asset/ui.js"></script>
+  <script type="text/javascript" src="asset/knob_helper.js"></script>
 
   <!-- Custom rendering code -->
   <script type="text/javascript">
 
-  var drawKnobSVG = function(knob, indicator, indicatorOrigin) {
-    // var $indicator = $(knob.element).siblings('svg').children('.ui-indicator');
-    var $indicator = $($(knob.element).siblings('svg').children()[1]);
-    $indicator.attr('transform',
-      [
-        'translate('+(indicator.x-indicatorOrigin.x)+', '+(indicator.y-indicatorOrigin.y)+')',
-        'rotate('+(-indicator.angle)+', '+indicatorOrigin.x+', '+indicatorOrigin.y+')'
-      ].join()
-    );
-  }
-
-  var createKnobSVG = function(knob, id, indicatorEl) {
-    var $input     = $(knob.element),
-        $container = $('<div class="container '+ id + '">'),
-        $svg       = $('<svg class="'+ id + '" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">');
-
-
-    $container.append($svg);
-
-    $input.hide();
-    $container.insertBefore($input);
-    $container.append($input);
-
-    // Must define SVG elements using NS
-    var body = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    body.setAttributeNS(null, 'r',  32);
-    body.setAttributeNS(null, 'fill', 'red');
-    // center knob in container
-    body.setAttributeNS(null, 'transform', 'translate(' + $container.outerWidth()/2 + ', ' + $container.outerHeight()/2 + ')');
-
-    $svg.append(body);
-    $svg.append(indicatorEl);
-
-    setupKnob(knob, $container[0]);
-  }
-
-
-  var positionKnob = new Knob(document.getElementById('position'),
-    function(knob, indicator) {
-      var indicatorOrigin = {
-        x: 0,
-        y: 0
-      }
-      drawKnobSVG(knob, indicator, indicatorOrigin);
-    }
-  );
-  var positionIndicator = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-  positionIndicator.setAttributeNS(null, 'class', 'ui-indicator position');
-  positionIndicator.setAttributeNS(null, 'r',  5);
-  positionIndicator.setAttributeNS(null, 'fill', 'white');
-
-  createKnobSVG(positionKnob, 'position', positionIndicator);
-
-  var rotateKnob = new Knob(document.getElementById('rotate'),
-    function(knob, indicator) {
-      var $svgIndicator = $($(knob.element).siblings('svg').children()[1]);
-      var indicatorOrigin = {
-        x: $svgIndicator.attr('width')/2,
-        y: $svgIndicator.attr('height')/2
-      }
-      drawKnobSVG(knob, indicator, indicatorOrigin);
-    }
-  );
-  var rotateIndicator = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-  rotateIndicator.setAttributeNS(null, 'class', 'ui-indicator rotate');
-  rotateIndicator.setAttributeNS(null, 'width',  64);
-  rotateIndicator.setAttributeNS(null, 'height', 10);
-  rotateIndicator.setAttributeNS(null, 'fill', 'white');
-
-  createKnobSVG(rotateKnob, 'rotate', rotateIndicator);
-
-  var positionRotateKnob = new Knob(document.getElementById('position-rotate'),
-    function(knob, indicator) {
-      var $svgIndicator = $($(knob.element).siblings('svg').children()[1]);
-      var indicatorOrigin = {
-        x: $svgIndicator.attr('width')/2,
-        y: $svgIndicator.attr('height')/2
-      }
-      drawKnobSVG(knob, indicator, indicatorOrigin);
-    }
-  );
-  var positionRotateIndicator = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-  positionRotateIndicator.setAttributeNS(null, 'class', 'ui-indicator position-rotate');
-  positionRotateIndicator.setAttributeNS(null, 'width',  10);
-  positionRotateIndicator.setAttributeNS(null, 'height', 6);
-  positionRotateIndicator.setAttributeNS(null, 'fill', 'white');
-
-  createKnobSVG(positionRotateKnob, 'position-rotate', positionRotateIndicator);
-
+  ['position-svg-knob', 'rotate-svg-knob', 'position-rotate-svg-knob'].map((name) => {
+    KnobHelper.createKnobSVG(document.getElementById(name), name)
+  })
 
   </script>
 </body>

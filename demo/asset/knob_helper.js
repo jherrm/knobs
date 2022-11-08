@@ -158,6 +158,80 @@ var KnobHelper = {};
 
     /*
     ---------------------------------------------------------------------------
+      SVG Knob Creation and Drawing Functions
+    ---------------------------------------------------------------------------
+    */
+
+    drawKnobSVG: function(knob, indicator) {
+      const $indicator = $($(knob.element).siblings('svg').children()[1]);
+      $indicator.attr('transform',
+        [
+          `translate(${indicator.x},${indicator.y})`,
+          `rotate(${-indicator.angle})`
+        ].join()
+      );
+    },
+  
+    createKnobSVG: function(inputEl, id) {
+      const knob = new Knob(inputEl,
+          function(knob, indicator) {
+            KnobHelper.drawKnobSVG(knob, indicator);
+          }),
+          $input     = $(knob.element),
+          $container = $(`<div class="ui-knob-container ${id}">`),
+          $svg       = $(`<svg class="${id}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">`);
+
+      $container.append($svg);
+  
+      $input.hide();
+      $container.insertBefore($input);
+      $container.append($input);
+  
+      // Must define SVG elements using NS
+      const body = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      body.setAttributeNS(null, 'r',  32);
+      body.setAttributeNS(null, 'fill', 'red');
+      // center knob in container
+      body.setAttributeNS(null, 'transform', `translate(${$container.outerWidth()/2}, ${$container.outerHeight()/2})`);
+  
+      if(knob.options.indicatorAutoPosition && knob.options.indicatorAutoRotate) {
+        const [w,h] = [10,6]
+        $indicator = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        $indicator.setAttributeNS(null, 'class', 'ui-indicator position-rotate-svg-knob');
+        $indicator.setAttributeNS(null, 'fill', 'white');
+        $indicator.setAttributeNS(null, 'width',  w);
+        $indicator.setAttributeNS(null, 'height', h);
+        $indicator.setAttributeNS(null, 'x', -w/2);
+        $indicator.setAttributeNS(null, 'y', -h/2);
+      }
+      else if(knob.options.indicatorAutoPosition) {
+        $indicator = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        $indicator.setAttributeNS(null, 'class', 'ui-indicator position-svg-knob');
+        $indicator.setAttributeNS(null, 'r',  5);
+        $indicator.setAttributeNS(null, 'fill', 'white');
+      }
+      else if(knob.options.indicatorAutoRotate) {
+        const [w,h] = [64,10]
+        $indicator = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        $indicator.setAttributeNS(null, 'class', 'ui-indicator rotate-svg-knob');
+        $indicator.setAttributeNS(null, 'fill', 'white');
+        $indicator.setAttributeNS(null, 'width',  w);
+        $indicator.setAttributeNS(null, 'height', h);
+        $indicator.setAttributeNS(null, 'x', -w/2);
+        $indicator.setAttributeNS(null, 'y', -h/2);
+      }
+
+      $svg.append(body);
+      $svg.append($indicator);
+
+      setupKnob(knob, $container[0]);
+
+      return knob;
+    },
+  
+  
+    /*
+    ---------------------------------------------------------------------------
       Sprite Knob Creation and Drawing Functions
     ---------------------------------------------------------------------------
     */
