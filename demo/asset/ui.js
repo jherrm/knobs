@@ -1,4 +1,4 @@
-var activeKnobs = {};
+const activeKnobs = {};
 
 function setupKnob(knob, container) {
 
@@ -14,7 +14,7 @@ function setupKnob(knob, container) {
 			// reset the position in case knob moved
 			knob.setPosition(container.offsetLeft, container.offsetTop);
 
-			var timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
+			const timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
 			// Keep track of the knobs currently being touched to support multitouch.
 			activeKnobs[e.targetTouches[0].identifier] = knob;
 			knob.doTouchStart(e.targetTouches, timeStamp);
@@ -22,10 +22,10 @@ function setupKnob(knob, container) {
 		}, false);
 
 		document.addEventListener('touchmove', function(e) {
-			var timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
+			const timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
 			// Support multi-touch knobs by only passing the appropriate touch events.
-			for(var i = 0, l = e.changedTouches.length; i < l; i++) {
-				var k = activeKnobs[e.changedTouches[i].identifier];
+			for(const i = 0, l = e.changedTouches.length; i < l; i++) {
+				const k = activeKnobs[e.changedTouches[i].identifier];
 				if(typeof k !== "undefined") {
 					k.doTouchMove([e.changedTouches[i]], timeStamp, e.scale);
 				}
@@ -34,18 +34,18 @@ function setupKnob(knob, container) {
 		}, false);
 
 		document.addEventListener('touchend', function(e) {
-			var timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
+			const timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
 			knob.doTouchEnd(timeStamp);
 		}, false);
 
 		document.addEventListener('touchcancel', function(e) {
-			var timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
+			const timeStamp = e.timeStamp.getTime ? e.timeStamp.getTime() : e.timeStamp;
 			knob.doTouchEnd(timeStamp);
 		}, false);
 
 	} else {
 		// No touch capable client detected, use mouse interactions
-		var mousedown = false;
+		let mousedown = false;
 
 		container.addEventListener('mousedown', function(e) {
 			// reset the position in case knob moved
@@ -101,6 +101,5 @@ function setupKnob(knob, container) {
 				e.preventDefault();
 			e.returnValue = false;
 		}, false);
-
 	}
 }

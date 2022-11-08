@@ -1,7 +1,7 @@
-var KnobHelper = {};
+const KnobHelper = {};
 (function(undefined) {
 
-  var members = {
+  const members = {
 
     /*
     ---------------------------------------------------------------------------
@@ -10,7 +10,7 @@ var KnobHelper = {};
     */
 
     createKnobCSS: function(inputEl, containerClass) {
-      var knob = new Knob(inputEl,
+      const knob = new Knob(inputEl,
           function(knob, indicator) {
             KnobHelper.drawKnobCSS(knob, indicator);
           }),
@@ -45,7 +45,7 @@ var KnobHelper = {};
         top:  indicator.y - $indicator.outerHeight()/2
       });
 
-      var rotateText = 'rotate('+(-indicator.angle)+'deg)';
+      const rotateText = `rotate(${(-indicator.angle)}deg)`;
       $indicator.css({
         'transform': rotateText,
         '-webkit-transform': rotateText,
@@ -68,14 +68,14 @@ var KnobHelper = {};
     },
 
     drawPositionIndicatorCanvas: function(context, knob, indicator) {
-      var indicatorRadius = 5;
+      const indicatorRadius = 5;
 
       context.fillStyle = "#efefef";
       KnobHelper.fillCircleCanvas(context, 0, 0, indicatorRadius);
     },
 
     drawRotateIndicatorCanvas: function(context, knob, indicator) {
-      var knobRadius = 32,
+      const knobRadius = 32,
         indicatorW = knobRadius*2,
         indicatorH = 10;
 
@@ -84,7 +84,7 @@ var KnobHelper = {};
     },
 
     drawPositionRotateIndicatorCanvas: function(context, knob, indicator) {
-      var knobRadius = 32,
+      const knobRadius = 32,
         indicatorW = 10,
         indicatorH = 6;
 
@@ -112,7 +112,7 @@ var KnobHelper = {};
     },
 
     drawKnobBodyCanvas: function(context, knob) {
-      var knobRadius = 32;
+      const knobRadius = 32;
 
       context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
@@ -122,11 +122,11 @@ var KnobHelper = {};
     },
 
     drawKnobCanvas: function(knob, indicator) {
-      var canvas = $(knob.element).siblings('canvas')[0];
+      const canvas = $(knob.element).siblings('canvas')[0];
 
       if(!canvas) { return; }
 
-      var context = canvas.getContext('2d');
+      const context = canvas.getContext('2d');
 
       KnobHelper.drawKnobBodyCanvas(context, knob);
 
@@ -134,7 +134,7 @@ var KnobHelper = {};
     },
 
     createKnobCanvas: function(inputEl, containerClass) {
-      var knob = new Knob(inputEl,
+      const knob = new Knob(inputEl,
           function(knob, indicator) {
             KnobHelper.drawKnobCanvas(knob, indicator);
           }),
@@ -259,11 +259,11 @@ var KnobHelper = {};
     },
 
     drawKnobSprite: function(knob, indicator, drawIndicatorFn, spriteOffset, spriteImage) {
-      var canvas = $(knob.element).siblings('canvas')[0];
+      const canvas = $(knob.element).siblings('canvas')[0];
 
       if(!canvas) { return; }
 
-      var context = canvas.getContext('2d'),
+      const context = canvas.getContext('2d'),
           spriteX = Math.floor(context.canvas.width/2  - knob.options.spriteWidth/2),
           spriteY = Math.floor(context.canvas.height/2 - knob.options.spriteHeight/2);
 
@@ -277,7 +277,7 @@ var KnobHelper = {};
     },
 
     loadImage: function(callback, path) {
-      var image = new Image();
+      const image = new Image();
       image.onload = function() {
         if(callback) { callback.call(this); }
       }
@@ -286,10 +286,8 @@ var KnobHelper = {};
     },
 
     createKnobSprite: function(inputEl, containerClass, spriteImagePath, indicatorImagePath) {
-      var context,
-          spriteImage,
-          indicatorImage,
-          knob = new Knob(inputEl,
+      let spriteImage, indicatorImage
+      const knob = new Knob(inputEl,
             function(knob, indicator, spriteOffset) {
               KnobHelper.drawKnobSprite(knob, indicator, KnobHelper.drawIndicatorImageSprite(indicatorImage), spriteOffset, spriteImage);
             }
@@ -298,14 +296,13 @@ var KnobHelper = {};
           $container = $(`<div class="ui-knob-container ${containerClass}">`),
           $body      = $('<canvas>');
 
-      console.log(knob.options.spriteDirection);
       $container.append($body);
 
       $input.hide();
       $container.insertBefore($input);
       $container.append($input);
 
-      context = $body[0].getContext('2d');
+      const context = $body[0].getContext('2d');
 
       $body[0].width  = $body[0].parentElement.clientWidth;
       $body[0].height = $body[0].parentElement.clientHeight;
@@ -328,7 +325,7 @@ var KnobHelper = {};
 
   } // end members
 
-  for (var key in members) {
+  for (const key in members) {
     KnobHelper[key] = members[key];
   }
 

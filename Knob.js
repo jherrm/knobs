@@ -1,4 +1,4 @@
-var Knob;
+let Knob;
 (function(undefined) {
 
   /**
@@ -17,9 +17,9 @@ var Knob;
     }
 
     /*
-    <input id="prog_knob"
+    <input id="prog-knob"
            type="range"
-           name="progressive_knob"
+           name="progressive-knob"
            min="1" max="10"
            data-angle-start="-400"
            data-angle-end="360"
@@ -28,6 +28,7 @@ var Knob;
            data-gesture-spin-enabled="true"
            data-gesture-slidex-enabled="true"
            data-gesture-slidey-enabled="true"
+           data-gesture-scroll-enabled="true"
            data-center-offset-x="0"
            data-center-offset-y="0"
            data-indicator-auto-rotate="false"
@@ -45,7 +46,7 @@ var Knob;
     */
 
     // parse the attributes from the input element
-    var options = {}
+    const options = {}
 
     if (inputEl.hasAttribute('min')) {
       options.valueMin = parseFloat(inputEl.getAttribute('min'));
@@ -148,10 +149,10 @@ var Knob;
       angleEnd: Number.POSITIVE_INFINITY,
 
       /** The minimum value the knob can go down to */
-      valueMin: Number.NEGATIVE_INFINITY,
+      valueMin: 0, // default for html sliders
 
       /** The maximum value the knob can go up to */
-      valueMax: Number.POSITIVE_INFINITY,
+      valueMax: 100, // default for html sliders
       // valueMax: 11, // This one goes to eleven.
 
       /** The current value of the knob */
@@ -165,7 +166,7 @@ var Knob;
       angleValueRatio: 0.1,
 
       /** How much the angle increases per pixel moved during the slide */
-      angleSlideRatio: 1.25,
+      angleSlideRatio: 2.0,
 
       /** How much the angle increases per pixel moved during the scroll */
       angleScrollRatio: 0.5,
@@ -230,7 +231,7 @@ var Knob;
 
     };
 
-    for (var key in options) {
+    for (const key in options) {
       if(this.options[key] !== undefined)
         this.options[key] = options[key];
     }
@@ -305,7 +306,7 @@ var Knob;
    */
   function constrain(value, low, high) {
     if(low > high) {
-      var tmp = low;
+      const tmp = low;
       low = high;
       high = tmp;
     }
@@ -343,7 +344,7 @@ var Knob;
    * @return {Number} Angle distance in degrees (0 >= angle <= 180)
    **/
   function smallestAngleDistance(angle1, angle2) {
-    var d = Math.abs(angle1 - angle2) % 360;
+    const d = Math.abs(angle1 - angle2) % 360;
 
     return d > 180 ? 360 - d : d;
   }
@@ -370,7 +371,7 @@ var Knob;
    * @return {Number} Angle distance in degrees
    **/
   function angleFromCoord(x, y, originX, originY) {
-    var ny = originY - y,
+    const ny = originY - y,
         nx = x - originX;
 
     // http://stackoverflow.com/questions/1311049/how-to-map-atan2-to-degrees-0-360
@@ -393,8 +394,8 @@ var Knob;
    * @return {Boolean} True if the angle is increasing
    **/
   function isAngleIncreasing(prevAngle, nextAngle) {
-    var lowerBound = 30,
-      upperBound = 360 - lowerBound;
+    const lowerBound = 30,
+          upperBound = 360 - lowerBound;
 
     if(prevAngle < lowerBound && nextAngle > upperBound) {
       return false;
@@ -415,7 +416,7 @@ var Knob;
   function normalizeAngle(angle) {
 
     // get normalized base angles by chopping off any previous turns
-    var normalized = angle % 360;
+    let normalized = angle % 360;
 
     // ensure the normalized angle is positive
     while (normalized < 0) { normalized += 360; }
@@ -425,7 +426,7 @@ var Knob;
 
 
 
-  var members = {
+  const members = {
 
     /*
     ---------------------------------------------------------------------------
@@ -551,7 +552,7 @@ var Knob;
      */
     setDimensions: function(clientWidth, clientHeight) {
 
-      var self = this;
+      const self = this;
 
       // Only update values which are defined
       if (clientWidth) {
@@ -574,7 +575,7 @@ var Knob;
      */
     setPosition: function(left, top) {
 
-      var self = this;
+      const self = this;
 
       self.__clientLeft = left || 0;
       self.__clientTop = top || 0;
@@ -624,12 +625,12 @@ var Knob;
      * Mouse wheel/scroll handler for knob turning support
      */
     doMouseScroll: function(wheelDelta, timeStamp, pageX, pageY) {
-      var self = this;
+      const self = this;
 
       if (!self.options.gestureScrollEnabled) return
 
       // Figure out where the touch was relative to the center
-      var change = constrain(wheelDelta, -20, 20);
+      let change = constrain(wheelDelta, -20, 20);
       change = (pageX >= self.__centerPageX) ? -change : change;
       change *= self.options.angleScrollRatio;
       self.__validateAndPublishAngle(self.__angle + change);
@@ -648,10 +649,10 @@ var Knob;
         throw new Error("Invalid timestamp value: " + timeStamp);
       }
 
-      var self = this,
-        isSingleTouch = touches.length === 1,
-        currentTouchLeft = touches[0].pageX,
-        currentTouchTop  = touches[0].pageY;
+      const self = this,
+            isSingleTouch = touches.length === 1,
+            currentTouchLeft = touches[0].pageX,
+            currentTouchTop  = touches[0].pageY;
 
       // Store initial positions
       self.__initialTouchLeft = currentTouchLeft;
@@ -708,16 +709,16 @@ var Knob;
         throw new Error("Invalid timestamp value: " + timeStamp);
       }
 
-      var self = this;
+      const self = this;
 
       // Ignore event when tracking is not enabled (event might be outside of element)
       if (!self.__isTracking) {
         return;
       }
 
-      var currentTouchLeft = touches[0].pageX,
-          currentTouchTop  = touches[0].pageY,
-          positions = self.__positions;
+      const currentTouchLeft = touches[0].pageX,
+            currentTouchTop  = touches[0].pageY,
+            positions = self.__positions;
 
 
       self.__validateAndPublishAngle(self.__getAngleFromGesture(currentTouchLeft, currentTouchTop));
@@ -726,11 +727,11 @@ var Knob;
 
       if (!self.__isGestureLocked) {
 
-        var minimumTrackingForChange = 35,
-            minimumDistanceForLocking = 40,
-            maximumSlideVariance = 5,
-            distanceX = Math.abs(currentTouchLeft - self.__initialTouchLeft),
-            distanceY = Math.abs(currentTouchTop  - self.__initialTouchTop);
+        const minimumTrackingForChange = 35,
+              minimumDistanceForLocking = 40,
+              maximumSlideVariance = 5,
+              distanceX = Math.abs(currentTouchLeft - self.__initialTouchLeft),
+              distanceY = Math.abs(currentTouchTop  - self.__initialTouchTop);
 
         self.__slideXDetected = self.options.gestureSlideXEnabled && distanceX >= minimumTrackingForChange && distanceY < maximumSlideVariance;
         self.__slideYDetected = self.options.gestureSlideYEnabled && distanceY >= minimumTrackingForChange && distanceX < maximumSlideVariance;
@@ -768,7 +769,7 @@ var Knob;
         positions.splice(0, 30);
       }
 
-      // Track scroll movement for decleration
+      // Track scroll movement for deceleration
       positions.push({
         left: currentTouchLeft,
         top: currentTouchTop,
@@ -790,7 +791,7 @@ var Knob;
         throw new Error("Invalid timestamp value: " + timeStamp);
       }
 
-      var self = this;
+      const self = this;
 
       // Ignore event when tracking is not enabled (no touchstart event on element)
       // This is required as this listener ('touchmove') sits on the document and not on the element itself.
@@ -821,20 +822,20 @@ var Knob;
 
     __validateAndPublishAngle: function(angle, forcePublish) {
 
-      var self = this, prevAngle, nPreviousAngle, nCurrentAngle, diff;
+      const self = this
+      let diff;
 
-      if(forcePublish) {
+      if (forcePublish) {
         this.__angle = self.__validateAngle(angle, true);
       }
 
-      prevAngle = self.__angle,
-      nPreviousAngle = normalizeAngle(prevAngle),
-      nCurrentAngle  = normalizeAngle(angle),
+      const prevAngle = self.__angle;
+      const nPreviousAngle = normalizeAngle(prevAngle);
+      const nCurrentAngle  = normalizeAngle(angle);
       diff = smallestAngleDistance(nPreviousAngle, nCurrentAngle);
 
-
       diff = isAngleIncreasing(nPreviousAngle, nCurrentAngle) ? diff : -diff;
-      var nextAngle = self.__validateAngle(self.__angle + diff);
+      const nextAngle = self.__validateAngle(self.__angle + diff);
 
       self.__angle = nextAngle;
       self.__value = self.__valueFromAngles(forcePublish ? nextAngle : prevAngle, nextAngle);
@@ -844,7 +845,7 @@ var Knob;
 
     __validateAndPublishValue: function(value, forcePublish) {
 
-      var self = this;
+      const self = this;
 
       // if(forcePublish) {
         self.__value = self.__validateValue(value, true);
@@ -861,13 +862,13 @@ var Knob;
      * @param angle {Number} Angle to validate
      */
     __validateAngle: function(angle, force) {
-      var self = this;
+      const self = this;
 
       angle = constrain(angle, self.options.angleStart, self.options.angleEnd);
 
       if(!force) {
         // if prevAngle was at a boundary, only allow a legal natural move to change the existing angle.
-        var threshold = 30;
+        const threshold = 30;
         if(self.__angle == self.options.angleStart && Math.abs(angle-self.__angle) > threshold ) {
           angle = self.options.angleStart;
         }
@@ -885,7 +886,7 @@ var Knob;
      * @param value {Number} Value to validate
      */
     __validateValue: function(value, force) {
-      var self = this;
+      const self = this;
 
       return constrain(value, self.options.valueMin, self.options.valueMax);
     },
@@ -897,7 +898,7 @@ var Knob;
      * @param nextAngle {Number} next angle of the knob
      */
     __valueFromAngles: function(prevAngle, nextAngle) {
-      var self = this;
+      const self = this;
 
 
       // If angle and value bounds are real, map angle directly to value
@@ -911,7 +912,7 @@ var Knob;
 
       // If bounds aren't real, just increase/decrease value based on the change in angle.
       // it's prevAngle - nextAngle to increase the value as the knob turns clockwise
-      var value = self.__value + (prevAngle - nextAngle) * self.options.angleValueRatio;
+      const value = self.__value + (prevAngle - nextAngle) * self.options.angleValueRatio;
 
       return self.__validateValue(value);
     },
@@ -922,7 +923,7 @@ var Knob;
      * @param value {Number} angle represented by the value
      */
     __angleFromValue: function(value) {
-      var self = this;
+      const self = this;
 
       // If angle and value bounds are real, map angle directly to value
       if (isFinite(self.options.valueMin) &&
@@ -933,7 +934,7 @@ var Knob;
       }
 
       // If bounds aren't real, just increase/decrease angle based on the change in value.
-      var angle = self.__angle + (value - self.__value) / self.options.angleValueRatio;
+      const angle = self.__angle + (value - self.__value) / self.options.angleValueRatio;
 
       return self.__validateAngle(angle, true);
     },
@@ -942,7 +943,7 @@ var Knob;
      * Applies the values to the callback function.
      */
     __publish: function() {
-      var self = this,
+      const self = this,
         indicator = self.__getIndicator(self.__angle),
         spriteOffset = self.__getSpriteOffset(self.__angle);
 
@@ -965,11 +966,11 @@ var Knob;
      */
     __getIndicator: function(angle) {
 
-      var self = this,
-        indicator = {};
+      const self = this,
+            indicator = {};
 
       if(self.options.indicatorAutoPosition) {
-        var rads = toRadians(angle);
+        const rads = toRadians(angle);
         // Subtract Y component because of canvas's inverted Y coordinate compared to output of sin.
         indicator.x = self.__centerPageX - self.__clientLeft + self.options.indicatorRadius * Math.cos(rads),
         indicator.y = self.__centerPageY - self.__clientTop  - self.options.indicatorRadius * Math.sin(rads);
@@ -999,16 +1000,16 @@ var Knob;
      */
     __getSpriteOffset: function(angle) {
 
-      var self = this,
-        offset = 0;
+      const self = this;
+      let offset = 0;
 
       // If there are multiple images (using sprites), figure out which image to show.
       if(self.options.spriteCount > 1) {
 
-        var spriteAngle = self.options.spriteDirection === 'ccw' ? angle : -angle;
+        let spriteAngle = self.options.spriteDirection === 'ccw' ? angle : -angle;
         // Align the background image for sprites
         spriteAngle += self.options.spriteStartAngle;
-        var imageIndex = (Math.floor(spriteAngle / self.options.spriteSeparationAngle) % self.options.spriteCount);
+        let imageIndex = (Math.floor(spriteAngle / self.options.spriteSeparationAngle) % self.options.spriteCount);
         if(imageIndex < 0) {
           imageIndex += self.options.spriteCount;
         }
@@ -1032,8 +1033,8 @@ var Knob;
      */
     __getAngleFromGesture: function(currentTouchLeft, currentTouchTop) {
 
-      var self = this,
-          angle = self.__angle;
+      const self = this;
+      let angle = self.__angle;
 
       // handle spin, then handle slides
       if(self.__spinDetected) {
@@ -1044,12 +1045,12 @@ var Knob;
       }
       else {
         if (self.__slideXDetected) {
-          var change = (currentTouchLeft - self.__lastTouchLeft) * self.options.angleSlideRatio;
+          const change = (currentTouchLeft - self.__lastTouchLeft) * self.options.angleSlideRatio;
           angle += (self.__initialTouchLocationY === "top") ? -change : change;
         }
 
         if (self.__slideYDetected) {
-          var change = (currentTouchTop - self.__lastTouchTop) * self.options.angleSlideRatio;
+          const change = (currentTouchTop - self.__lastTouchTop) * self.options.angleSlideRatio;
           angle += (self.__initialTouchLocationX === "right") ? -change : change;
         }
       }
@@ -1062,7 +1063,7 @@ var Knob;
      * Update the page based center of the knob.
      */
     __updateCenterLocation: function() {
-      var self = this;
+      const self = this;
 
       // Get the center of knob to base interactions from
       self.__centerPageX = self.__clientLeft + self.__clientWidth/2 + self.options.centerOffsetX;
@@ -1070,7 +1071,7 @@ var Knob;
     }
   }
 
-  for (var key in members) {
+  for (const key in members) {
     Knob.prototype[key] = members[key];
   }
 })();
