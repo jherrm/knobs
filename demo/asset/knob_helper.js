@@ -15,9 +15,9 @@ var KnobHelper = {};
             KnobHelper.drawKnobCSS(knob, indicator);
           }),
           $input     = $(knob.element),
-          $container = $('<div class="container '+ containerClass + '">'),
-          $body      = $('<div class="ui-knob ui-shadow">'),
-          $indicator = $('<div class="ui-indicator">');
+          $container = $(`<div class="ui-knob-container ${containerClass}">`),
+          $body      = $('<div class="ui-knob ui-knob-shadow">'),
+          $indicator = $('<div class="ui-knob-indicator">');
 
       $container.append($body);
       $container.append($indicator);
@@ -39,7 +39,7 @@ var KnobHelper = {};
     },
 
     drawKnobCSS: function(knob, indicator) {
-      var $indicator = $(knob.element).siblings('.ui-indicator');
+      const $indicator = $(knob.element).siblings('.ui-knob-indicator');
       $indicator.css({
         left: indicator.x - $indicator.outerWidth()/2,
         top:  indicator.y - $indicator.outerHeight()/2
@@ -139,8 +139,8 @@ var KnobHelper = {};
             KnobHelper.drawKnobCanvas(knob, indicator);
           }),
           $input     = $(knob.element),
-          $container = $('<div class="container '+ containerClass + '">'),
-          $body      = $('<canvas class="'+ containerClass + '">');
+          $container = $(`<div class="ui-knob-container ${containerClass}">`),
+          $body      = $(`<canvas class="${containerClass}">`);
 
       $container.append($body);
 
@@ -221,7 +221,7 @@ var KnobHelper = {};
             }
           ),
           $input     = $(knob.element),
-          $container = $('<div class="container '+ containerClass + '">'),
+          $container = $(`<div class="ui-knob-container ${containerClass}">`),
           $body      = $('<canvas>');
 
       console.log(knob.options.spriteDirection);

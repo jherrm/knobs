@@ -14,7 +14,7 @@ body{
 	line-height: 1.8;
 }
 
-.container{
+.ui-knob-container{
 	position: relative;
 	left: 20px;
 	top: 20px;

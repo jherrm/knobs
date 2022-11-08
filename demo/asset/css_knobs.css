@@ -1,4 +1,4 @@
-.ui-shadow {
+.ui-knob-shadow {
      -moz-box-shadow: 0px 4px 10px rgba(0,0,0,.5);
   -webkit-box-shadow: 0px 4px 10px rgba(0,0,0,.5);
           box-shadow: 0px 4px 10px rgba(0,0,0,.5);
@@ -29,7 +29,7 @@
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fdfdfd', EndColorStr='#dddddd')";
 }
 
-.ui-indicator {
+.ui-knob-indicator {
   position: absolute;
   display: block;
   z-index: 10;
@@ -49,33 +49,32 @@
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#eeeeee', EndColorStr='#dddddd')";
 }
 
-.rotate_knob.ui-knob {
+.rotate-knob.ui-knob {
   background: #333;
   background-image: -webkit-gradient(linear,left top,left bottom, color-stop(0, #333), color-stop(1, #222));
   background-image: -moz-linear-gradient(top, #333, #222);
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#333', EndColorStr='#222')";
 }
 
-.position-rotate_knob.ui-knob {
+.position-rotate-knob.ui-knob {
   background: #333;
   background-image: -webkit-gradient(linear,left top,left bottom, color-stop(0, #333), color-stop(1, #222));
   background-image: -moz-linear-gradient(top, #333, #222);
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#333', EndColorStr='#222')";
 }
 
-.position_css_knob .ui-indicator {
+.position-css-knob .ui-knob-indicator, .spin-knob .ui-knob-indicator, .vertical-slide-knob .ui-knob-indicator, .horizontal-slide-knob .ui-knob-indicator {
   width: 10px;
   height: 10px;
   border-radius: 8px;
 }
 
-.rotate_css_knob .ui-indicator {
+.rotate-css-knob .ui-knob-indicator {
   width: 62px;
   height: 10px;
 }
 
-.position-rotate_css_knob .ui-indicator {
+.position-rotate-css-knob .ui-knob-indicator {
   width: 10px;
   height: 6px;
 }
-
