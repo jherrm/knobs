@@ -1,0 +1,525 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Knobs - CSS</title>
+  <link rel="stylesheet" href="asset/ui.css" />
+  <link rel="stylesheet" href="asset/css_knobs.css" />
+  <meta name="viewport" content="user-scalable=no, width=device-width">
+  <meta charset="utf-8">
+  <script type="text/javascript" src="../jquery.min.js"></script>
+  <script type="text/javascript" src="../Knob.js"></script>
+  <style>
+    .knobs-grid {
+      display: grid;
+      max-width: 960px;
+      margin: 100px auto;
+      padding: 10px;
+      display: grid;
+      /* grid-template-columns: repeat(3, 1fr); */
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+
+      /* align-items: end;
+      justify-content: end; */
+
+      /* column-gap: 10px;
+      row-gap: 10px; */
+      /* grid-auto-rows: minmax(200px, auto); */
+      grid-template-rows: repeat(3, 1fr);
+
+    }
+    .knobs-grid>div {
+      background: steelblue;
+      color: #fff;
+      font-size: 20px;
+      /* padding: 20px; */
+      border: skyblue 1px solid;
+    }
+
+    /* .item:nth-of-type(1) {
+      background: #000;
+      grid-column: 1 / 3;
+    }
+
+    .item:nth-of-type(3) {
+      background: #333;
+      grid-row: 2 / 4;
+    }
+
+    .item:nth-of-type(4) {
+      background: #333;
+      grid-row: 2 / 4;
+    } */
+
+    @media (max-width: 500px) {
+      .knobs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="knobs-grid">
+    <div></div>
+    <div><p>Static background.<br/>Positioned indicator.<br/>Unlimited rotation.</p></div>
+    <div><p>Static background<br/>Rotated indicator.<br/>-200° to 200°</p></div>
+    <div><p>Static background<br/>Rotated & positioned indicator.<br/>210° to -30°</p></div>
+    <div><p>CSS</p></div>
+    <div>
+      <input id="position-css-knob"
+            name="position-css-knob"
+            type="range"
+            data-indicator-auto-position="true"
+            data-indicator-radius="22"
+            />
+    </div>
+    <div>
+      <input id="rotate-css-knob"
+           name="rotate-css-knob"
+           type="range"
+           value="50"
+           min="0" max="100"
+           data-angle-start="-200"
+           data-angle-end="200"
+           data-indicator-auto-rotate="true"
+          />
+    </div>
+    <div>
+      <input id="position-rotate-css-knob"
+           name="position-rotate-css-knob"
+           type="range"
+           value="50"
+           min="0" max="100"
+           data-angle-start="210"
+           data-angle-end="-30"
+           data-indicator-auto-position="true"
+           data-indicator-auto-rotate="true"
+           data-indicator-radius="22"
+            />
+    </div>
+
+    <div><p>Canvas</p></div>
+    <div>
+      <input id="position-canvas-knob"
+           name="position-canvas-knob"
+           type="range"
+           value="50"
+           min="0" max="100"
+           data-indicator-auto-position="true"
+           data-indicator-radius="22"
+            />
+    </div>
+    <div>
+      <input id="rotate-canvas-knob"
+           name="rotate-canvas-knob"
+           type="range"
+           value="50"
+           min="0" max="100"
+           data-angle-start="-200"
+           data-angle-end="200"
+           data-indicator-auto-rotate="true"
+            />
+    </div>
+    <div>
+      <input id="position-rotate-canvas-knob"
+           name="position-rotate-canvas-knob"
+           type="range"
+           value="50"
+           min="0" max="100"
+           data-angle-start="210"
+           data-angle-end="-30"
+           data-indicator-auto-position="true"
+           data-indicator-auto-rotate="true"
+           data-indicator-radius="22"
+            />
+    </div>
+
+    <div><p>SVG</p></div>
+    <div>
+      <input id="position-svg-knob"
+          name="position-svg-knob"
+          type="range"
+          data-indicator-auto-position="true"
+          data-indicator-radius="22"
+          />
+    </div>
+    <div>
+      <input id="rotate-svg-knob"
+          name="rotate-svg-knob"
+          type="range"
+          value="50"
+          min="0" max="100"
+          data-angle-start="-200"
+          data-angle-end="200"
+          data-indicator-auto-rotate="true"
+          />
+    </div>
+    <div>
+      <input id="position-rotate-svg-knob"
+          name="rotate-svg-knob"
+          type="range"
+          value="50"
+          min="0" max="100"
+          data-angle-start="210"
+          data-angle-end="-30"
+          data-indicator-auto-position="true"
+          data-indicator-auto-rotate="true"
+          data-indicator-radius="22"
+          />
+    </div>
+
+    <div><p>Sprites</p></div>
+    <div>
+      <input id="position-sprite-knob"
+           name="position-sprite-knob"
+           type="range"
+           data-indicator-auto-position="true"
+           data-indicator-radius="20"
+           data-sprite-width="100"
+           data-sprite-height="100"
+           data-center-offset-x="2"
+           data-center-offset-y="2"
+            />
+    </div>
+    <div>
+      <input id="repeated-knob"
+       name="repeated-knob"
+       type="range"
+       data-sprite-count="12"
+       data-sprite-width="100"
+       data-sprite-height="100"
+       data-sprite-direction="cw"
+        />
+    </div>
+    <div>
+      <input id="oven-knob"
+       name="oven-knob"
+       type="range"
+       data-sprite-count="120"
+       data-sprite-width="100"
+       data-sprite-height="100"
+       data-sprite-direction="cw"
+        />
+    </div>
+  
+    <div><p>Knobs with a static background image and a positioned indicator image.</p></div>
+  
+    <div>
+        <input id="generic" name="generic"
+            type="range" 
+            data-indicator-auto-position="true" 
+            data-indicator-radius="20"
+            data-sprite-width="90" 
+            data-sprite-height="90" 
+            data-center-offset-x="0.5" 
+            data-center-offset-y="2.5" />
+    </div>
+    <div>
+        <input id="clavinet" name="clavinet"
+        type="range" 
+        data-indicator-auto-position="true" 
+        data-indicator-radius="20"
+        data-sprite-width="90" 
+        data-sprite-height="90" 
+        data-center-offset-x="0.5" 
+        data-center-offset-y="-2.5" />
+    </div>
+    <div></div>
+
+
+    <div><p>Knobs with a static background image and a rotating indicator image.</p></div>
+    <div>
+        <input id="panner" name="panner"
+            type="range" 
+            data-indicator-radius="20"
+            data-indicator-auto-rotate="true"
+            data-indicator-start-angle="90"
+            data-sprite-width="52" 
+            data-sprite-height="45" 
+            data-center-offset-x="0" 
+            data-center-offset-y="1" />
+    </div>
+    <div>
+        <input id="pad" name="pad"
+            type="range" 
+            data-indicator-radius="20"
+            data-indicator-auto-rotate="true" 
+            data-indicator-start-angle="90"
+            data-sprite-width="63" 
+            data-sprite-height="65" 
+            data-center-offset-x="-3" 
+            data-center-offset-y="-9" />
+
+    </div>
+    <div>
+        <input id="rhodes" name="rhodes"
+            type="range" 
+            data-indicator-auto-position="true" 
+            data-indicator-radius="27"
+            data-indicator-auto-rotate="true"
+            data-indicator-start-angle="270"
+            data-sprite-width="90" 
+            data-sprite-height="90" 
+            data-center-offset-x="0.5" 
+            data-center-offset-y="-2.5" />
+    </div>
+
+
+
+
+    <div><p>Knobs with repeating sprites and a positioned indicator image.</p></div>
+    <div>
+        <input id="hammond" name="hammond"
+            type="range" 
+            data-indicator-auto-position="true" 
+            data-indicator-radius="26"
+            data-sprite-width="100" 
+            data-sprite-height="100" 
+            data-sprite-count="5" 
+            data-sprite-separation-gap="1" 
+            data-sprite-direction="cw" />
+    </div>
+    <div></div>
+    <div></div>
+
+
+    <div><p>Knobs with repeating sprites and rotating indicator image.</p></div>
+    <div>
+        <input id="synth" name="synth"
+            type="range" 
+            data-indicator-auto-rotate="true" 
+            data-indicator-start-angle="90"
+            data-sprite-width="93" 
+            data-sprite-height="93" 
+            data-sprite-count="17"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="cw" 
+            data-center-offset-x="0.5" 
+            data-center-offset-y="2.5" />
+    </div>
+    <div></div>
+    <div></div>
+
+
+
+
+
+    <div><p>Pre-rendered knob using only sprites, no indicator.</p></div>
+    <div>
+        <input id="septa_120" name="septa_120"
+            type="range" 
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="black_point_120" name="black_point_120"
+            type="range" 
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="black_smooth_120" name="black_smooth_120"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="black_notched_120" name="black_notched_120"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="mini_120" name="mini_120"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="black_shiny_120" name="black_shiny_120"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="numbers_120" name="numbers_120"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="round_metal_120" name="round_metal_120"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="small_black_120" name="small_black_120"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="small_white_120" name="small_white_120"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="gold_120" name="gold_120"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="silver_120" name="silver_120"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="pointy_black_120" name="pointy_black_120"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="pointy_white_120" name="pointy_white_120"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="pointy_metal_120" name="pointy_metal_120"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="pointy_red_120" name="pointy_red_120"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="round_arrow_120" name="round_arrow_120"
+            data-sprite-width="67"
+            data-sprite-height="67"
+            data-sprite-count="120"
+            data-sprite-separation-gap="1"
+            data-sprite-direction="ccw" />
+
+    </div>
+    <div>
+        <input id="test_92_72" name="test_92_72"
+            type="range" 
+            data-angle-slide-ratio="0.4"
+            data-sprite-count="72"
+            data-sprite-separation-gap="1"
+            data-sprite-separation-angle="5"
+            data-sprite-width="91"
+            data-sprite-height="91"
+            data-sprite-direction="ccw" />
+    </div>
+
+  </div>
+
+
+  <!-- mouse/touch events -->
+  <script type="text/javascript" src="asset/ui.js"></script>
+  <script type="text/javascript" src="asset/knob_helper.js"></script>
+
+  <script type="text/javascript">
+  const knobs = [
+    {id:'position-css-knob', type:'css'},
+    {id:'rotate-css-knob', type:'css'},
+    {id:'position-rotate-css-knob', type:'css'},
+    {id:'position-canvas-knob', type:'canvas'},
+    {id:'rotate-canvas-knob', type:'canvas'},
+    {id:'position-rotate-canvas-knob', type:'canvas'},
+    {id:'position-svg-knob', type:'svg'},
+    {id:'rotate-svg-knob', type:'svg'},
+    {id:'position-rotate-svg-knob', type:'svg'},
+    {id:'position-sprite-knob', type:'sprite', image:'../post/house.png', indicator:'../post/house_indicator.png'},
+    {id:'repeated-knob', type:'sprite', image:'../post/toaster_knob.png'},
+    {id:'oven-knob', type:'sprite', image:'../post/oven_knob.png'},
+  ]
+  knobs.map(({id, type, image, indicator}) => {
+            const el = document.getElementById(id)
+            switch(type) {
+              case 'css':
+                KnobHelper.createKnobCSS(el, id)
+                break
+                case 'canvas':
+                KnobHelper.createKnobCanvas(el, id)
+                break
+              case 'svg':
+                KnobHelper.createKnobSVG(el, id)
+                break
+              case 'sprite':
+                KnobHelper.createKnobSprite(el, id, image, indicator)
+                break
+              default:
+                break
+            }
+        })
+
+  const gbKnobs =
+      [
+          'generic',
+          'clavinet',
+          'panner',
+          'pad',
+          'rhodes',
+          'hammond',
+          'synth',
+          'septa_120',
+          'black_point_120',
+          'black_smooth_120',
+          'black_notched_120',
+          'mini_120',
+          'black_shiny_120',
+          'numbers_120',
+          'round_metal_120',
+          'small_black_120',
+          'small_white_120',
+          'gold_120',
+          'silver_120',
+          'pointy_black_120',
+          'pointy_white_120',
+          'pointy_metal_120',
+          'pointy_red_120',
+          'round_arrow_120',
+          'test_92_72',
+      ]
+  gbKnobs.map((name) => {
+      const el = document.getElementById(name)
+      KnobHelper.createKnobSprite(el,
+          name,
+          `asset/gb/${name}.png`,
+          [...el.attributes].some(({ name }) => name.startsWith('data-indicator-')) ? `asset/gb/${name}_indicator.png` : undefined
+          )
+  })
+  </script>
+
+</body>
+</html>
