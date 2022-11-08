@@ -12,16 +12,16 @@ body{
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 14px;
 	line-height: 1.8;
+	margin: 10px;
 }
 
 .ui-knob-container{
 	position: relative;
-	left: 20px;
-	top: 20px;
-	width: 140px;
-	height: 140px;
+	width: 256px;
+	height: 100px;
 	cursor: default;
 	overflow: hidden;
+	margin: auto;
 
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -73,4 +73,27 @@ body{
 button{
 	padding: 6px 10px;
 	margin-right: 1px;
+}
+
+
+.grid {
+	margin:10px auto;
+	max-width:840px;
+}
+
+.grid>div {
+	float:left;
+	width: 200px;
+	height: 140px;
+	/* background-color: #ffeeee;
+	border: solid 1px #bbb; */
+}
+
+.grid p {
+	text-align: center;
+}
+
+
+.clearfix {
+	clear:both;
 }

@@ -1,0 +1,693 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="user-scalable=no, width=device-width">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎛</text></svg>">
+  <link rel="stylesheet" href="asset/github-mkdn.css" />
+  <link rel="stylesheet" href="asset/ui.css" />
+  <link rel="stylesheet" href="asset/css_knobs.css" />
+  <script type="text/javascript" src="../jquery.min.js"></script>
+  <script type="text/javascript" src="../Knob.js"></script>
+
+  <title>How Apple Designs a Virtual Knob</title>
+  <style>
+
+#gestures {
+  display: block;
+  max-width:600px;
+  margin: auto;
+}
+
+.knobs-grid {
+    display: grid;
+    max-width: 960px;
+    margin: 10px auto;
+    padding: 10px;
+    display: grid;
+    /* grid-template-columns: repeat(3, 1fr); */
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    gap: 10px;
+
+    /* align-items: end;
+    justify-content: end; */
+
+    /* column-gap: 10px;
+    row-gap: 10px; */
+    /* grid-auto-rows: minmax(200px, auto); */
+    /* grid-template-rows: repeat(3, 1fr); */
+
+  }
+  .knobs-grid>div {
+    /* background: steelblue; */
+    /* color: #fff; */
+    font-size: 20px;
+    /* padding: 20px; */
+    /* border: skyblue 1px solid; */
+  }
+  .knobs-grid label {
+    font-weight: bold;
+    font-size: 40px;
+    display: block;
+    text-align: center;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+  .caption {
+    font-size: 12px;
+    color: #777;
+    text-align: center;
+  }
+  /* .item:nth-of-type(1) {
+    background: #000;
+    grid-column: 1 / 3;
+  }
+
+  .item:nth-of-type(3) {
+    background: #333;
+    grid-row: 2 / 4;
+  }
+
+  .item:nth-of-type(4) {
+    background: #333;
+    grid-row: 2 / 4;
+  } */
+
+  @media (max-width: 500px) {
+    .knobs-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  figure {
+    /* height: 250px; */
+    /* width:400px; */
+    /* background-color: blue; */
+    position: relative;
+    overflow-x:auto;
+    overflow-y:auto;
+  }
+
+  /* figure > img {
+      position: relative;
+      max-width:none;
+      height: auto;
+  } */
+
+  .big-knob canvas, .big-knob .ui-knob-container {
+    height: 256px;
+  }
+
+  .note {
+    background-color:#eee;
+    font-style: italic;
+    padding: 20px;
+  }
+</style>
+</head>
+<body class="normal">
+  <div id="wrapper">
+
+<h1>🎛 How Apple Designs a Virtual Knob</h1>
+
+
+<p class="note">💡 Author's note: This unpublished post was originally written in May 2012, and refreshed for publication in November 2022.</p>
+
+<p>When Apple introduced Garageband for the iPad back in March 2011, I just had to try it out. It wasn&#8217;t just the ability to create music that drew me in, it was the realization that this was a flagship app that uses the strengths of a multitouch interface to create experiences that weren&#8217;t possible with a keyboard and mouse. My favorite example is how you can hit a note on the sound sampler keyboard then drag your fingers left and right to bend the pitch.</p>
+
+<p>Some time after a new type of interface is introduced, a handful of concepts tend to &#8220;win&#8221; and become a standard way of interacting with the interface. Keyboard shortcuts and right click contextual menus aren&#8217;t tied to a specific OS, they&#8217;re part of the standard toolset you get by using a keyboard and mouse. The iPhone popularized pinch-to-zoom, swipe, long tap, and many other useful multitouch interactions. With Garageband, Apple explored uncharted waters in user interaction and I&#8217;m going to talk about one simple control that has a few surprises in both use and implementation: <b>the virtual knob.</b></p>
+
+<h2>Apple&#8217;s Three Ways to Turn a Virtual Knob</h2>
+
+<p>After using the knobs in Garageband for a while, I noticed that they didn&#8217;t always react the way I thought they would. Most of the time the little indicator dot on the knob would follow my finger as I spun the knob around in a circle. Other times the knob wouldn&#8217;t follow my finger at all and seemed to go in random directions. I eventually figured out that I had stumbled on three different ways to turn a virtual knob. I was so impressed by this added functionality that I had to try and reproduce it myself, which led to me writing <a href="http://jherrm.github.io/knobs">Knob.js</a>, a javascript implementation of multitouch knobs that attempt to replicate the knobs found in Garageband. Knob.js powers all of the examples used in this post.</p>
+
+<figure>
+<img id="gestures" src="asset/gestures_diagram.svg" alt="" title="Apple's Three Ways to Turn a Virtual Knob" /></figure>
+
+
+
+<h3 id="spin">Spin</h3>
+
+<p>The natural interaction with a knob is to spin, so being able to touch the knob and drag it in a circle is key to a successful virtual knob. You can start the spin at any point on the knob, and if your finger is hiding the indicator you can drag away from the knob as you spin, so you can see what&#8217;s going on. Dragging further away from the center of the knob also lets you be more precise in setting the value.</p>
+
+<div class="knobs-grid">
+  <div>
+    <input id="spin-knob"
+          name="spin-knob"
+          type="range"
+          data-indicator-auto-position="true"
+          data-indicator-radius="22"
+          data-gesture-slidex-enabled="false"
+          data-gesture-slidey-enabled="false"
+          data-gesture-scroll-enabled="false"
+          oninput="slide(this)"
+          onchange="slide(this)"
+          />
+          <div class="caption">
+            Try spinning this knob.<br/>
+            (other gestures disabled)
+          </div>
+      </div>
+  <div>
+    <label id="spin-knob-val"></label>
+  </div>
+</div>
+
+<h3 id="verticalslide">Vertical Slide</h3>
+
+<p>Just as pinch-to-zoom actually wraps zoom, pan and rotate in one gesture<a href="#fn:1" id="fnref:1" title="see footnote" class="footnote">[1]</a>, Apple&#8217;s knobs also do double duty as sliders. By sliding your finger in a vertical line, the knob will lock into vertical slider mode. This makes it super easy to make the knob spin several full revolutions without giving your finger a workout. Just like a real life physical knob, the direction the knob spins is dependent on which side of the knob you turn. If you start sliding down on the right side of the knob, it will spin clockwise, and if you start sliding down on the left side of the knob it turns counter-clockwise. (spin disabled)</p>
+
+<div class="knobs-grid">
+  <div>
+  <input id="vertical-slide-knob"
+       name="vertical-slide-knob"
+       type="range"
+       data-indicator-auto-position="true"
+       data-indicator-radius="22"
+       data-gesture-spin-enabled="false"
+       data-gesture-slidex-enabled="false"
+       data-gesture-scroll-enabled="false"
+       oninput="slide(this)"
+       onchange="slide(this)"
+       />
+      <div class="caption">
+        Try sliding up or down on this knob.<br/>
+        (other gestures disabled)
+      </div>
+</div>
+  <div>
+    <label id="vertical-slide-knob-val"></label>
+  </div>
+</div>
+
+
+<p>Another bonus of using the vertical slide gesture with multitouch is you can easily change multiple knobs with one gesture on one hand. Using one finger per knob, drag straight up or down as if they were sliders on a audio mixing board.</p>
+
+<h3 id="horizontalslide">Horizontal Slide</h3>
+
+<p>Like the vertical slide, if you start sliding in a horizontal line the knob will lock into horizontal slider mode. Start sliding at the top and moving right causes the knob to spin clockwise, and starting at the bottom and going right will spin the knob counter-clockwise. (spin and vertical slide disabled)</p>
+
+<div class="knobs-grid">
+  <div>
+  <input id="horizontal-slide-knob"
+       name="horizontal-slide-knob"
+       type="range"
+       data-indicator-auto-position="true"
+       data-indicator-radius="22"
+       data-gesture-spin-enabled="false"
+       data-gesture-slidey-enabled="false"
+       data-gesture-scroll-enabled="false"
+       oninput="slide(this)"
+       onchange="slide(this)"
+        />
+        <div class="caption">
+          Try sliding left or right on this knob.<br/>
+          (other gestures disabled)
+        </div>
+    </div>
+  <div>
+    <label id="horizontal-slide-knob-val"></label>
+  </div>
+</div>
+
+
+<h3 id="alltogethernow">All Together Now</h3>
+
+<p>The demos above restrict the functionality to show each type of interaction one at a time. Try all three interactions together, as well as mouse/trackpad scrolling support on this button:</p>
+
+<div class="knobs-grid">
+  <div>
+  <input id="position-css-knob"
+       name="position-css-knob"
+       type="range"
+       data-indicator-auto-position="true"
+       data-indicator-auto-rotate="true"
+       data-indicator-radius="22"
+       oninput="slide(this)"
+       onchange="slide(this)"
+       />
+       <div class="caption">
+        Try spinning, sliding up/down or left/right on this knob<br/>
+        Mouse and trackpad scrolling works too!
+      </div>
+</div>
+  <div>
+    <label id="position-css-knob-val"></label>
+  </div>
+</div>
+
+<h2 id="howweretheybuilt">How Were They Built?</h2>
+
+<p>When I set out to replicate the knobs in Garageband, the first thing I did was open up the Garageband.ipa file and extract the assets. What I found was that in order to recreate the classic knobs from various instruments and amps, the developers used several techniques to bring the knobs to life in an efficient and realistic way.</p>
+
+<h3 id="knobswithstaticbackgrounds">Knobs with static backgrounds</h3>
+
+<p>Below we have a knob made with two images: a non-moving knob &#8220;background&#8221; and an indicator. The indicator is simply repositioned to create the turning effect. In Garageband, the <em>generic</em> and <em>clavinet</em> knobs all use this technique.</p>
+
+<div class="knobs-grid">
+  <div>
+  <input id="position-sprite-knob"
+       name="position-sprite-knob"
+       type="range"
+       data-indicator-auto-position="true"
+       data-indicator-radius="20"
+       data-sprite-width="100"
+       data-sprite-height="100"
+       data-center-offset-x="2"
+       data-center-offset-y="2"
+        />
+      <div class="caption">
+        Sprite based knob and indicator<br/>
+        Static background, positioned indicator.
+      </div>
+    </div>
+    <div>
+    </div>
+    <div>
+      <input id="generic" name="generic"
+          type="range" 
+          data-indicator-auto-position="true" 
+          data-indicator-radius="20"
+          data-sprite-width="90" 
+          data-sprite-height="90" 
+          data-center-offset-x="0.5" 
+          data-center-offset-y="2.5" />
+          <div class="caption">
+            Garageband Generic knob<br/>
+            Static background, positioned indicator.
+          </div>
+        </div>
+    <div>
+        <input id="clavinet" name="clavinet"
+        type="range" 
+        data-indicator-auto-position="true" 
+        data-indicator-radius="20"
+        data-sprite-width="90" 
+        data-sprite-height="90" 
+        data-center-offset-x="0.5" 
+        data-center-offset-y="-2.5" />
+        <div class="caption">
+          Garageband Clavinet knob<br/>
+          Static background, positioned indicator.
+        </div>
+  </div>
+</div>
+
+<p>Here&#8217;s another knob with a non-moving background, but instead of positioning the indicator to simulate turning, it rotates the indicator instead. Another neat thing about this knob is it, along with the knobs shown at the beginning of this post, are created with CSS rather than images. You can also render a knob with SVG and canvas. The <em>pad</em> and <em>panner</em> knobs in Garageband uses the rotating indicator method, though <em>panner</em> looks like a simple repositioned indicator knob.</p>
+
+<div class="knobs-grid">
+  <div>
+    <input id="rotate-css-knob"
+       name="rotate-css-knob"
+       type="range"
+       data-indicator-auto-rotate="true"
+        />
+    <div class="caption">
+      CSS knob<br/>
+      Static background, rotating indicator.
+    </div>
+  </div>
+  <div>
+    <input id="rotate-svg-knob"
+    name="rotate-svg-knob"
+    type="range"
+    data-indicator-auto-rotate="true"
+    />
+    <div class="caption">
+      SVG knob<br/>
+      Static background, rotating indicator.
+    </div>
+</div>
+  <div>
+    <input id="panner" name="panner"
+        type="range" 
+        data-indicator-radius="20"
+        data-indicator-auto-rotate="true"
+        data-indicator-start-angle="90"
+        data-sprite-width="52" 
+        data-sprite-height="45" 
+        data-center-offset-x="0" 
+        data-center-offset-y="1" />
+        <div class="caption">
+          Garageband Panner knob<br/>
+          Static background, rotated indicator.
+        </div>
+  </div>
+  <div>
+    <input id="pad" name="pad"
+        type="range" 
+        data-indicator-radius="20"
+        data-indicator-auto-rotate="true" 
+        data-indicator-start-angle="90"
+        data-sprite-width="63" 
+        data-sprite-height="65" 
+        data-center-offset-x="-3" 
+        data-center-offset-y="-9" />
+    <div class="caption">
+      Garageband Pad knob<br/>
+      Static background, rotating indicator.
+    </div>
+  </div>
+</div>
+
+<p>A third variation of a knob with a non-moving background is found by combining the other two indicator transformations. An indicator that&#8217;s both positioned and rotated offers a nice way to emulate real knobs. The <em>rhodes</em> electric piano knobs in Garageband show off this style.</p>
+
+<div class="knobs-grid">
+  <div>
+  <input id="position-rotate-css-knob"
+       name="position-rotate-css-knob"
+       type="range"
+       data-indicator-auto-position="true"
+       data-indicator-auto-rotate="true"
+       data-indicator-radius="21"
+        />
+      <div class="caption">
+        CSS knob<br/>
+        Static background, rotating and positioned indicator.
+      </div>
+  </div>
+  <div>
+    <input id="rhodes" name="rhodes"
+        type="range" 
+        data-indicator-auto-position="true" 
+        data-indicator-radius="27"
+        data-indicator-auto-rotate="true"
+        data-indicator-start-angle="270"
+        data-sprite-width="90" 
+        data-sprite-height="90" 
+        data-center-offset-x="0.5" 
+        data-center-offset-y="-2.5" />
+        <div class="caption">
+          Garageband Rhodes knob<br/>
+          Static background, rotating and positioned indicator.
+      </div>
+    </div>
+</div>
+
+<h3 id="knobswithrepeatingbackgrounds">Knobs with repeating backgrounds</h3>
+
+<p>Apple uses repeating backgrounds for knobs that change more than just their indicator as they&#8217;re spun around. To make one of these knobs just create the knob image without the indicator, rotate the image a few degrees and save a new image until the pattern is repeated. Combine all of the generated images side by side into one wide grid. Thanks to <s>Google</s> <a href="http://sketchup.google.com/3dwarehouse/">Trimble 3D Warehouse</a>, I was able to find some 3D knobs and recreate the process using blender and photoshop:</p>
+
+<p>Here&#8217;s one that I made that has a 13 image repeated progression:</p>
+
+<figure>
+<img src="knobs/toaster_knob.png" alt="" /></figure>
+
+<div class="knobs-grid">
+  <div>
+  <input id="repeated-knob"
+       name="repeated-knob"
+       type="range"
+       data-sprite-count="12"
+       data-sprite-width="100"
+       data-sprite-height="100"
+       data-sprite-direction="cw"
+        />
+        <div class="caption">
+          Toaster knob<br/>
+          Repeated sprite with a 13 image sequence.
+      </div>
+    </div>
+</div>
+
+<p>Of course you can also combine a repeating background with the indicator styles. The <em>hammond</em> knobs on the organs in Garageband are an example of a repeating background and a positioned indicator. The knobs on the generic synthesizers show off a repeated background and an indicator that&#8217;s rotated and positioned.</p>
+
+<div class="knobs-grid">
+  <div>
+<figure><img src="knobs/gb/hammond.png" alt="" />
+  <div class="caption">
+  Garageband Hammond knob source file with a 5 image repeating sequence.<br/>
+  </div>
+</figure>
+</div>
+
+<div>
+  <figure><img src="knobs/gb/synth.png" alt="" />
+  <div class="caption">
+  Garageband Synth knob source file with a 17 image repeating sequence.<br/>
+  </div>
+</figure>
+</div>
+
+<div>
+    <input id="hammond" name="hammond"
+    type="range" 
+    data-indicator-auto-position="true" 
+    data-indicator-radius="26"
+    data-sprite-width="100" 
+    data-sprite-height="100" 
+    data-sprite-count="5" 
+    data-sprite-separation-gap="1" 
+    data-sprite-direction="cw" />
+    <div class="caption">
+      Garageband Hammond knob<br/>
+      Repeated sprite with a 5 image sequence and positioned indicator.
+    </div>
+  </div>
+  <div>
+    <input id="synth" name="synth"
+        type="range" 
+        data-indicator-auto-rotate="true" 
+        data-indicator-start-angle="90"
+        data-sprite-width="93" 
+        data-sprite-height="93" 
+        data-sprite-count="17"
+        data-sprite-separation-gap="1"
+        data-sprite-direction="cw" 
+        data-center-offset-x="0.5" 
+        data-center-offset-y="2.5" />
+        <div class="caption">
+          Garageband Synth knob<br/>
+          Repeated sprite with a 17 image sequence with positioned and rotated indicator.
+        </div>
+    </div>
+</div>
+
+<h3 id="fullyrendered3dknobs">Fully Rendered 3D Knobs</h3>
+
+<p>Some knobs just can&#8217;t be reproduced with static images or repeating backgrounds. Instead of embedding an OpenGL 3D model of the knob, Apple chose to use a similar solution to the repeating background knobs. They basically created a 3D model of then knob then took a picture of it as they spun it around 3 degrees at a time. Since a circle has 360 degrees that means they&#8217;re creating 120 different snapshots of the knob! They line them up in order and save it off as a single image that looks like this:</p>
+
+<figure>
+<img src="asset/rendered_tiny.png" alt="" title="Birdseye view of all 120 knob sprites" /></figure>
+
+<figure>
+<img src="asset/rendered_medium.png" alt="" title="Zoomed in view of knob sprites" /></figure>
+
+<figure>
+<img src="asset/rendered_full.png" alt="" title="Actual size view of knob sprites" /></figure>
+
+
+
+<p>Out of the 25 knobs in Garageband that are able to be turned in all directions, 18 were created using this method.</p>
+<p>Thanks to WebGL we could even do one better and use an actual 3D knob! Unfortunately that will have to wait for another day!</p>
+
+<!-- <figure>
+  <img src="knobs/oven_knob.png" alt="" />
+</figure>
+<figure>
+  <img src="knobs/guitar.png" alt="" />
+</figure> -->
+      
+
+
+<div class="knobs-grid">
+  <div class="big-knob">
+  <input id="oven-knob"
+       name="oven-knob"
+       type="range"
+       data-sprite-count="120"
+       data-sprite-width="256"
+       data-sprite-height="256"
+       data-sprite-direction="cw"
+        />
+        <div class="caption">
+          Oven knob<br/>
+          Fully rendered sprite with 3° turns between images.
+        </div>
+    </div>
+    <div class="big-knob">
+      <input id="guitar"
+           name="guitar"
+           type="range"
+           data-sprite-count="120"
+           data-sprite-width="256"
+           data-sprite-height="256"
+           data-sprite-direction="cw"
+            />
+            <div class="caption">
+              Guitar knob<br/>
+              Fully rendered sprite with 3° turns between images.
+            </div>
+        </div>
+    </div>
+
+<hr />
+
+<h2 id="garagebandsecrets">Garageband Secrets</h2>
+
+<p>While going through the assets extracted from the Garageband, I ended up finding some knobs that didn&#8217;t make the cut for inclusion in the final release.
+ I&#8217;m happy to breathe some life into these knobs for the first time outside of Apple labs.</p>
+
+<h3 id="testknob">Test Knob</h3>
+
+<p>Before Apple settled on one image for every 3 degrees for 3D knobs, they tested out one image for every 5 degrees - 72 sprites in all. I can only assume they thought the jump from frame to frame was too jarring and was worth the increase in file size.</p>
+
+<div class="knobs-grid">
+  <div>
+  <input id="test-knob"
+       name="test-knob"
+       type="range"
+       value="50"
+       min="0" max="100"
+       data-sprite-count="72"
+       data-sprite-separation-gap="1"
+       data-sprite-separation-angle="5"
+       data-sprite-width="91"
+       data-sprite-height="91"
+        />
+    </div>
+</div>
+
+<h3 id="knobrejects">Knob Rejects</h3>
+
+<p>There were also three knobs that were fully finished but not included. Two were simple color/material changes to existing knobs, but the round arrow knob is new. I especially enjoy the specular highlights that appear on the rounded part of the arrow as you spin it.</p>
+
+<div class="knobs-grid">
+  <div>
+  <input id="secret_arrow"
+       name="secret_arrow"
+       type="range"
+       value="50"
+       min="0" max="100"
+       data-sprite-count="120"
+       data-sprite-separation-gap="1"
+        />
+  </div>
+  <div>
+  </div>
+  <div>
+  <input id="secret_red"
+       name="secret_red"
+       type="range"
+       value="50"
+       min="0" max="100"
+       data-sprite-count="120"
+       data-sprite-separation-gap="1"
+        />
+  </div>
+  <div>
+  <input id="secret_metal"
+       name="secret_metal"
+       type="range"
+       value="50"
+       min="0" max="100"
+       data-sprite-count="120"
+       data-sprite-separation-gap="1"
+        />
+  </div>
+</div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Apple&#8217;s attention to detail is what has propelled it to be the most valuable company on earth. Whether it&#8217;s the click of a physical button or the math behind inertial scrolling, Apple employees work really hard to make products that are deceptively simple and just feel right. The virtual knobs found in Garageband are no exception and I hope others enjoyed learning about them as much as I have.</p>
+
+<div class="footnotes">
+<hr />
+<ol>
+
+<li id="fn:1">
+<p>Unlike Mobile Safari, in the most popular versions of the browser in Android (as of May 2012), pinch-to-zoom only does zooming. This means that centering the content and zooming in on it require two separate actions - pinch to zoom, then drag to pan. This is the kind of thing that drives iOS natives crazy, yet wasn&#8217;t important enough for Google to fix until version 4 of their OS. <a href="#fnref:1" title="return to article" class="reversefootnote">&#160;&#8617;</a></p>
+</li>
+
+</ol>
+</div>
+
+    </div>
+
+  <!-- mouse/touch events -->
+  <script type="text/javascript" src="asset/ui.js"></script>
+  <script type="text/javascript" src="asset/knob_helper.js"></script>
+
+  <script type="text/javascript">
+
+  const knobs = [
+    {id:'spin-knob', type:'css'},
+    {id:'vertical-slide-knob', type:'css'},
+    {id:'horizontal-slide-knob', type:'css'},
+    {id:'position-css-knob', type:'css'},
+    {id:'rotate-css-knob', type:'css'},
+    {id:'position-rotate-css-knob', type:'css'},
+    {id:'rotate-svg-knob', type:'svg'},
+    {id:'position-sprite-knob', type:'sprite', image:'knobs/house.png', indicator:'knobs/house_indicator.png'},
+    {id:'repeated-knob', type:'sprite', image:'knobs/toaster_knob.png'},
+    {id:'oven-knob', type:'sprite', image:'knobs/oven_knob.png'},
+    {id:'guitar', type:'sprite', image:'knobs/guitar.png'},
+    {id:'test-knob', type:'sprite', image:'knobs/gb/test_92_72.png'},
+    {id:'secret_arrow', type:'sprite', image:'knobs/gb/round_arrow_120.png'},
+    {id:'secret_red', type:'sprite', image:'knobs/gb/pointy_red_120.png'},
+    {id:'secret_metal', type:'sprite', image:'knobs/gb/pointy_metal_120.png'},
+  ]
+  knobs.map(({id, type, image, indicator}) => {
+            const el = document.getElementById(id)
+            switch(type) {
+              case 'css':
+                KnobHelper.createKnobCSS(el, id)
+                break
+                case 'canvas':
+                KnobHelper.createKnobCanvas(el, id)
+                break
+              case 'svg':
+                KnobHelper.createKnobSVG(el, id)
+                break
+              case 'sprite':
+                KnobHelper.createKnobSprite(el, id, image, indicator)
+                break
+              default:
+                break
+            }
+        })
+
+  const gbKnobs =
+      [
+          'generic',
+          'clavinet',
+          'panner',
+          'pad',
+          'rhodes',
+          'hammond',
+          'synth',
+          // 'septa_120',
+          // 'black_point_120',
+          // 'black_smooth_120',
+          // 'black_notched_120',
+          // 'mini_120',
+          // 'black_shiny_120',
+          // 'numbers_120',
+          // 'round_metal_120',
+          // 'small_black_120',
+          // 'small_white_120',
+          // 'gold_120',
+          // 'silver_120',
+          // 'pointy_black_120',
+          // 'pointy_white_120',
+          // 'round_arrow_120',
+      ]
+  gbKnobs.map((name) => {
+      const el = document.getElementById(name)
+      KnobHelper.createKnobSprite(el,
+          name,
+          `knobs/gb/${name}.png`,
+          [...el.attributes].some(({ name }) => name.startsWith('data-indicator-')) ? `knobs/gb/${name}_indicator.png` : undefined
+          )
+  })
+
+  function slide(slider) {
+    document.getElementById(`${slider.id}-val`).innerHTML = slider.value;
+  }
+  </script>
+</body>
+</html>
