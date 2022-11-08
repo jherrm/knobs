@@ -86,6 +86,8 @@ function setupKnob(knob, container) {
 		// Handle scroll for webkit
 		container.addEventListener('mousewheel', function(e) {
 			knob.doMouseScroll(e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
+			// reset the position in case knob moved
+			knob.setPosition(container.offsetLeft, container.offsetTop);
 			// Prevent page scroll
 			if (e.preventDefault)
 				e.preventDefault();
@@ -96,6 +98,8 @@ function setupKnob(knob, container) {
 		// container.addEventListener('MozMousePixelScroll', function(e) {
 		container.addEventListener('DOMMouseScroll', function(e) {
 			knob.doMouseScroll(-4*e.detail, e.timeStamp, e.pageX, e.pageY);
+			// reset the position in case knob moved
+			knob.setPosition(container.offsetLeft, container.offsetTop);
 			// Prevent page scroll
 			if (e.preventDefault)
 				e.preventDefault();
