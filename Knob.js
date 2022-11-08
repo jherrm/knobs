@@ -80,6 +80,9 @@ var Knob;
     if (inputEl.hasAttribute('data-gesture-slidey-enabled')) {
       options.gestureSlideYEnabled = parseBool(inputEl.getAttribute('data-gesture-slidey-enabled'));
     }
+    if (inputEl.hasAttribute('data-gesture-scroll-enabled')) {
+      options.gestureScrollEnabled = parseBool(inputEl.getAttribute('data-gesture-scroll-enabled'));
+    }
     if (inputEl.hasAttribute('data-center-offset-x')) {
       options.centerOffsetX = parseFloat(inputEl.getAttribute('data-center-offset-x'));
     }
@@ -131,6 +134,9 @@ var Knob;
 
       /** Enable turning of the knob with a vertical sliding motion */
       gestureSlideYEnabled: true,
+
+      /** Enable turning of the knob with a mouse scroll */
+      gestureScrollEnabled: true,
 
       /** During spin gestures, point the indicator to the finger as it spins */
       // followFinger: true,
@@ -619,6 +625,8 @@ var Knob;
      */
     doMouseScroll: function(wheelDelta, timeStamp, pageX, pageY) {
       var self = this;
+
+      if (!self.options.gestureScrollEnabled) return
 
       // Figure out where the touch was relative to the center
       var change = constrain(wheelDelta, -20, 20);
