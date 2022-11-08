@@ -68,6 +68,9 @@ var Knob;
     if (inputEl.hasAttribute('data-angle-slide-ratio')) {
       options.angleSlideRatio = parseFloat(inputEl.getAttribute('data-angle-slide-ratio'));
     }
+    if (inputEl.hasAttribute('data-angle-scroll-ratio')) {
+      options.angleScrollRatio = parseFloat(inputEl.getAttribute('data-angle-scroll-ratio'));
+    }
     if (inputEl.hasAttribute('data-gesture-spin-enabled')) {
       options.gestureSpinEnabled = parseBool(inputEl.getAttribute('data-gesture-spin-enabled'));
     }
@@ -157,6 +160,9 @@ var Knob;
 
       /** How much the angle increases per pixel moved during the slide */
       angleSlideRatio: 1.25,
+
+      /** How much the angle increases per pixel moved during the scroll */
+      angleScrollRatio: 0.5,
 
       /** Number of pixels the rotational center of the knob is shifted from element's center along the X axis */
       centerOffsetX: 0,
@@ -617,9 +623,8 @@ var Knob;
       // Figure out where the touch was relative to the center
       var change = constrain(wheelDelta, -20, 20);
       change = (pageX >= self.__centerPageX) ? -change : change;
-      change *= self.options.angleSlideRatio;
-
-      self.__validateAndPublishAngle(self.__angle + change, true);
+      change *= self.options.angleScrollRatio;
+      self.__validateAndPublishAngle(self.__angle + change);
     },
 
     /**
