@@ -6,8 +6,8 @@
   <link rel="stylesheet" href="asset/css_knobs.css" />
   <meta name="viewport" content="user-scalable=no, width=device-width">
   <meta charset="utf-8">
-  <script type="text/javascript" src="../jquery.min.js"></script>
-  <script type="text/javascript" src="../Knob.js"></script>
+  <script type="text/javascript" src="jquery.min.js"></script>
+  <script type="text/javascript" src="Knob.js"></script>
   <style>
     .knobs-grid {
       display: grid;
@@ -459,9 +459,9 @@
     {id:'position-svg-knob', type:'svg'},
     {id:'rotate-svg-knob', type:'svg'},
     {id:'position-rotate-svg-knob', type:'svg'},
-    {id:'position-sprite-knob', type:'sprite', image:'../post/house.png', indicator:'../post/house_indicator.png'},
-    {id:'repeated-knob', type:'sprite', image:'../post/toaster_knob.png'},
-    {id:'oven-knob', type:'sprite', image:'../post/oven_knob.png'},
+    {id:'position-sprite-knob', type:'sprite', image:'knobs/house.png', indicator:'knobs/house_indicator.png'},
+    {id:'repeated-knob', type:'sprite', image:'knobs/toaster_knob.png'},
+    {id:'oven-knob', type:'sprite', image:'knobs/oven_knob.png'},
   ]
   knobs.map(({id, type, image, indicator}) => {
             const el = document.getElementById(id)
