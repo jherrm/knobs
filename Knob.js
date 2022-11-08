@@ -948,6 +948,7 @@ var Knob;
 
       // Set the input element's value
       self.element.value = self.__value;
+      self.element.dispatchEvent(new CustomEvent('change'));
 
       // Push values out
       if (self.__callback) {
